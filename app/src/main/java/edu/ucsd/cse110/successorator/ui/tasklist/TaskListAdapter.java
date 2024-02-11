@@ -34,7 +34,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         }
 
         binding.description.setText(task.getDescription());
-        binding.date.setText(task.getDateCreated().toString());
+        binding.date.setText(task.getDateString());
 
         return binding.getRoot();
     }
