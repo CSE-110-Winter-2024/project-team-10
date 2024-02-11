@@ -2,6 +2,10 @@ package edu.ucsd.cse110.successorator;
 
 import android.app.Application;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import edu.ucsd.cse110.successorator.lib.data.InMemoryDataSource;
 import edu.ucsd.cse110.successorator.lib.domain.SimpleTaskRepository;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
@@ -20,5 +24,8 @@ public class SuccessoratorApplication extends Application {
 
     public TaskRepository getTaskRepository() {
         return taskRepository;
+    }
+    public String getDate() {
+        return new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(new Date());
     }
 }
