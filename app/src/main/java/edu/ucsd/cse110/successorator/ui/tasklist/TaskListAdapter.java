@@ -10,13 +10,17 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import edu.ucsd.cse110.successorator.databinding.TaskBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 
 public class TaskListAdapter extends ArrayAdapter<Task> {
-    public TaskListAdapter(Context context, List<Task> taskList) {
+    Consumer<Integer> onTaskClick;
+
+    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClick) {
         super(context, 0, new ArrayList<>(taskList));
+        this.onTaskClick = onTaskClick;
     }
 
     @NonNull
@@ -35,6 +39,12 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
         binding.description.setText(task.getDescription());
         binding.date.setText(task.getDateString());
+
+        binding.task.setOnClickListener(v -> {
+            var id = task.id();
+            assert id != null;
+            onTaskClick.accept(id);
+        });
 
         return binding.getRoot();
     }

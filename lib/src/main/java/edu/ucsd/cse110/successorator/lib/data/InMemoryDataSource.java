@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.util.MutableSubject;
 import edu.ucsd.cse110.successorator.lib.util.SimpleSubject;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
 
@@ -14,6 +17,11 @@ public class InMemoryDataSource {
     private final List<Task> taskList = new ArrayList<>();
     private final List<Subject<Task>> taskSubjects = new ArrayList<>();
     private final SimpleSubject<List<Task>> taskListSubject = new SimpleSubject<>();
+
+
+    private int minSortOrder = Integer.MAX_VALUE;
+    private int maxSortOrder = Integer.MIN_VALUE;
+
 
     public InMemoryDataSource() {}
 
@@ -27,14 +35,12 @@ public class InMemoryDataSource {
         taskListSubject.setValue(taskList);
     }
 
-    public Subject<List<Task>> getTaskListSubject() {
-        return taskListSubject;
-    }
+    public Subject<List<Task>> getTaskListSubject() { return taskListSubject; }
 
     public static final List<Task> DEFAULT_TASKS = List.of(
-            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime()),
-            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime()),
-            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime())
+            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false),
+            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false),
+            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false)
     );
 
     public static InMemoryDataSource fromDefault() {
@@ -45,4 +51,58 @@ public class InMemoryDataSource {
 
         return data;
     }
+
+    public int getMinSortOrder() {
+        return minSortOrder;
+    }
+
+    public int getMaxSortOrder() {
+        return maxSortOrder;
+    }
+
+    public void completed(int id) {
+        var task = taskList.get(id);
+        //var sortOrder = task.sortOrder();
+        taskList.;
+
+        //taskListSubject.setValue(getTaskListSubject().getValue());
+    }
+
+
+//    public void shiftSortOrders(int from, int to, int by) {
+//        var cards = taskList.values().stream()
+//                .filter(card -> card.sortOrder() >= from && card.sortOrder() <= to)
+//                .map(card -> card.withSortOrder(card.sortOrder() + by))
+//                .collect(Collectors.toList());
+//
+//        putFlashcards(cards);
+//    }
+
+
+
+
+
+//    public void putTask(Task task) {
+//        var fixedCard = preInsert(task);
+//
+//        tasks.put(fixedCard.id(), fixedCard);
+//        postInsert();
+//        assertSortOrderConstraints();
+//
+//        if (taskSubjects.containsKey(fixedCard.id())) {
+//            taskSubjects.get(fixedCard.id()).setValue(fixedCard);
+//        }
+//        taskListSubject.setValue(getTasks());
+//    }
+//
+//    //Crosses out task and moves it to the bottom
+//    public boolean completeAndCrossOut(Task task) {
+//        SimpleSubject<Task> newSubject = new SimpleSubject<Task>();
+//        newSubject.setValue(task);
+//
+//        taskList.completeAndCrossOut(task);
+//        taskSubjects.completeAndCrossOut(task);
+//
+//        taskListSubject.setValue(taskList);
+//    }
 }

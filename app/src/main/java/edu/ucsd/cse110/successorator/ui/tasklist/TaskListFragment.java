@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
@@ -20,6 +21,7 @@ public class TaskListFragment extends Fragment {
     private MainViewModel activityModel;
     private FragmentTaskListBinding view;
     private TaskListAdapter adapter;
+
 
     public TaskListFragment() {}
 
@@ -41,7 +43,7 @@ public class TaskListFragment extends Fragment {
         this.activityModel = modelProvider.get(MainViewModel.class);
 
         // Initializer the adapter
-        this.adapter = new TaskListAdapter(requireContext(), List.of());
+        this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion);
         activityModel.getTaskList().observe(list -> {
             if (list == null)
                 return;

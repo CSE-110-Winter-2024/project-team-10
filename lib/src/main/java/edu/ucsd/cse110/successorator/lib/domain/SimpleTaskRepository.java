@@ -31,4 +31,18 @@ public class SimpleTaskRepository implements TaskRepository {
     public int size() {
         return 0;
     }
+
+
+    @Override
+    public void completed(int id) {
+        dataSource.completed(id);
+        //return true;
+    }
+
+
+
+    //Completing a task
+//    public void completeAndCrossOut(Task task) {
+//        dataSource.putTask(task.getMaxSortOrder());
+//    }
 }
