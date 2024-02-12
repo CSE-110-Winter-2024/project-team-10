@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.successorator.lib.domain;
 
 import java.util.List;
+import java.util.Objects;
 
 import edu.ucsd.cse110.successorator.lib.data.InMemoryDataSource;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
@@ -31,4 +32,12 @@ public class SimpleTaskRepository implements TaskRepository {
     public int size() {
         return 0;
     }
+
+    public void updateTask(Task task) {
+        // Print whether the task is completed or not
+        System.out.println("Task '" + task.getDescription() + "' is " + (task.isCompleted() ? "completed" : "not completed"));
+        // Delegate the task update operation to the InMemoryDataSource
+        dataSource.updateTask(task);
+    }
+
 }
