@@ -61,4 +61,15 @@ public class TaskListFragment extends Fragment {
         view.taskList.setAdapter(adapter);
         return view.getRoot();
     }
+
+//    @Override
+//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//
+//        // Set up click listener for each item in the task list
+//        adapter.setOnItemClickListener((position, task) -> {
+//            // Toggle task completion when a task item is clicked
+//            activityModel.toggleTaskCompletion(task);
+//        });
+//    }
 }

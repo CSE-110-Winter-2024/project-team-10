@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.successorator.ui.tasklist;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,10 +41,23 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         binding.description.setText(task.getDescription());
         binding.date.setText(task.getDateString());
 
+
         binding.task.setOnClickListener(v -> {
             var id = task.id();
             assert id != null;
             onTaskClick.accept(id);
+            task.setCompleted(!task.isCompleted());
+
+//        binding.getRoot().setOnClickListener(v -> {
+//            Log.d("TaskListAdapter", "Item clicked: " + task.getDescription());
+//            // Toggle the completion status of the task
+//            task.setCompleted(!task.isCompleted());
+//            // Log the task description and completion status
+//            String completionStatus = task.isCompleted() ? "completed" : "not completed";
+//            Log.d("TaskListAdapter", task.getDescription() + " is now " + completionStatus);
+//            // Update the UI to reflect the change
+//            notifyDataSetChanged();
+//
         });
 
         return binding.getRoot();

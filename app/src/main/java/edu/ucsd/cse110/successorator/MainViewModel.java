@@ -38,9 +38,10 @@ public class MainViewModel extends ViewModel {
         return taskListSubject;
     }
 
-    public TaskRepository getTaskRepository() {
-        return taskRepository;
-    }
+//    public void toggleTaskCompletion(Task task) {
+//        task.setCompleted(!task.isCompleted());
+//        taskRepository.updateTask(task);
+//    }
 
     public void toggleTaskCompletion(int id) {
         //task.setCompleted(!task.isCompleted());

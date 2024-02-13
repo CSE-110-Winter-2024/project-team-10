@@ -10,7 +10,9 @@ public interface TaskRepository {
     public void save(Task task);
     public int size();
 
+
     //public void completeAndCrossOut(Task task);
 
     public void completed(int id);
+    //public void updateTask(Task task);
 }

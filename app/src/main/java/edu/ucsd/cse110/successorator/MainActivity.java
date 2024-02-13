@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         this.view = ActivityMainBinding.inflate(getLayoutInflater());
         //setContentView(view.getRoot());
 
@@ -38,6 +39,14 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(view.getRoot());
 
+
+//        this.view = ActivityMainBinding.inflate(getLayoutInflater());
+//
+//        String strDate = new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(new Date());
+//        view.dateText.setText(strDate);
+//
+//        setContentView(view.getRoot());
+        //setContentView(R.layout.activity_main);
     }
 
 

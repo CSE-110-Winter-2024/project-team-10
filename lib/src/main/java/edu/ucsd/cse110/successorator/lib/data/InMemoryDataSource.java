@@ -38,9 +38,9 @@ public class InMemoryDataSource {
     public Subject<List<Task>> getTaskListSubject() { return taskListSubject; }
 
     public static final List<Task> DEFAULT_TASKS = List.of(
-            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false),
-            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false),
-            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false)
+            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0),
+            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 1),
+            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 2)
     );
 
     public static InMemoryDataSource fromDefault() {
@@ -61,9 +61,12 @@ public class InMemoryDataSource {
     }
 
     public void completed(int id) {
-        var task = taskList.get(id);
+        var data = new InMemoryDataSource();
+        var task = taskList.get(id-1);
+
+        data.addTask(task);
         //var sortOrder = task.sortOrder();
-        taskList.;
+        //taskList.r;
 
         //taskListSubject.setValue(getTaskListSubject().getValue());
     }
@@ -105,4 +108,21 @@ public class InMemoryDataSource {
 //
 //        taskListSubject.setValue(taskList);
 //    }
+
+    public void updateTask(Task updatedTask) {
+        for (int i = 0; i < taskList.size(); i++) {
+            Task task = taskList.get(i);
+            if (task.id().equals(updatedTask.id())) { // Assuming each task has an ID for identification
+                taskList.set(i, updatedTask);
+                taskListSubject.setValue(taskList); // Notify observers
+                return;
+            }
+        }
+    }
+
+//    public  void updateTask( int id){
+//        var task = task.get(id);
+//
+//    }
+
 }
