@@ -14,7 +14,7 @@ public class Task {
 
     private boolean isCompleted;
 
-    public Task(Integer id, String description, Date dateCreated, boolean isCompleted) {
+    public Task(Integer id, String description, Date dateCreated, Boolean isCompleted) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
