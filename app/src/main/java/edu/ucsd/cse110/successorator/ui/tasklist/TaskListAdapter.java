@@ -48,7 +48,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
             var id = task.id();
             assert id != null;
             onTaskClick.accept(id);
-            onTaskDelete.accept(id);
+            onTaskDelete.accept(id-1);
             task.setCompleted(!task.isCompleted());
 
 
