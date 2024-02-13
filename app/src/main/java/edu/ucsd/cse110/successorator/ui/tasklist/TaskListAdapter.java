@@ -18,10 +18,12 @@ import edu.ucsd.cse110.successorator.lib.domain.Task;
 
 public class TaskListAdapter extends ArrayAdapter<Task> {
     Consumer<Integer> onTaskClick;
+    Consumer<Integer> onTaskDelete;
 
-    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClick) {
+    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClick, Consumer<Integer> onTaskDelete) {
         super(context, 0, new ArrayList<>(taskList));
         this.onTaskClick = onTaskClick;
+        this.onTaskDelete = onTaskDelete;
     }
 
     @NonNull
@@ -46,7 +48,9 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
             var id = task.id();
             assert id != null;
             onTaskClick.accept(id);
+            onTaskDelete.accept(id);
             task.setCompleted(!task.isCompleted());
+
 
 //        binding.getRoot().setOnClickListener(v -> {
 //            Log.d("TaskListAdapter", "Item clicked: " + task.getDescription());

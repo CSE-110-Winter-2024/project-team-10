@@ -64,12 +64,51 @@ public class InMemoryDataSource {
         var data = new InMemoryDataSource();
         var task = taskList.get(id-1);
 
+
+
+
+
         data.addTask(task);
+
+        //list1.remove(item)
+        //list1.insert(new_index, item)
+
+        //append task to list
+
+        //delete task from list
+
+        //data.addTask(task);
         //var sortOrder = task.sortOrder();
         //taskList.r;
 
         //taskListSubject.setValue(getTaskListSubject().getValue());
     }
+
+    public void removeTask(int id) {
+        var card = taskList.get(id);
+        var sortOrder = card.sortOrder();
+
+        taskList.remove(id);
+        //shiftSortOrders(sortOrder, maxSortOrder, -1);
+
+        if (taskSubjects.contains(id)) {
+            taskSubjects.remove(id);
+        }
+        taskListSubject.setValue(getTasks());
+    }
+
+    public List<Task> getTasks() {
+        return List.copyOf(taskList);
+    }
+
+//    public void shiftSortOrders(int from, int to, int by) {
+//        var cards = taskList.values().stream()
+//                .filter(card -> card.sortOrder() >= from && card.sortOrder() <= to)
+//                .map(card -> card.withSortOrder(card.sortOrder() + by))
+//                .collect(Collectors.toList());
+//
+//        putFlashcards(cards);
+//    }
 
 
 //    public void shiftSortOrders(int from, int to, int by) {
@@ -80,6 +119,22 @@ public class InMemoryDataSource {
 //
 //        putFlashcards(cards);
 //    }
+
+//    public void putTask(Task task) {
+//        var fixedTask = preInsert(task);
+//
+//        taskList.put(fixedTask.id(), fixedTask);
+//        postInsert();
+//        assertSortOrderConstraints();
+//
+//        if (taskSubjects.contains(fixedTask.id()){
+//                //containsKey(fixedTask.id())) {
+//            taskSubjects.get(fixedTask.id()).setValue(fixedTask);
+//        }
+//        TaskSubjects.setValue(getTasks());
+//    }
+
+
 
 
 
@@ -109,16 +164,16 @@ public class InMemoryDataSource {
 //        taskListSubject.setValue(taskList);
 //    }
 
-    public void updateTask(Task updatedTask) {
-        for (int i = 0; i < taskList.size(); i++) {
-            Task task = taskList.get(i);
-            if (task.id().equals(updatedTask.id())) { // Assuming each task has an ID for identification
-                taskList.set(i, updatedTask);
-                taskListSubject.setValue(taskList); // Notify observers
-                return;
-            }
-        }
-    }
+//    public void updateTask(Task updatedTask) {
+//        for (int i = 0; i < taskList.size(); i++) {
+//            Task task = taskList.get(i);
+//            if (task.id().equals(updatedTask.id())) { // Assuming each task has an ID for identification
+//                taskList.set(i, updatedTask);
+//                taskListSubject.setValue(taskList); // Notify observers
+//                return;
+//            }
+//        }
+//    }
 
 //    public  void updateTask( int id){
 //        var task = task.get(id);
