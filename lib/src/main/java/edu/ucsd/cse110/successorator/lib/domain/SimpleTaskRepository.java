@@ -33,11 +33,25 @@ public class SimpleTaskRepository implements TaskRepository {
         return 0;
     }
 
-    public void updateTask(Task task) {
-        // Print whether the task is completed or not
-        System.out.println("Task '" + task.getDescription() + "' is " + (task.isCompleted() ? "completed" : "not completed"));
-        // Delegate the task update operation to the InMemoryDataSource
-        dataSource.updateTask(task);
+    @Override
+    public void completed(int id) {
+        dataSource.completed(id, dataSource);
+        //return true;
     }
+
+    public void addingTask(Task task) {
+        dataSource.addTask(task);
+    }
+
+    @Override
+    public void remove(int id) {
+        dataSource.removeTask(id);
+    }
+
+//    public void append(Task task) {
+//        dataSource.putTask(
+//                task.withSortOrder(dataSource.getMaxSortOrder() + 1)
+//        );
+//    }
 
 }

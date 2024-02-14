@@ -11,13 +11,19 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import edu.ucsd.cse110.successorator.databinding.TaskBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 
 public class TaskListAdapter extends ArrayAdapter<Task> {
-    public TaskListAdapter(Context context, List<Task> taskList) {
+    Consumer<Integer> onTaskClick;
+    Consumer<Integer> onTaskDelete;
+
+    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClick, Consumer<Integer> onTaskDelete) {
         super(context, 0, new ArrayList<>(taskList));
+        this.onTaskClick = onTaskClick;
+        this.onTaskDelete = onTaskDelete;
     }
 
     @NonNull
@@ -37,15 +43,22 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         binding.description.setText(task.getDescription());
         binding.date.setText(task.getDateString());
 
-        binding.getRoot().setOnClickListener(v -> {
-            Log.d("TaskListAdapter", "Item clicked: " + task.getDescription());
-            // Toggle the completion status of the task
-            task.setCompleted(!task.isCompleted());
-            // Log the task description and completion status
-            String completionStatus = task.isCompleted() ? "completed" : "not completed";
-            Log.d("TaskListAdapter", task.getDescription() + " is now " + completionStatus);
-            // Update the UI to reflect the change
-            notifyDataSetChanged();
+
+        binding.task.setOnClickListener(v -> {
+            var id = task.id();
+            assert id != null;
+            onTaskClick.accept(id); //marks a task as complete
+//            onTaskDelete.accept(id-1);
+//        binding.getRoot().setOnClickListener(v -> {
+//            Log.d("TaskListAdapter", "Item clicked: " + task.getDescription());
+//            // Toggle the completion status of the task
+//            task.setCompleted(!task.isCompleted());
+//            // Log the task description and completion status
+//            String completionStatus = task.isCompleted() ? "completed" : "not completed";
+//            Log.d("TaskListAdapter", task.getDescription() + " is now " + completionStatus);
+//            // Update the UI to reflect the change
+//            notifyDataSetChanged();
+//
         });
 
         return binding.getRoot();

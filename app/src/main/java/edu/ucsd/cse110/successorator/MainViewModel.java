@@ -27,6 +27,8 @@ public class MainViewModel extends ViewModel {
                     }
             );
 
+
+
     public MainViewModel(TaskRepository taskRepository, String date) {
         this.taskRepository = taskRepository;
         this.taskListSubject = taskRepository.findAll();
@@ -36,8 +38,23 @@ public class MainViewModel extends ViewModel {
         return taskListSubject;
     }
 
-    public void toggleTaskCompletion(Task task) {
-        task.setCompleted(!task.isCompleted());
-        taskRepository.updateTask(task);
+//    public void toggleTaskCompletion(Task task) {
+//        task.setCompleted(!task.isCompleted());
+//        taskRepository.updateTask(task);
+//    }
+
+    public void toggleTaskCompletion(int id) {
+        //task.setCompleted(!task.isCompleted());
+        //System.out.println(task.isCompleted());
+
+        taskRepository.completed(id);
+    }
+
+    public void addedTask(Task task) {
+        taskRepository.addingTask(task);
+    }
+
+    public void remove(int id) {
+        taskRepository.remove(id);
     }
 }
