@@ -47,11 +47,4 @@ public class SimpleTaskRepository implements TaskRepository {
     public void remove(int id) {
         dataSource.removeTask(id);
     }
-
-//    public void append(Task task) {
-//        dataSource.putTask(
-//                task.withSortOrder(dataSource.getMaxSortOrder() + 1)
-//        );
-//    }
-
 }

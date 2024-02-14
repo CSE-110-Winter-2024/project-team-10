@@ -44,9 +44,6 @@ public class MainViewModel extends ViewModel {
 //    }
 
     public void toggleTaskCompletion(int id) {
-        //task.setCompleted(!task.isCompleted());
-        //System.out.println(task.isCompleted());
-
         taskRepository.completed(id);
     }
 
