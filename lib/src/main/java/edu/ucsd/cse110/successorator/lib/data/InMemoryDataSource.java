@@ -67,6 +67,9 @@ public class InMemoryDataSource {
         if (task.isCompleted()){
             data.removeTask(task.id());
             data.addTask(task);
+        }else {
+            data.removeTask(task.id());
+            data.prependTask(task);
         }
     }
 
@@ -100,5 +103,15 @@ public class InMemoryDataSource {
         }
 
         return taskToComplete;
+    }
+
+    public void prependTask(Task newTask) {
+        SimpleSubject<Task> newSubject = new SimpleSubject<Task>();
+        newSubject.setValue(newTask);
+
+        taskList.add(0, newTask); // Add task at index 0 to prepend it
+        taskSubjects.add(0, newSubject); // Add subject at index 0 to prepend it
+
+        taskListSubject.setValue(taskList);
     }
 }
