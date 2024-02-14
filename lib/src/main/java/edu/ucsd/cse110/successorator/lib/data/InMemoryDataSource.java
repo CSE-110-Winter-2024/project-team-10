@@ -38,9 +38,9 @@ public class InMemoryDataSource {
     public Subject<List<Task>> getTaskListSubject() { return taskListSubject; }
 
     public static final List<Task> DEFAULT_TASKS = List.of(
-            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0),
-            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 1),
-            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 2)
+            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false),//, 0),
+            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false),//, 1),
+            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false)//, 2)
     );
 
     public static InMemoryDataSource fromDefault() {
@@ -85,13 +85,15 @@ public class InMemoryDataSource {
     }
 
     public void removeTask(int id) {
-        var card = taskList.get(id);
-        var sortOrder = card.sortOrder();
+        var taskL = taskList.get(id);
+        var taskS = taskSubjects.get(id);
+
 
         taskList.remove(id);
-        //shiftSortOrders(sortOrder, maxSortOrder, -1);
+        taskList.add(taskList.size(), taskL);
 
         if (taskSubjects.contains(id)) {
+            taskSubjects.add(taskSubjects.size(), taskS);
             taskSubjects.remove(id);
         }
         taskListSubject.setValue(getTasks());

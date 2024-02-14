@@ -18,8 +18,10 @@ public interface TaskRepository {
 
     //public void append(Task task);
 
-    public void addingTask(Task task);
+    //public void addingTask(Task task);
 
     public void remove(int id);
+
+
 }
 

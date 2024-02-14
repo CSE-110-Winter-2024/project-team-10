@@ -50,11 +50,13 @@ public class MainViewModel extends ViewModel {
         taskRepository.completed(id);
     }
 
-    public void addedTask(Task task) {
-        taskRepository.addingTask(task);
-    }
+    //public void addedTask(Task task) {
+    //    taskRepository.addingTask(task);
+    //}
 
     public void remove(int id) {
         taskRepository.remove(id);
     }
+
+
 }
