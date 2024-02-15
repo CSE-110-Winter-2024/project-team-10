@@ -38,15 +38,6 @@ public class Task {
         return new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(dateCreated);
     }
 
-    public int sortOrder() {
-        return sortOrder;
-    }
-
-    public Task withSortOrder(int sortOrder) {
-        Task task = new Task(id, description, dateCreated, isCompleted, sortOrder);
-        return task;
-    }
-
     public boolean isCompleted() {
         return isCompleted;
     }

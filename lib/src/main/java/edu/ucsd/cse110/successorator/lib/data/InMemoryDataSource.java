@@ -19,11 +19,8 @@ public class InMemoryDataSource {
     private final SimpleSubject<List<Task>> taskListSubject = new SimpleSubject<>();
 
 
-    private int minSortOrder = Integer.MAX_VALUE;
-    private int maxSortOrder = Integer.MIN_VALUE;
-
-
-    public InMemoryDataSource() {}
+    public InMemoryDataSource() {
+    }
 
     public void addTask(Task newTask) {
         SimpleSubject<Task> newSubject = new SimpleSubject<Task>();
@@ -35,7 +32,9 @@ public class InMemoryDataSource {
         taskListSubject.setValue(taskList);
     }
 
-    public Subject<List<Task>> getTaskListSubject() { return taskListSubject; }
+    public Subject<List<Task>> getTaskListSubject() {
+        return taskListSubject;
+    }
 
     public static final List<Task> DEFAULT_TASKS = List.of(
             new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0),
@@ -52,22 +51,14 @@ public class InMemoryDataSource {
         return data;
     }
 
-    public int getMinSortOrder() {
-        return minSortOrder;
-    }
-
-    public int getMaxSortOrder() {
-        return maxSortOrder;
-    }
-
     public void completed(int id, InMemoryDataSource data) {
 //        var data = new InMemoryDataSource();
         var task = findTask(id);
         task.setCompleted(!task.isCompleted());
-        if (task.isCompleted()){
+        if (task.isCompleted()) {
             data.removeTask(task.id());
             data.addTask(task);
-        }else {
+        } else {
             data.removeTask(task.id());
             data.prependTask(task);
         }
@@ -92,7 +83,7 @@ public class InMemoryDataSource {
         return List.copyOf(taskList);
     }
 
-    public Task findTask(int id){
+    public Task findTask(int id) {
         Task taskToComplete = null;
 
         for (Task task : taskList) {

@@ -1,9 +1,7 @@
 package edu.ucsd.cse110.successorator.ui.tasklist;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +42,6 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
         binding.description.setText(task.getDescription());
         binding.date.setText(task.getDateString());
-        //binding.description.setPaintFlags(binding.description.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
 
         binding.task.setOnClickListener(v -> {
             var id = task.id();
@@ -52,14 +49,11 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
             onTaskClick.accept(id); // (un)marks a task as complete
             if (task.isCompleted()) {
                 // Apply the STRIKE_THRU_TEXT_FLAG and gray out the task
-                binding.description.setPaintFlags(binding.description.getPaintFlags() | (Paint.STRIKE_THRU_TEXT_FLAG));
-                binding.description.setPaintFlags(binding.description.getPaintFlags() & (~Paint.FAKE_BOLD_TEXT_FLAG));
+                binding.description.setPaintFlags(binding.description.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 binding.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gray));
-
             } else {
                 // Remove the STRIKE_THRU_TEXT_FLAG and return to default white background
                 binding.description.setPaintFlags(binding.description.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                binding.description.setPaintFlags(binding.description.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
                 binding.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
             }
         });

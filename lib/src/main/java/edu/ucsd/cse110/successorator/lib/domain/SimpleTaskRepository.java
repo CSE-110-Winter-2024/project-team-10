@@ -36,15 +36,5 @@ public class SimpleTaskRepository implements TaskRepository {
     @Override
     public void completed(int id) {
         dataSource.completed(id, dataSource);
-        //return true;
-    }
-
-    public void addingTask(Task task) {
-        dataSource.addTask(task);
-    }
-
-    @Override
-    public void remove(int id) {
-        dataSource.removeTask(id);
     }
 }

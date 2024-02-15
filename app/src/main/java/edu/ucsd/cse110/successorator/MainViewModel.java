@@ -4,11 +4,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
@@ -38,20 +34,8 @@ public class MainViewModel extends ViewModel {
         return taskListSubject;
     }
 
-//    public void toggleTaskCompletion(Task task) {
-//        task.setCompleted(!task.isCompleted());
-//        taskRepository.updateTask(task);
-//    }
-
     public void toggleTaskCompletion(int id) {
         taskRepository.completed(id);
     }
 
-    public void addedTask(Task task) {
-        taskRepository.addingTask(task);
-    }
-
-    public void remove(int id) {
-        taskRepository.remove(id);
-    }
 }
