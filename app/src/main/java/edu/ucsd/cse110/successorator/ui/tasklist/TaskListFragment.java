@@ -21,7 +21,8 @@ public class TaskListFragment extends Fragment {
     private FragmentTaskListBinding view;
     private TaskListAdapter adapter;
 
-    public TaskListFragment() {}
+    public TaskListFragment() {
+    }
 
     public static TaskListFragment newInstance() {
         TaskListFragment fragment = new TaskListFragment();
@@ -41,7 +42,7 @@ public class TaskListFragment extends Fragment {
         this.activityModel = modelProvider.get(MainViewModel.class);
 
         // Initializer the adapter
-        this.adapter = new TaskListAdapter(requireContext(), List.of());
+        this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion);
         activityModel.getTaskList().observe(list -> {
             if (list == null)
                 return;

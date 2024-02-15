@@ -9,4 +9,7 @@ public interface TaskRepository {
     public Subject<List<Task>> findAll();
     public void save(Task task);
     public int size();
+
+    public void completed(int id);
+
 }
