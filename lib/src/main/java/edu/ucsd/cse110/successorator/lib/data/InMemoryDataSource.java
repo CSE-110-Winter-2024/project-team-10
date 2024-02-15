@@ -38,9 +38,9 @@ public class InMemoryDataSource {
     public Subject<List<Task>> getTaskListSubject() { return taskListSubject; }
 
     public static final List<Task> DEFAULT_TASKS = List.of(
-            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false),//, 0),
-            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false),//, 1),
-            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false)//, 2)
+            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0),
+            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 1),
+            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 2)
     );
 
     public static InMemoryDataSource fromDefault() {
@@ -60,40 +60,29 @@ public class InMemoryDataSource {
         return maxSortOrder;
     }
 
-    public void completed(int id) {
-        var data = new InMemoryDataSource();
-        var task = taskList.get(id-1);
-
-
-
-
-
-        data.addTask(task);
-
-        //list1.remove(item)
-        //list1.insert(new_index, item)
-
-        //append task to list
-
-        //delete task from list
-
-        //data.addTask(task);
-        //var sortOrder = task.sortOrder();
-        //taskList.r;
-
-        //taskListSubject.setValue(getTaskListSubject().getValue());
+    public void completed(int id, InMemoryDataSource data) {
+//        var data = new InMemoryDataSource();
+        var task = findTask(id);
+        task.setCompleted(!task.isCompleted());
+        if (task.isCompleted()){
+            data.removeTask(task.id());
+            data.addTask(task);
+        }else {
+            data.removeTask(task.id());
+            data.prependTask(task);
+        }
     }
 
     public void removeTask(int id) {
-        var taskL = taskList.get(id);
-        var taskS = taskSubjects.get(id);
+        var task = findTask(id);
 
-
-        taskList.remove(id);
-        taskList.add(taskList.size(), taskL);
+        if (task != null) {
+            taskList.remove(task);
+        } else {
+            System.out.println("Task with ID " + id + " not found.");
+        }
 
         if (taskSubjects.contains(id)) {
-            taskSubjects.add(taskSubjects.size(), taskS);
             taskSubjects.remove(id);
         }
         taskListSubject.setValue(getTasks());
@@ -103,83 +92,26 @@ public class InMemoryDataSource {
         return List.copyOf(taskList);
     }
 
-//    public void shiftSortOrders(int from, int to, int by) {
-//        var cards = taskList.values().stream()
-//                .filter(card -> card.sortOrder() >= from && card.sortOrder() <= to)
-//                .map(card -> card.withSortOrder(card.sortOrder() + by))
-//                .collect(Collectors.toList());
-//
-//        putFlashcards(cards);
-//    }
+    public Task findTask(int id){
+        Task taskToComplete = null;
 
+        for (Task task : taskList) {
+            if (task.id() == id) {
+                taskToComplete = task;
+                break;
+            }
+        }
 
-//    public void shiftSortOrders(int from, int to, int by) {
-//        var cards = taskList.values().stream()
-//                .filter(card -> card.sortOrder() >= from && card.sortOrder() <= to)
-//                .map(card -> card.withSortOrder(card.sortOrder() + by))
-//                .collect(Collectors.toList());
-//
-//        putFlashcards(cards);
-//    }
+        return taskToComplete;
+    }
 
-//    public void putTask(Task task) {
-//        var fixedTask = preInsert(task);
-//
-//        taskList.put(fixedTask.id(), fixedTask);
-//        postInsert();
-//        assertSortOrderConstraints();
-//
-//        if (taskSubjects.contains(fixedTask.id()){
-//                //containsKey(fixedTask.id())) {
-//            taskSubjects.get(fixedTask.id()).setValue(fixedTask);
-//        }
-//        TaskSubjects.setValue(getTasks());
-//    }
+    public void prependTask(Task newTask) {
+        SimpleSubject<Task> newSubject = new SimpleSubject<Task>();
+        newSubject.setValue(newTask);
 
+        taskList.add(0, newTask); // Add task at index 0 to prepend it
+        taskSubjects.add(0, newSubject); // Add subject at index 0 to prepend it
 
-
-
-
-
-
-//    public void putTask(Task task) {
-//        var fixedCard = preInsert(task);
-//
-//        tasks.put(fixedCard.id(), fixedCard);
-//        postInsert();
-//        assertSortOrderConstraints();
-//
-//        if (taskSubjects.containsKey(fixedCard.id())) {
-//            taskSubjects.get(fixedCard.id()).setValue(fixedCard);
-//        }
-//        taskListSubject.setValue(getTasks());
-//    }
-//
-//    //Crosses out task and moves it to the bottom
-//    public boolean completeAndCrossOut(Task task) {
-//        SimpleSubject<Task> newSubject = new SimpleSubject<Task>();
-//        newSubject.setValue(task);
-//
-//        taskList.completeAndCrossOut(task);
-//        taskSubjects.completeAndCrossOut(task);
-//
-//        taskListSubject.setValue(taskList);
-//    }
-
-//    public void updateTask(Task updatedTask) {
-//        for (int i = 0; i < taskList.size(); i++) {
-//            Task task = taskList.get(i);
-//            if (task.id().equals(updatedTask.id())) { // Assuming each task has an ID for identification
-//                taskList.set(i, updatedTask);
-//                taskListSubject.setValue(taskList); // Notify observers
-//                return;
-//            }
-//        }
-//    }
-
-//    public  void updateTask( int id){
-//        var task = task.get(id);
-//
-//    }
-
+        taskListSubject.setValue(taskList);
+    }
 }
