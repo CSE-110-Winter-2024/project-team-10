@@ -57,7 +57,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
                 binding.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gray));
 
             } else {
-                // Remove the STRIKE_THRU_TEXT_FLAG and return to default white background
+                // Remove the STRIKE_THRU_TEXT_FLAG and return to default white background 
                 binding.description.setPaintFlags(binding.description.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 binding.description.setPaintFlags(binding.description.getPaintFlags() | Paint.FAKE_BOLD_TEXT_FLAG);
                 binding.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
