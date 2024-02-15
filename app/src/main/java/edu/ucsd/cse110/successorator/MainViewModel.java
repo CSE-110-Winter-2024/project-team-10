@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.ViewModelInitializer;
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +37,8 @@ public class MainViewModel extends ViewModel {
         return taskListSubject;
     }
 
-    public TaskRepository getTaskRepository() {
-        return taskRepository;
+    public void appendTask(String description) {
+        var task = new Task(null, description, LocalDateTime.now());
+        taskRepository.save(task);
     }
 }

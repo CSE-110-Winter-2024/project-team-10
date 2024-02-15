@@ -40,7 +40,7 @@ public class TaskListFragment extends Fragment {
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
         this.activityModel = modelProvider.get(MainViewModel.class);
 
-        // Initializer the adapter
+        // Initializer the adapter (M -> V)
         this.adapter = new TaskListAdapter(requireContext(), List.of());
         activityModel.getTaskList().observe(list -> {
             if (list == null)
@@ -57,6 +57,7 @@ public class TaskListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceData) {
         this.view = FragmentTaskListBinding.inflate(inflater, container, false);
         view.taskList.setAdapter(adapter);
+
         return view.getRoot();
     }
 }
