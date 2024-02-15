@@ -43,6 +43,7 @@ public class TaskListFragment extends Fragment {
 
         // Initializer the adapter
         this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion);
+
         activityModel.getTaskList().observe(list -> {
             if (list == null)
                 return;

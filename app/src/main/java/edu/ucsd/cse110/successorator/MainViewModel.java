@@ -4,6 +4,13 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
@@ -34,8 +41,14 @@ public class MainViewModel extends ViewModel {
         return taskListSubject;
     }
 
+
     public void toggleTaskCompletion(int id) {
         taskRepository.completed(id);
+    }
+
+    public void appendTask(String description) {
+        var task = new Task(1, "Task 4", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0);
+        taskRepository.save(task);
     }
 
 }
