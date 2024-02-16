@@ -16,6 +16,7 @@ import java.util.Locale;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
 import edu.ucsd.cse110.successorator.databinding.FragmentTopBarBinding;
+import edu.ucsd.cse110.successorator.ui.tasklist.dialog.CreateTaskDialogFragment;
 
 public class TopBarFragment extends Fragment {
 
@@ -50,7 +51,10 @@ public class TopBarFragment extends Fragment {
         view.dateText.setText(strDate);
 
         view.plusButton.setOnClickListener(v -> {
-           activityModel.appendTask(null);
+            var dialogFragment = CreateTaskDialogFragment.newInstance();
+            dialogFragment.show(getParentFragmentManager(), "CreateTaskDialogFragment");
+
+
         });
 
         return view.getRoot();
