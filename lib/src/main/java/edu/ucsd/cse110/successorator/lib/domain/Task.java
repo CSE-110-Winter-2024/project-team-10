@@ -3,14 +3,12 @@ package edu.ucsd.cse110.successorator.lib.domain;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Task {
     private final @Nullable Integer id;
     private final @NonNull String description;
     private final @NonNull Date dateCreated;
-
     private boolean isCompleted;
 
     private int sortOrder;
@@ -27,10 +25,6 @@ public class Task {
 
     public String getDescription() {
         return description;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
     }
 
     public String getDateString() {

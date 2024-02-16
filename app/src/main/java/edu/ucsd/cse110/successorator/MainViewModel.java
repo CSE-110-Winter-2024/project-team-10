@@ -41,7 +41,6 @@ public class MainViewModel extends ViewModel {
         return taskListSubject;
     }
 
-
     public void toggleTaskCompletion(int id) {
         taskRepository.completed(id);
     }
