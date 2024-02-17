@@ -15,7 +15,7 @@ public class Task {
 
     private boolean isCompleted;
 
-    public Task(Integer id, String description, Date dateCreated, boolean isCompleted) {
+    public Task(@Nullable Integer id, @NonNull String description, @NonNull Date dateCreated, boolean isCompleted) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
@@ -24,10 +24,12 @@ public class Task {
 
     public Integer id() { return id; }
 
+    @NonNull
     public String getDescription() {
         return description;
     }
 
+    @NonNull
     public Date getDateCreated() {
         return dateCreated;
     }

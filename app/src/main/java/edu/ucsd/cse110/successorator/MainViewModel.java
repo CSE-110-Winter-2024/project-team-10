@@ -1,14 +1,11 @@
 package edu.ucsd.cse110.successorator;
 
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.viewmodel.ViewModelInitializer;
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.viewmodel.ViewModelInitializer;
+
 import java.util.List;
-import java.util.Locale;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
@@ -23,11 +20,11 @@ public class MainViewModel extends ViewModel {
                     creationExtras -> {
                         var app = (SuccessoratorApplication) creationExtras.get(APPLICATION_KEY);
                         assert app != null;
-                        return new MainViewModel(app.getTaskRepository(), app.getDate());
+                        return new MainViewModel(app.getTaskRepository());
                     }
             );
 
-    public MainViewModel(TaskRepository taskRepository, String date) {
+    public MainViewModel(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
         this.taskListSubject = taskRepository.findAll();
     }
