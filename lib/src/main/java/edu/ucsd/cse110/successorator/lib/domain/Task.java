@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Task {
@@ -54,4 +55,5 @@ public class Task {
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
+
 }
