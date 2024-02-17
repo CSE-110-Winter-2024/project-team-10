@@ -19,11 +19,13 @@ public class MainViewModel extends ViewModel {
                     creationExtras -> {
                         var app = (SuccessoratorApplication) creationExtras.get(APPLICATION_KEY);
                         assert app != null;
+
+                        //Rolling over unfinished tasks
+                        //app.unfinishedTaskRollOverDone(app.getDate());
+
                         return new MainViewModel(app.getTaskRepository(), app.getDate());
                     }
             );
-
-
 
     public MainViewModel(TaskRepository taskRepository, String date) {
         this.taskRepository = taskRepository;
@@ -37,5 +39,9 @@ public class MainViewModel extends ViewModel {
     public void toggleTaskCompletion(int id) {
         taskRepository.completed(id);
     }
+
+//    public void unfinishedTaskRollOver(String currDate) {
+//        taskRepository.nextDayRemoveCompleted(app.g);
+//    }
 
 }

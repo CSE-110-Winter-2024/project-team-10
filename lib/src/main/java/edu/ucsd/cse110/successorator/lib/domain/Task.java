@@ -14,14 +14,11 @@ public class Task {
 
     private boolean isCompleted;
 
-    private int sortOrder;
-
-    public Task(Integer id, String description, Date dateCreated, boolean isCompleted, int sortOrder) {
+    public Task(Integer id, String description, Date dateCreated, boolean isCompleted) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.isCompleted = isCompleted;
-        this.sortOrder =  sortOrder;
     }
 
     public Integer id() { return id; }

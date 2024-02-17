@@ -37,9 +37,11 @@ public class InMemoryDataSource {
     }
 
     public static final List<Task> DEFAULT_TASKS = List.of(
-            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0),
-            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 1),
-            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 2)
+            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false),
+            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false),
+            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false),
+            new Task(4, "Task 4", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), true),
+            new Task(5, "Task 5", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false)
     );
 
     public static InMemoryDataSource fromDefault() {
@@ -52,7 +54,6 @@ public class InMemoryDataSource {
     }
 
     public void completed(int id, InMemoryDataSource data) {
-//        var data = new InMemoryDataSource();
         var task = findTask(id);
         task.setCompleted(!task.isCompleted());
         if (task.isCompleted()) {
@@ -77,6 +78,14 @@ public class InMemoryDataSource {
             taskSubjects.remove(id);
         }
         taskListSubject.setValue(getTasks());
+    }
+
+    public void nextDayRemoveCompletedTasks(String currDate, InMemoryDataSource data) {
+        for (Task task : taskList) {
+            if ((!task.getDateString().equals(currDate)) && task.isCompleted()) {
+                data.removeTask(task.id());
+            }
+        }
     }
 
     public List<Task> getTasks() {

@@ -37,4 +37,8 @@ public class SimpleTaskRepository implements TaskRepository {
     public void completed(int id) {
         dataSource.completed(id, dataSource);
     }
+
+    public void nextDayRemoveCompleted(String date) {
+        dataSource.nextDayRemoveCompletedTasks(date, dataSource);
+    }
 }

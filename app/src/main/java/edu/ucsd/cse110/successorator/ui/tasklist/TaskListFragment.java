@@ -41,6 +41,8 @@ public class TaskListFragment extends Fragment {
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
         this.activityModel = modelProvider.get(MainViewModel.class);
 
+        //this.activityModel.
+
         // Initializer the adapter
         this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion);
         activityModel.getTaskList().observe(list -> {

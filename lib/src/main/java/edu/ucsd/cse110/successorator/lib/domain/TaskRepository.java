@@ -12,4 +12,6 @@ public interface TaskRepository {
 
     public void completed(int id);
 
+    public void nextDayRemoveCompleted(String date);
+
 }
