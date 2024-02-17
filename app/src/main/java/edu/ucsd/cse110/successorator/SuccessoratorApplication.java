@@ -19,7 +19,6 @@ public class SuccessoratorApplication extends Application {
         super.onCreate();
 
         this.dataSource = InMemoryDataSource.fromDefault();
-
         this.taskRepository = new SimpleTaskRepository(dataSource);
     }
 
@@ -28,9 +27,5 @@ public class SuccessoratorApplication extends Application {
     }
     public String getDate() {
         return new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(new Date());
-    }
-
-    public void unfinishedTaskRollOverDone(String date) {
-        taskRepository.nextDayRemoveCompleted(date);
     }
 }

@@ -43,9 +43,5 @@ public class Task {
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
-<<<<<<< HEAD
-}
-=======
 
 }
->>>>>>> f1285afd31bcef271ef59c8fafcbc38a9e847ea6

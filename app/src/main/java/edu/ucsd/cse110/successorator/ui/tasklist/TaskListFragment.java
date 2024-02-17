@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
@@ -21,8 +22,8 @@ public class TaskListFragment extends Fragment {
     private FragmentTaskListBinding view;
     private TaskListAdapter adapter;
 
-    public TaskListFragment() {
-    }
+
+    public TaskListFragment() {}
 
     public static TaskListFragment newInstance() {
         TaskListFragment fragment = new TaskListFragment();
@@ -40,8 +41,6 @@ public class TaskListFragment extends Fragment {
         var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
         this.activityModel = modelProvider.get(MainViewModel.class);
-
-        //this.activityModel.
 
         // Initializer the adapter
         this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion);

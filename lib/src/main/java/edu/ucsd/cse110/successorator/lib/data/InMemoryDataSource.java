@@ -18,16 +18,7 @@ public class InMemoryDataSource {
     private final List<Subject<Task>> taskSubjects = new ArrayList<>();
     private final SimpleSubject<List<Task>> taskListSubject = new SimpleSubject<>();
 
-
-<<<<<<< HEAD
-    public InMemoryDataSource() {
-    }
-=======
-    private int minSortOrder = Integer.MAX_VALUE;
-    private int maxSortOrder = Integer.MIN_VALUE;
-
     public InMemoryDataSource() {}
->>>>>>> f1285afd31bcef271ef59c8fafcbc38a9e847ea6
 
     public void addTask(Task newTask) {
         SimpleSubject<Task> newSubject = new SimpleSubject<Task>();
@@ -39,23 +30,13 @@ public class InMemoryDataSource {
         taskListSubject.setValue(taskList);
     }
 
-    public Subject<List<Task>> getTaskListSubject() {
-        return taskListSubject;
-    }
+    public Subject<List<Task>> getTaskListSubject() { return taskListSubject; }
 
     public static final List<Task> DEFAULT_TASKS = List.of(
-<<<<<<< HEAD
-            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false),
-            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false),
-            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false),
-            new Task(4, "Task 4", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), true),
-            new Task(5, "Task 5", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false)
-=======
-            new Task(1, "Task 1", new Date(), false, 0),
-            new Task(2, "Task 2", new Date(), false, 1),
-            new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true, 2),
-            new Task(4, "Prev Day: uncompleted", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false, 2)
->>>>>>> f1285afd31bcef271ef59c8fafcbc38a9e847ea6
+            new Task(1, "Task 1", new Date(), false),
+            new Task(2, "Task 2", new Date(), false),
+            new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true),
+            new Task(4, "PrevDay: uncomplete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false)
     );
 
     public static InMemoryDataSource fromDefault() {
@@ -75,10 +56,10 @@ public class InMemoryDataSource {
     public void completed(int id, InMemoryDataSource data) {
         var task = findTask(id);
         task.setCompleted(!task.isCompleted());
-        if (task.isCompleted()) {
+        if (task.isCompleted()){
             data.removeTask(task.id());
             data.addTask(task);
-        } else {
+        }else {
             data.removeTask(task.id());
             data.prependTask(task);
         }
@@ -99,19 +80,11 @@ public class InMemoryDataSource {
         taskListSubject.setValue(getTasks());
     }
 
-    public void nextDayRemoveCompletedTasks(String currDate, InMemoryDataSource data) {
-        for (Task task : taskList) {
-            if ((!task.getDateString().equals(currDate)) && task.isCompleted()) {
-                data.removeTask(task.id());
-            }
-        }
-    }
-
     public List<Task> getTasks() {
         return List.copyOf(taskList);
     }
 
-    public Task findTask(int id) {
+    public Task findTask(int id){
         Task taskToComplete = null;
 
         for (Task task : taskList) {
