@@ -2,6 +2,7 @@ package edu.ucsd.cse110.successorator.ui.tasklist;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,22 +44,26 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         binding.description.setText(task.getDescription());
         binding.date.setText(task.getDateString());
 
+        // Set appearance depending on task completion status
+        var paintFlags = binding.description.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG);
+        var backgroundColor = ContextCompat.getColor(getContext(), android.R.color.white);
+
+        if (task.isCompleted()) {
+            paintFlags = binding.description.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG;
+            backgroundColor = ContextCompat.getColor(getContext(), R.color.gray);
+        }
+
+        binding.description.setPaintFlags(paintFlags);
+        binding.getRoot().setBackgroundColor(backgroundColor);
+
         binding.task.setOnClickListener(v -> {
             var id = task.id();
             assert id != null;
 
+            Log.i("Click", "id " + task.id() + ", completed? " + task.isCompleted());
             // (un)marks a task as complete
             onTaskClick.accept(id);
-
-            if (task.isCompleted()) {
-                // Apply the STRIKE_THRU_TEXT_FLAG and gray out the task
-                binding.description.setPaintFlags(binding.description.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                binding.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gray));
-            } else {
-                // Remove the STRIKE_THRU_TEXT_FLAG and return to default white background
-                binding.description.setPaintFlags(binding.description.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                binding.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
-            }
+            Log.i("Click (After accept)", "id " + task.id() + ", completed? " + task.isCompleted());
         });
 
         return binding.getRoot();

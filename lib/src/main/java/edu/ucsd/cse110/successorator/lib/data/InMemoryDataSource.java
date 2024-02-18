@@ -53,15 +53,16 @@ public class InMemoryDataSource {
         return data;
     }
 
-    public void completed(int id, InMemoryDataSource data) {
+    public void complete(int id) {
         var task = findTask(id);
+
         task.setCompleted(!task.isCompleted());
-        if (task.isCompleted()){
-            data.removeTask(task.id());
-            data.addTask(task);
+
+        removeTask(task.id());
+        if (task.isCompleted()) {
+            addTask(task);
         } else {
-            data.removeTask(task.id());
-            data.prependTask(task);
+            prependTask(task);
         }
     }
 
@@ -71,12 +72,13 @@ public class InMemoryDataSource {
         if (task != null) {
             taskList.remove(task);
         } else {
-            System.out.println("Task with ID " + id + " not found.");
+            throw new IllegalArgumentException();
         }
 
         if (taskSubjects.contains(id)) {
             taskSubjects.remove(id);
         }
+
         taskListSubject.setValue(getTasks());
     }
 

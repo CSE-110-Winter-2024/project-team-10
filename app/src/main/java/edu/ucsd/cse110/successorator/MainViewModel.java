@@ -2,6 +2,8 @@ package edu.ucsd.cse110.successorator;
 
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
+import android.util.Log;
+
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
@@ -15,6 +17,7 @@ import edu.ucsd.cse110.successorator.lib.util.Subject;
 public class MainViewModel extends ViewModel {
     private final TaskRepository taskRepository;
     private final Subject<List<Task>> taskListSubject;
+
     public static final ViewModelInitializer<MainViewModel> initializer =
             new ViewModelInitializer<>(
                     MainViewModel.class,
@@ -27,7 +30,7 @@ public class MainViewModel extends ViewModel {
 
     public MainViewModel(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
-        this.taskListSubject = taskRepository.findAll();
+        this.taskListSubject = taskRepository.fetchSubjectList();
     }
 
     public Subject<List<Task>> getTaskList() {
@@ -35,11 +38,11 @@ public class MainViewModel extends ViewModel {
     }
 
     public void toggleTaskCompletion(int id) {
-        taskRepository.completed(id);
+        taskRepository.completeTask(id);
     }
 
     public void createTask(String description) {
-        var task = new Task(taskRepository.nextId(), description, new Date(), false);
-        taskRepository.save(task);
+        var task = new Task(taskRepository.generateNextId(), description, new Date(), false);
+        taskRepository.saveTask(task);
     }
 }
