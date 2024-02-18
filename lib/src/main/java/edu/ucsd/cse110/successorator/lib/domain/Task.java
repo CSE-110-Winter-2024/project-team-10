@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Task {
@@ -14,22 +15,21 @@ public class Task {
 
     private boolean isCompleted;
 
-    private int sortOrder;
-
-    public Task(Integer id, String description, Date dateCreated, boolean isCompleted, int sortOrder) {
+    public Task(@Nullable Integer id, @NonNull String description, @NonNull Date dateCreated, boolean isCompleted) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.isCompleted = isCompleted;
-        this.sortOrder =  sortOrder;
     }
 
     public Integer id() { return id; }
 
+    @NonNull
     public String getDescription() {
         return description;
     }
 
+    @NonNull
     public Date getDateCreated() {
         return dateCreated;
     }
@@ -45,4 +45,5 @@ public class Task {
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
+
 }
