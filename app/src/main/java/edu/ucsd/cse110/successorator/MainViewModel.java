@@ -5,6 +5,7 @@ import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLI
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
+import java.util.Date;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
@@ -35,5 +36,10 @@ public class MainViewModel extends ViewModel {
 
     public void toggleTaskCompletion(int id) {
         taskRepository.completed(id);
+    }
+
+    public void createTask(String description) {
+        var task = new Task(taskRepository.nextId(), description, new Date(), false);
+        taskRepository.save(task);
     }
 }

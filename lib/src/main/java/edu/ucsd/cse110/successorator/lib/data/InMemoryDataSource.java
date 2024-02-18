@@ -36,7 +36,7 @@ public class InMemoryDataSource {
             new Task(1, "Task 1", new Date(), false),
             new Task(2, "Task 2", new Date(), false),
             new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true),
-            new Task(4, "PrevDay: uncomplete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false)
+            new Task(4, "Prev Day: uncompleted", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false)
     );
 
     public static InMemoryDataSource fromDefault() {
@@ -46,7 +46,7 @@ public class InMemoryDataSource {
             LocalDate taskDate = task.getDateCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             if (taskDate.isBefore(ChronoLocalDate.from(currentDate)) && task.isCompleted()){
                 data.removeTask(task.id());
-            }else {
+            } else {
                 data.addTask(task);
             }
         }
@@ -59,7 +59,7 @@ public class InMemoryDataSource {
         if (task.isCompleted()){
             data.removeTask(task.id());
             data.addTask(task);
-        }else {
+        } else {
             data.removeTask(task.id());
             data.prependTask(task);
         }
@@ -84,9 +84,8 @@ public class InMemoryDataSource {
         return List.copyOf(taskList);
     }
 
-    public Task findTask(int id){
+    public Task findTask(int id) {
         Task taskToComplete = null;
-
         for (Task task : taskList) {
             if (task.id() == id) {
                 taskToComplete = task;
@@ -100,10 +99,17 @@ public class InMemoryDataSource {
     public void prependTask(Task newTask) {
         SimpleSubject<Task> newSubject = new SimpleSubject<Task>();
         newSubject.setValue(newTask);
-
-        taskList.add(0, newTask); // Add task at index 0 to prepend it
-        taskSubjects.add(0, newSubject); // Add subject at index 0 to prepend it
-
+        taskList.add(0, newTask);
+        taskSubjects.add(0, newSubject);
         taskListSubject.setValue(taskList);
+    }
+
+    public int getMaxId() {
+        int max = 0;
+        for (Task task : taskList) {
+            max = Math.max(max, task.id());
+        }
+
+        return max;
     }
 }

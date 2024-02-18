@@ -75,7 +75,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         assert task != null;
 
         var id = task.id();
-        assert  id != null;
+        assert id != null;
 
         return id;
     }

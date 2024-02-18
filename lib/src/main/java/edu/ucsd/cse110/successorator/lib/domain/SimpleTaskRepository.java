@@ -28,12 +28,12 @@ public class SimpleTaskRepository implements TaskRepository {
     }
 
     @Override
-    public int size() {
-        return 0;
+    public void completed(int id) {
+        dataSource.completed(id, dataSource);
     }
 
     @Override
-    public void completed(int id) {
-        dataSource.completed(id, dataSource);
+    public int nextId() {
+        return 1 + dataSource.getMaxId();
     }
 }

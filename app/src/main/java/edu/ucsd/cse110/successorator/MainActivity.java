@@ -16,12 +16,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         var view = ActivityMainBinding.inflate(getLayoutInflater());
-
-        String strDate = new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(new Date());
-        view.dateText.setText(strDate);
-
         setContentView(view.getRoot());
     }
 

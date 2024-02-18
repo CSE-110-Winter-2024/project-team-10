@@ -8,6 +8,6 @@ public interface TaskRepository {
     Subject<Task> find(String description);
     Subject<List<Task>> findAll();
     void save(Task task);
-    int size();
     void completed(int id);
+    int nextId();
 }
