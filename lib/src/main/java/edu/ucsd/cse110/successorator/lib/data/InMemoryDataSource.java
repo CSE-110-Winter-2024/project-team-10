@@ -41,12 +41,10 @@ public class InMemoryDataSource {
 //    public static final LocalDateTime today = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
 
     public static final List<Task> DEFAULT_TASKS = List.of(
-            new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0),
-            new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 1),
-            new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 2)
-//            new Task(1, "Task 1", today.withHour(8)),
-//            new Task(2, "Task 2", today.withHour(9)),
-//            new Task(3, "Task 3", today.withHour(10))
+           // new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0),
+           // new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 1),
+           // new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 2),
+
     );
 
     public static InMemoryDataSource fromDefault() {

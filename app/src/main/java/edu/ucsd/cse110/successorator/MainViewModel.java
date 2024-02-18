@@ -45,9 +45,10 @@ public class MainViewModel extends ViewModel {
         taskRepository.completed(id);
     }
 
-    public void appendTask(String description) {
-        var task = new Task(1, description, new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0);
-        taskRepository.save(task);
+    public void append(Task card) {
+        taskRepository.append(card);
+        //var task = new Task(1, description, new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0);
+        //taskRepository.save(task);
     }
 
 }

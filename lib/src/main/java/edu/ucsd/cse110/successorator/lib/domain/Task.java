@@ -27,9 +27,17 @@ public class Task {
         return description;
     }
 
+    public Date getDate() {
+        return dateCreated;
+//        return new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(dateCreated);
+    }
+
     public String getDateString() {
         return dateCreated.toString();
 //        return new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(dateCreated);
+    }
+    public int getSortOrder() {
+        return sortOrder;
     }
 
     public boolean isCompleted() {

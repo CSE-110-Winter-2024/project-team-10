@@ -11,9 +11,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentDialogCreateTaskBinding;
-
+import edu.ucsd.cse110.successorator.lib.domain.Task;
 
 
 public class CreateTaskDialogFragment extends DialogFragment{
@@ -45,8 +49,8 @@ public class CreateTaskDialogFragment extends DialogFragment{
     }
 
     private void onPositiveButtonClick(DialogInterface dialog, int which) {
-
-        activityModel.appendTask(view.editTextText2.getText().toString());
+        var card = new Task(null, view.editTextText2.getText().toString(), new Date(), false, -1);
+        activityModel.append(card);
         dialog.dismiss();
     }
     private void onNegativeButtonClick(DialogInterface dialog, int which) {
