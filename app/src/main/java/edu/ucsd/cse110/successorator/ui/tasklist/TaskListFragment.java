@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.successorator.ui.tasklist;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public class TaskListFragment extends Fragment {
         // Initializer the adapter
         this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion);
         activityModel.getTaskList().observe(list -> {
+            Log.i("TaskListFragment", "change value, list = " + list);
             if (list == null)
                 return;
 
