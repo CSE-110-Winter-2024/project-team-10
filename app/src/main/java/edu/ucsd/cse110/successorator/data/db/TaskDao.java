@@ -9,8 +9,6 @@ import androidx.room.Transaction;
 
 import java.util.List;
 
-import edu.ucsd.cse110.successorator.lib.domain.Task;
-
 @Dao
 public interface TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -23,7 +21,7 @@ public interface TaskDao {
     TaskEntity find(int id);
 
     @Query("SELECT * FROM tasks ORDER BY id")
-    LiveData<List<TaskEntity>> findAllAsLiveData();
+    LiveData<List<TaskEntity>> fetchAllAsLiveData();
 
     // For reordering tasks and adding new tasks
     @Query("SELECT MAX(id) FROM tasks")

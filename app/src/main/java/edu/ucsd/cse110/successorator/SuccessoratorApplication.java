@@ -1,13 +1,16 @@
 package edu.ucsd.cse110.successorator;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.room.Room;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 import edu.ucsd.cse110.successorator.data.db.RoomTaskRepository;
 import edu.ucsd.cse110.successorator.data.db.SuccessoratorDatabase;
-import edu.ucsd.cse110.successorator.lib.data.InMemoryDataSource;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 
@@ -24,9 +27,6 @@ public class SuccessoratorApplication extends Application {
                 "successorator-database"
         ).allowMainThreadQueries().build();
 
-        Log.i("debug", "database has " + database.dao().size() + " elements");
-        Log.i("debug", "fetch value is " + database.dao().findAllAsLiveData().getValue());
-
         this.taskRepository = new RoomTaskRepository(database.dao());
 
         // Configure preferences to mark first time
@@ -34,21 +34,22 @@ public class SuccessoratorApplication extends Application {
         var isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
 
         if (isFirstRun && database.dao().size() == 0) {
-            for (Task task : InMemoryDataSource.DEFAULT_TASKS) {
+            for (Task task : DEFAULT_TASKS)
                 taskRepository.saveTask(task);
-            }
 
             sharedPreferences.edit()
                     .putBoolean("isFirstRun", false)
                     .apply();
         }
-
-//        for (var task : taskRepository.fetchSubjectList().getValue()) {
-//            Log.i("Application::DB", "task <" + task.getDescription() + ", " + task.isCompleted() + ">");
-//        }
     }
 
     public TaskRepository getTaskRepository() {
         return taskRepository;
     }
+    public static final List<Task> DEFAULT_TASKS = List.of(
+            new Task(1, "Task 1", new Date(), false),
+            new Task(2, "Task 2", new Date(), false),
+            new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true),
+            new Task(4, "Prev Day: uncompleted", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false)
+    );
 }

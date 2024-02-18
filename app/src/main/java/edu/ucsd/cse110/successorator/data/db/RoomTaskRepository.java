@@ -1,8 +1,5 @@
 package edu.ucsd.cse110.successorator.data.db;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
 import androidx.lifecycle.Transformations;
 
 import java.util.List;
@@ -22,7 +19,7 @@ public class RoomTaskRepository implements TaskRepository {
 
     @Override
     public Subject<List<Task>> fetchSubjectList() {
-        var entitiesLiveData = dao.findAllAsLiveData();
+        var entitiesLiveData = dao.fetchAllAsLiveData();
         var liveData = Transformations.map(entitiesLiveData, entities -> {
             return entities.stream()
                     .map(TaskEntity::toTask)
