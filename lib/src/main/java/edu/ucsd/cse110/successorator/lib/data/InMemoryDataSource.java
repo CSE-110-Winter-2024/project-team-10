@@ -21,8 +21,6 @@ public class InMemoryDataSource {
     private final List<Subject<Task>> taskSubjects = new ArrayList<>();
     private final SimpleSubject<List<Task>> taskListSubject = new SimpleSubject<>();
 
-
-<<<<<<< HEAD
     private int minSortOrder = Integer.MAX_VALUE;
     private int maxSortOrder = Integer.MIN_VALUE;
 

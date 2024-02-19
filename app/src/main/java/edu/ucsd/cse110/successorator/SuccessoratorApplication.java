@@ -35,6 +35,7 @@ public class SuccessoratorApplication extends Application {
 
         this.taskRepository = new RoomTaskRepository(database.taskDao());
         var sharedPreferences = getSharedPreferences("successorator", MODE_PRIVATE);
+//        sharedPreferences.edit().putBoolean("isFirstRun", true).apply();
         var isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
 
         if (isFirstRun && database.taskDao().count() == 0) {

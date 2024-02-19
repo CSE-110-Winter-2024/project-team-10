@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
@@ -48,8 +50,12 @@ public class TaskListFragment extends Fragment {
             if (list == null)
                 return;
 
+            var sortedList = list.stream()
+                    .sorted(Comparator.comparing(task -> task.isCompleted()))
+                    .collect(Collectors.toList());
+
             adapter.clear();
-            adapter.addAll(new ArrayList<>(list));
+            adapter.addAll(new ArrayList<>(sortedList));
             adapter.notifyDataSetChanged();
         });
     }

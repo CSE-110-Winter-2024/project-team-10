@@ -43,19 +43,19 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         binding.description.setText(task.getDescription());
         binding.date.setText(task.getDateString());
 
+        if (task.isCompleted()) {
+            // Apply the STRIKE_THRU_TEXT_FLAG and gray out the task
+            binding.description.setPaintFlags(binding.description.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            binding.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gray));
+        } else {
+            // Remove the STRIKE_THRU_TEXT_FLAG and return to default white background
+            binding.description.setPaintFlags(binding.description.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            binding.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
+        }
         binding.task.setOnClickListener(v -> {
             var id = task.id();
             assert id != null;
             onTaskClick.accept(id); // (un)marks a task as complete
-            if (task.isCompleted()) {
-                // Apply the STRIKE_THRU_TEXT_FLAG and gray out the task
-                binding.description.setPaintFlags(binding.description.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                binding.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gray));
-            } else {
-                // Remove the STRIKE_THRU_TEXT_FLAG and return to default white background
-                binding.description.setPaintFlags(binding.description.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                binding.getRoot().setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
-            }
         });
 
         return binding.getRoot();
