@@ -11,19 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import edu.ucsd.cse110.successorator.MainActivity;
 import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.FragmentTopBarBinding;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.CreateTaskDialogFragment;
 
 public class TopBarFragment extends Fragment {
+    private LocalDate tomorrow;
     public TopBarFragment() {}
 
-    public static TopBarFragment newInstance() {
+    public static TopBarFragment newInstance(LocalDate date) {
         TopBarFragment fragment = new TopBarFragment();
         Bundle args = new Bundle();
+        args.putSerializable("date_key", date);
         fragment.setArguments(args);
         return fragment;
     }
@@ -32,8 +36,22 @@ public class TopBarFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         var view = FragmentTopBarBinding.inflate(inflater, container, false);
 
-        String strDate = new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(new Date());
-        view.dateText.setText(strDate);
+        if (getArguments() != null) tomorrow = (LocalDate) getArguments().getSerializable("date_key");
+        else tomorrow = LocalDate.now().plusDays(2);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EE, MMM dd", Locale.ENGLISH);
+        updateDateText(view, formatter);
+
+        view.nextButton.setOnClickListener(v -> {
+            tomorrow = tomorrow.plusDays(1);
+            updateDateText(view, formatter);
+            if (getActivity() instanceof MainActivity) ((MainActivity) getActivity()).onTopBarNextButtonClicked();
+        });
+
+        view.todayButton.setOnClickListener(v -> {
+            tomorrow = LocalDate.now();
+            updateDateText(view, formatter);
+            if (getActivity() instanceof MainActivity) ((MainActivity) getActivity()).onTopBarTodayButtonClicked();
+        });
 
         view.addButton.setOnClickListener(v -> {
             Log.i("addButton", "adding task");
@@ -42,5 +60,15 @@ public class TopBarFragment extends Fragment {
         });
 
         return view.getRoot();
+    }
+    private void updateDateText(FragmentTopBarBinding view, DateTimeFormatter formatter) {
+        String formattedDate = tomorrow.format(formatter);
+        view.dateText.setText(formattedDate);
+        Log.i("date", "Date set to: " + formattedDate);
+    }
+
+    public String getDateText() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMM dd", Locale.ENGLISH);
+        return tomorrow.format(formatter);
     }
 }
