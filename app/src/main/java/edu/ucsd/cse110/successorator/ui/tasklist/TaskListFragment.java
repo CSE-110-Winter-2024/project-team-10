@@ -40,7 +40,7 @@ public class TaskListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) date = (LocalDate) getArguments().getSerializable("date_key");
-        else date = LocalDate.now().plusDays(2);
+        else date = LocalDate.now();
 
         // Initialize the model
         var modelOwner = requireActivity();

@@ -37,7 +37,7 @@ public class TopBarFragment extends Fragment {
         var view = FragmentTopBarBinding.inflate(inflater, container, false);
 
         if (getArguments() != null) tomorrow = (LocalDate) getArguments().getSerializable("date_key");
-        else tomorrow = LocalDate.now().plusDays(2);
+        else tomorrow = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EE, MMM dd", Locale.ENGLISH);
         updateDateText(view, formatter);
 
