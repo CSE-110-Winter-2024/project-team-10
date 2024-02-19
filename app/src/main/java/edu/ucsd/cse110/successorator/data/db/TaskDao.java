@@ -48,6 +48,5 @@ public interface TaskDao {
         );
         return Math.toIntExact(insert(newTask));
     }
-
-
+    void setIsCompleted(Integer id, boolean b);
 }

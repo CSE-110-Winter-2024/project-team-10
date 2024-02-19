@@ -54,7 +54,8 @@ public class RoomTaskRepository implements TaskRepository {
 
     @Override
     public void completed(int id) {
-
+        Task task = taskDao.find(id).toTask();
+        taskDao.setIsCompleted(task.id(), !task.isCompleted());
     }
 
     @Override
