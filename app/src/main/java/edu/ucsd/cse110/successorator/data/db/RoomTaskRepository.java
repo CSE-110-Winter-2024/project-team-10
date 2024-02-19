@@ -35,6 +35,11 @@ public class RoomTaskRepository implements TaskRepository {
     }
 
     @Override
+    public void removeTask(int id) {
+        dao.delete(id);
+    }
+
+    @Override
     public void completeTask(int id) {
         var task = dao.find(id).toTask();
 
