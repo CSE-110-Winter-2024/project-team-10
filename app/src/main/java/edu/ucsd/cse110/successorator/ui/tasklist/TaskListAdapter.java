@@ -33,6 +33,9 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         var task = getItem(position);
         assert task != null;
 
+//        boolean dateCreated = task.getDateCreated();
+//        if (dateCreated < TopBarFragment.)
+
         TaskBinding binding;
         if (convertView != null) {
             binding = TaskBinding.bind(convertView);

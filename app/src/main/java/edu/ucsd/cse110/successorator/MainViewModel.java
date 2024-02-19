@@ -5,6 +5,8 @@ import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLI
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
 
 public class MainViewModel extends ViewModel {
+    private LocalDate currentDate;
     private final TaskRepository taskRepository;
     private final Subject<List<Task>> taskListSubject;
 
@@ -40,7 +43,21 @@ public class MainViewModel extends ViewModel {
     }
 
     public void createTask(String description) {
-        var task = new Task(taskRepository.generateNextId(), description, new Date(), false);
+        var task = new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false);
         taskRepository.saveTask(task);
+    }
+
+    public void setCurrentDate(LocalDate date) {
+        currentDate = date;
+    }
+
+    public LocalDate getCurrentDate() {
+        return currentDate;
+    }
+
+    private Date LocalDateToDate() {
+        return Date.from(currentDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
     }
 }
