@@ -11,7 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import edu.ucsd.cse110.successorator.R;
@@ -19,6 +20,7 @@ import edu.ucsd.cse110.successorator.databinding.FragmentTopBarBinding;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.CreateTaskDialogFragment;
 
 public class TopBarFragment extends Fragment {
+    private LocalDate tomorrow;
     public TopBarFragment() {}
 
     public static TopBarFragment newInstance() {
@@ -32,8 +34,19 @@ public class TopBarFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         var view = FragmentTopBarBinding.inflate(inflater, container, false);
 
-        String strDate = new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(new Date());
-        view.dateText.setText(strDate);
+        tomorrow = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EE, MMM dd", Locale.ENGLISH);
+        updateDateText(view, formatter);
+
+        view.nextButton.setOnClickListener(v -> {
+            tomorrow = tomorrow.plusDays(1);
+            updateDateText(view, formatter);
+        });
+
+        view.todayButton.setOnClickListener(v -> {
+            tomorrow = LocalDate.now();
+            updateDateText(view, formatter);
+        });
 
         view.addButton.setOnClickListener(v -> {
             Log.i("addButton", "adding task");
@@ -42,5 +55,15 @@ public class TopBarFragment extends Fragment {
         });
 
         return view.getRoot();
+    }
+    private void updateDateText(FragmentTopBarBinding view, DateTimeFormatter formatter) {
+        String formattedDate = tomorrow.format(formatter);
+        view.dateText.setText(formattedDate);
+        Log.i("date", "Date set to: " + formattedDate);
+    }
+
+    public String getDateText() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMM dd", Locale.ENGLISH);
+        return tomorrow.format(formatter);
     }
 }
