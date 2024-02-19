@@ -1,8 +1,11 @@
 package edu.ucsd.cse110.successorator.lib.data;
 
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +22,7 @@ public class InMemoryDataSource {
     private final SimpleSubject<List<Task>> taskListSubject = new SimpleSubject<>();
 
 
+<<<<<<< HEAD
     private int minSortOrder = Integer.MAX_VALUE;
     private int maxSortOrder = Integer.MIN_VALUE;
 
@@ -34,20 +38,27 @@ public class InMemoryDataSource {
         taskListSubject.setValue(taskList);
     }
 
-    public Subject<List<Task>> getTaskListSubject() { return taskListSubject; }
+    public Subject<List<Task>> getTaskListSubject() {
+        return taskListSubject;
+    }
+
+//    public static final LocalDateTime today = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
 
     public static final List<Task> DEFAULT_TASKS = List.of(
             new Task(1, "Task 1", new Date(), false, 0),
             new Task(2, "Task 2", new Date(), false, 1),
             new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true, 2),
             new Task(4, "Prev Day: uncompleted", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false, 2)
+           // new Task(1, "Task 1", new GregorianCalendar(2024, Calendar.FEBRUARY, 1).getTime(), false, 0),
+           // new Task(2, "Task 2", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 1),
+           // new Task(3, "Task 3", new GregorianCalendar(2024, Calendar.FEBRUARY, 2).getTime(), false, 2),
     );
 
     public static InMemoryDataSource fromDefault() {
         var data = new InMemoryDataSource();
         var currentDate = new Date().toInstant().atZone(ZoneId.systemDefault());
         for (Task task : DEFAULT_TASKS) {
-            LocalDate taskDate = task.getDateCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate taskDate = task.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             if (taskDate.isBefore(ChronoLocalDate.from(currentDate)) && task.isCompleted()){
                 data.removeTask(task.id());
             }else {
@@ -57,22 +68,14 @@ public class InMemoryDataSource {
         return data;
     }
 
-    public int getMinSortOrder() {
-        return minSortOrder;
-    }
-
-    public int getMaxSortOrder() {
-        return maxSortOrder;
-    }
-
     public void completed(int id, InMemoryDataSource data) {
 //        var data = new InMemoryDataSource();
         var task = findTask(id);
         task.setCompleted(!task.isCompleted());
-        if (task.isCompleted()){
+        if (task.isCompleted()) {
             data.removeTask(task.id());
             data.addTask(task);
-        }else {
+        } else {
             data.removeTask(task.id());
             data.prependTask(task);
         }
@@ -97,7 +100,7 @@ public class InMemoryDataSource {
         return List.copyOf(taskList);
     }
 
-    public Task findTask(int id){
+    public Task findTask(int id) {
         Task taskToComplete = null;
 
         for (Task task : taskList) {

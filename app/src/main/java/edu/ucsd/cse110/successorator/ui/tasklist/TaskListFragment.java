@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
@@ -22,8 +21,8 @@ public class TaskListFragment extends Fragment {
     private FragmentTaskListBinding view;
     private TaskListAdapter adapter;
 
-
-    public TaskListFragment() {}
+    public TaskListFragment() {
+    }
 
     public static TaskListFragment newInstance() {
         TaskListFragment fragment = new TaskListFragment();
@@ -44,6 +43,7 @@ public class TaskListFragment extends Fragment {
 
         // Initializer the adapter
         this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion);
+
         activityModel.getTaskList().observe(list -> {
             if (list == null)
                 return;
@@ -59,17 +59,7 @@ public class TaskListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceData) {
         this.view = FragmentTaskListBinding.inflate(inflater, container, false);
         view.taskList.setAdapter(adapter);
+
         return view.getRoot();
     }
-
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//
-//        // Set up click listener for each item in the task list
-//        adapter.setOnItemClickListener((position, task) -> {
-//            // Toggle task completion when a task item is clicked
-//            activityModel.toggleTaskCompletion(task);
-//        });
-//    }
 }

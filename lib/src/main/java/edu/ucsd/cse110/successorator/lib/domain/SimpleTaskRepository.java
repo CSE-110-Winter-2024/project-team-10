@@ -14,6 +14,11 @@ public class SimpleTaskRepository implements TaskRepository {
     }
 
     @Override
+    public Subject<Task> find(int id) {
+        return null;
+    }
+
+    @Override
     public Subject<Task> find(String description) {
         return null;
     }
@@ -36,15 +41,15 @@ public class SimpleTaskRepository implements TaskRepository {
     @Override
     public void completed(int id) {
         dataSource.completed(id, dataSource);
-        //return true;
-    }
-
-    public void addingTask(Task task) {
-        dataSource.addTask(task);
     }
 
     @Override
-    public void remove(int id) {
-        dataSource.removeTask(id);
+    public void save(List<Task> tasks) {
+
+    }
+
+    @Override
+    public void append(Task task) {
+
     }
 }

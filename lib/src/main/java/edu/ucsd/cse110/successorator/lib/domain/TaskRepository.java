@@ -5,21 +5,16 @@ import java.util.List;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
 
 public interface TaskRepository {
+    Subject<Task> find(int id);
+
     public Subject<Task> find(String description);
     public Subject<List<Task>> findAll();
     public void save(Task task);
     public int size();
 
-
-    //public void completeAndCrossOut(Task task);
-
     public void completed(int id);
-    //public void updateTask(Task task);
 
-    //public void append(Task task);
+    void save(List<Task> tasks);
 
-    public void addingTask(Task task);
-
-    public void remove(int id);
+    void append(Task task);
 }
-
