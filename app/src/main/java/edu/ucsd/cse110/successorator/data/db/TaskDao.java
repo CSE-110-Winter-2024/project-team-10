@@ -48,5 +48,7 @@ public interface TaskDao {
         );
         return Math.toIntExact(insert(newTask));
     }
-    void setIsCompleted(Integer id, boolean b);
+
+    @Query("UPDATE tasks SET isCompleted = :isCompleted WHERE id = :taskId")
+    void setIsCompleted(int taskId, boolean isCompleted);
 }
