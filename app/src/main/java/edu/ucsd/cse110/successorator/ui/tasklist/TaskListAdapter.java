@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +19,16 @@ import java.util.function.Consumer;
 import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.TaskBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.ui.tasklist.dialog.ChangeTaskModeDialogFragment;
 
 public class TaskListAdapter extends ArrayAdapter<Task> {
-    Consumer<Integer> onTaskClick;
+    private Consumer<Integer> onTaskClick;
+    private FragmentManager fragmentManager;
 
-    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClick) {
+    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClick, FragmentManager fragmentManager) {
         super(context, 0, new ArrayList<>(taskList));
         this.onTaskClick = onTaskClick;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -56,6 +60,12 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         binding.description.setPaintFlags(paintFlags);
         binding.getRoot().setBackgroundColor(backgroundColor);
 
+        binding.task.setOnLongClickListener(v -> {
+            // Show the ChangeTaskModeDialogFragment when a task is long-pressed
+            showChangeTaskModeDialog(task);
+            return true;
+        });
+
         binding.task.setOnClickListener(v -> {
             var id = task.id();
             assert id != null;
@@ -67,6 +77,12 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         });
 
         return binding.getRoot();
+    }
+
+    // Method to show the ChangeTaskModeDialogFragment
+    private void showChangeTaskModeDialog(Task task) {
+        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(task, onTaskClick);
+        dialogFragment.show(fragmentManager, "ChangeTaskModeDialogFragment");
     }
 
     @Override

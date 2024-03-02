@@ -15,7 +15,7 @@ import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
 
 public class MainViewModel extends ViewModel {
-    private LocalDate currentDate;
+    private LocalDate currentDate = LocalDate.now();
     private final TaskRepository taskRepository;
     private final Subject<List<Task>> taskListSubject;
 

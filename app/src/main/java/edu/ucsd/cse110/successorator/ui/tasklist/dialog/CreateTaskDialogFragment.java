@@ -48,11 +48,11 @@ public class CreateTaskDialogFragment extends DialogFragment {
                 .create();
     }
 
-    private void onPositiveButtonClick(DialogInterface dialog, int which) {
+    private void onPositiveButtonClick(@NonNull DialogInterface dialog, int which) {
         activityModel.createTask(view.descriptionText.getText().toString());
         dialog.dismiss();
     }
-    private void onNegativeButtonClick(DialogInterface dialog, int which) {
+    private void onNegativeButtonClick(@NonNull DialogInterface dialog, int which) {
         dialog.cancel();
     }
 }
