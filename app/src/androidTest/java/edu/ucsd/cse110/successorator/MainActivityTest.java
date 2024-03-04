@@ -31,7 +31,7 @@ public class MainActivityTest {
                 var rootView = activity.findViewById(R.id.root);
                 var binding = ActivityMainBinding.bind(rootView);
 
-                var expected = activity.getString(R.string.hello_world);
+                //var expected = activity.getString(R.string.hello_world);
                 //var actual = binding.placeholderText.getText();
 
                 //assertEquals(expected, actual);

@@ -23,12 +23,14 @@ import edu.ucsd.cse110.successorator.ui.tasklist.dialog.ChangeTaskModeDialogFrag
 
 public class TaskListAdapter extends ArrayAdapter<Task> {
     private Consumer<Integer> onTaskClick;
+    private Consumer<Integer> onTaskPressDelete;
     private FragmentManager fragmentManager;
 
-    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClick, FragmentManager fragmentManager) {
+    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClick, FragmentManager fragmentManager, Consumer<Integer> onTaskPressDelete) {
         super(context, 0, new ArrayList<>(taskList));
         this.onTaskClick = onTaskClick;
         this.fragmentManager = fragmentManager;
+        this.onTaskPressDelete = onTaskPressDelete;
     }
 
     @NonNull
@@ -81,7 +83,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
     // Method to show the ChangeTaskModeDialogFragment
     private void showChangeTaskModeDialog(Task task) {
-        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(task, onTaskClick);
+        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(task, onTaskClick, onTaskPressDelete);
         dialogFragment.show(fragmentManager, "ChangeTaskModeDialogFragment");
     }
 

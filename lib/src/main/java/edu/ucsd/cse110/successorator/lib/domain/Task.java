@@ -15,11 +15,14 @@ public class Task {
 
     private boolean isCompleted;
 
-    public Task(@Nullable Integer id, @NonNull String description, @NonNull Date dateCreated, boolean isCompleted) {
+    private boolean exists;
+
+    public Task(@Nullable Integer id, @NonNull String description, @NonNull Date dateCreated, boolean isCompleted, boolean exists) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.isCompleted = isCompleted;
+        this.exists = exists;
     }
 
     public Integer id() { return id; }
@@ -44,6 +47,14 @@ public class Task {
 
     public void setCompleted(boolean completed) {
         isCompleted = completed;
+    }
+
+    public boolean exists() {
+        return exists;
+    }
+
+    public void setExists(boolean exists) {
+        this.exists = exists;
     }
 
 }

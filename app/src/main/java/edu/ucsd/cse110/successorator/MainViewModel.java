@@ -34,7 +34,7 @@ public class MainViewModel extends ViewModel {
         this.taskListSubject = taskRepository.fetchSubjectList();
     }
 
-    public Subject<List<Task>> getTaskList() {    
+    public Subject<List<Task>> getTaskList() {
         return taskListSubject;
     }
 
@@ -42,8 +42,14 @@ public class MainViewModel extends ViewModel {
         taskRepository.completeTask(id);
     }
 
+    //Used for long press to delete
+    public void toggleTaskDeletion(int id) {
+        taskRepository.removeTask(id);
+    }
+
     public void createTask(String description) {
-        var task = new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false);
+        var task =
+                new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false, true);
         taskRepository.saveTask(task);
     }
 

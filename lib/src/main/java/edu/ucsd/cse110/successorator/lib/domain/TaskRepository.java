@@ -10,4 +10,10 @@ public interface TaskRepository {
     void removeTask(int id);
     void completeTask(int id);
     int generateNextId();
+
+
+    //public boolean isCompleted();
+    //public void setCompleted(boolean completed);
+    //public boolean exists();
+    //public void setExists(boolean exists);
 }

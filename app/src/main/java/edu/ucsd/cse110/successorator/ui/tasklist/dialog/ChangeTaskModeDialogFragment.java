@@ -28,14 +28,16 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
 
     private Task task;
     private Consumer<Integer> onTaskClick;
+    private Consumer<Integer> onTaskPressDelete;
 
-    public ChangeTaskModeDialogFragment(Task task, Consumer<Integer> onTaskClick) {
+    public ChangeTaskModeDialogFragment(Task task, Consumer<Integer> onTaskClick, Consumer<Integer> onTaskPressDelete) {
         this.task = task;
         this.onTaskClick = onTaskClick;
+        this.onTaskPressDelete = onTaskPressDelete;
     }
 
-    public static ChangeTaskModeDialogFragment newInstance(Task task, Consumer<Integer> onTaskClick) {
-        ChangeTaskModeDialogFragment fragment = new ChangeTaskModeDialogFragment(task, onTaskClick);
+    public static ChangeTaskModeDialogFragment newInstance(Task task, Consumer<Integer> onTaskClick, Consumer<Integer> onTaskPressDelete) {
+        ChangeTaskModeDialogFragment fragment = new ChangeTaskModeDialogFragment(task, onTaskClick, onTaskPressDelete);
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -51,6 +53,8 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
         this.activityModel = modelProvider.get(MainViewModel.class);
     }
 
+
+    //Long Press a Task: so that I can move it to today, tomorrow, finish, or delete it.
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -82,11 +86,16 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
 
         deleteButton.setOnClickListener(v -> {
             Log.i("TextView Click", "Delete clicked");
+            if (task.exists() == true) {
+                onTaskPressDelete.accept(task.id());
+            }
             dismiss();
         });
 
-//        moveToTodayButton.setEnabled(task.due() == LocalDate.now());
+        //moveToTodayButton.setEnabled(task.due() == LocalDate.now());
+        //moveToTomorrowButton.setEnabled(task.due() == (LocalDate.now() + 1));
         finishButton.setEnabled(task.isCompleted() == false);
+        deleteButton.setEnabled(task.exists() == true);
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(task.getDescription())
