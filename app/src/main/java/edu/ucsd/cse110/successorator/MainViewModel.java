@@ -34,7 +34,7 @@ public class MainViewModel extends ViewModel {
         this.taskListSubject = taskRepository.fetchSubjectList();
     }
 
-    public Subject<List<Task>> getTaskList() {
+    public Subject<List<Task>> getTaskList() {    
         return taskListSubject;
     }
 
