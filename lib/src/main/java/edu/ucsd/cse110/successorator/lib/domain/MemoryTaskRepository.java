@@ -41,6 +41,9 @@ public class MemoryTaskRepository implements TaskRepository {
     @Override
     public void moveTaskToToday(int id) { }
 
+    @Override
+    public void moveTaskToTomorrow(int id) { }
+
     public int taskListSize() {
         return dataSource.taskListSize();
     }

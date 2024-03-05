@@ -48,6 +48,11 @@ public class RoomTaskRepository implements TaskRepository {
     }
 
     @Override
+    public void moveTaskToTomorrow(int id) {
+        dao.setDue(id, LocalDateToString(LocalDate.now().plusDays(1)));
+    }
+
+    @Override
     public void completeTask(int id) {
         var task = dao.find(id).toTask();
 

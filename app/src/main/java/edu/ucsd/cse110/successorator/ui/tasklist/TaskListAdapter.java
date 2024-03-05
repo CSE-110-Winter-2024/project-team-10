@@ -25,14 +25,21 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
     private Consumer<Integer> onTaskClickComplete;
     private Consumer<Integer> onTaskPressDelete;
     private Consumer<Integer> onTaskPressMoveToToday;
+    private Consumer<Integer> onTaskPressMoveToTomorrow;
     private FragmentManager fragmentManager;
 
-    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClickComplete, FragmentManager fragmentManager, Consumer<Integer> onTaskPressDelete, Consumer<Integer> onTaskPressMoveToToday) {
+    public TaskListAdapter(Context context, List<Task> taskList,
+                           Consumer<Integer> onTaskClickComplete,
+                           FragmentManager fragmentManager,
+                           Consumer<Integer> onTaskPressDelete,
+                           Consumer<Integer> onTaskPressMoveToToday,
+                           Consumer<Integer> onTaskPressMoveToTomorrow) {
         super(context, 0, new ArrayList<>(taskList));
         this.onTaskClickComplete = onTaskClickComplete;
         this.fragmentManager = fragmentManager;
         this.onTaskPressDelete = onTaskPressDelete;
         this.onTaskPressMoveToToday = onTaskPressMoveToToday;
+        this.onTaskPressMoveToTomorrow = onTaskPressMoveToTomorrow;
     }
 
     @NonNull
@@ -85,7 +92,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
     // Method to show the ChangeTaskModeDialogFragment
     private void showChangeTaskModeDialog(Task task) {
-        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(task, onTaskClickComplete, onTaskPressDelete, onTaskPressMoveToToday);
+        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(task, onTaskClickComplete, onTaskPressDelete, onTaskPressMoveToToday, onTaskPressMoveToTomorrow);
         dialogFragment.show(fragmentManager, "ChangeTaskModeDialogFragment");
     }
 

@@ -50,7 +50,7 @@ public class TaskListFragment extends Fragment {
         var activityModel = modelProvider.get(MainViewModel.class);
 
         // Initializer the adapter
-        this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion, getParentFragmentManager(), activityModel::toggleTaskDeletion, activityModel::toggleTaskMoveToToday);
+        this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion, getParentFragmentManager(), activityModel::toggleTaskDeletion, activityModel::toggleTaskMoveToToday, activityModel::toggleTaskMoveToTomorrow);
         activityModel.getTaskList().observe(list -> {
             Log.i("TaskListFragment", "change value, list = " + list);
             if (list == null) return;

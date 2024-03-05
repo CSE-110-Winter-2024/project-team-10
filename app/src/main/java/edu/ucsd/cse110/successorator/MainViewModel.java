@@ -53,7 +53,9 @@ public class MainViewModel extends ViewModel {
     }
 
     //Used for long press move to tomorrow
-
+    public void toggleTaskMoveToTomorrow(int id) {
+        taskRepository.moveTaskToTomorrow(id);
+    }
 
     public void createTask(String description) {
         var task =
