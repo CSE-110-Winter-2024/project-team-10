@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -15,14 +16,14 @@ public class Task {
 
     private boolean isCompleted;
 
-    private boolean exists;
+    private LocalDate due;
 
-    public Task(@Nullable Integer id, @NonNull String description, @NonNull Date dateCreated, boolean isCompleted, boolean exists) {
+    public Task(@Nullable Integer id, @NonNull String description, @NonNull Date dateCreated, boolean isCompleted, LocalDate due) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.isCompleted = isCompleted;
-        this.exists = exists;
+        this.due = due;
     }
 
     public Integer id() { return id; }
@@ -49,12 +50,12 @@ public class Task {
         isCompleted = completed;
     }
 
-    public boolean exists() {
-        return exists;
+    public LocalDate due() {
+        return due;
     }
 
-    public void setExists(boolean exists) {
-        this.exists = exists;
+    public void setDue(LocalDate due) {
+        this.due = due;
     }
 
 }

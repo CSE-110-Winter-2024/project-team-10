@@ -22,15 +22,17 @@ import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.ChangeTaskModeDialogFragment;
 
 public class TaskListAdapter extends ArrayAdapter<Task> {
-    private Consumer<Integer> onTaskClick;
+    private Consumer<Integer> onTaskClickComplete;
     private Consumer<Integer> onTaskPressDelete;
+    private Consumer<Integer> onTaskPressMoveToToday;
     private FragmentManager fragmentManager;
 
-    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClick, FragmentManager fragmentManager, Consumer<Integer> onTaskPressDelete) {
+    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClickComplete, FragmentManager fragmentManager, Consumer<Integer> onTaskPressDelete, Consumer<Integer> onTaskPressMoveToToday) {
         super(context, 0, new ArrayList<>(taskList));
-        this.onTaskClick = onTaskClick;
+        this.onTaskClickComplete = onTaskClickComplete;
         this.fragmentManager = fragmentManager;
         this.onTaskPressDelete = onTaskPressDelete;
+        this.onTaskPressMoveToToday = onTaskPressMoveToToday;
     }
 
     @NonNull
@@ -74,7 +76,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
             Log.i("Click", "id " + task.id() + ", completed? " + task.isCompleted());
             // (un)marks a task as complete
-            onTaskClick.accept(id);
+            onTaskClickComplete.accept(id);
             Log.i("Click (After accept)", "id " + task.id() + ", completed? " + task.isCompleted());
         });
 
@@ -83,7 +85,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
     // Method to show the ChangeTaskModeDialogFragment
     private void showChangeTaskModeDialog(Task task) {
-        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(task, onTaskClick, onTaskPressDelete);
+        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(task, onTaskClickComplete, onTaskPressDelete, onTaskPressMoveToToday);
         dialogFragment.show(fragmentManager, "ChangeTaskModeDialogFragment");
     }
 

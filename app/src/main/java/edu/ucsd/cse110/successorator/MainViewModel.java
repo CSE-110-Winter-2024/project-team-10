@@ -47,9 +47,17 @@ public class MainViewModel extends ViewModel {
         taskRepository.removeTask(id);
     }
 
+    //Used for long press move to today
+    public void toggleTaskMoveToToday(int id) {
+        taskRepository.moveTaskToToday(id);
+    }
+
+    //Used for long press move to tomorrow
+
+
     public void createTask(String description) {
         var task =
-                new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false, true);
+                new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false, currentDate);
         taskRepository.saveTask(task);
     }
 

@@ -27,17 +27,20 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
     FragmentChangeTaskmodeDialogBinding view;
 
     private Task task;
-    private Consumer<Integer> onTaskClick;
+    private Consumer<Integer> onTaskClickComplete;
     private Consumer<Integer> onTaskPressDelete;
 
-    public ChangeTaskModeDialogFragment(Task task, Consumer<Integer> onTaskClick, Consumer<Integer> onTaskPressDelete) {
+    private Consumer<Integer> onTaskPressMoveToToday;
+
+    public ChangeTaskModeDialogFragment(Task task, Consumer<Integer> onTaskClickComplete, Consumer<Integer> onTaskPressDelete, Consumer<Integer> onTaskPressMoveToToday) {
         this.task = task;
-        this.onTaskClick = onTaskClick;
+        this.onTaskClickComplete = onTaskClickComplete;
         this.onTaskPressDelete = onTaskPressDelete;
+        this.onTaskPressMoveToToday = onTaskPressMoveToToday;
     }
 
-    public static ChangeTaskModeDialogFragment newInstance(Task task, Consumer<Integer> onTaskClick, Consumer<Integer> onTaskPressDelete) {
-        ChangeTaskModeDialogFragment fragment = new ChangeTaskModeDialogFragment(task, onTaskClick, onTaskPressDelete);
+    public static ChangeTaskModeDialogFragment newInstance(Task task, Consumer<Integer> onTaskClick, Consumer<Integer> onTaskPressDelete, Consumer<Integer> onTaskPressMoveToToday) {
+        ChangeTaskModeDialogFragment fragment = new ChangeTaskModeDialogFragment(task, onTaskClick, onTaskPressDelete, onTaskPressMoveToToday);
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -68,6 +71,7 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
 
         moveToTodayButton.setOnClickListener(v -> {
             Log.i("TextView Click", "Move to Today clicked");
+            onTaskPressMoveToToday.accept(task.id());
             dismiss();
         });
 
@@ -79,23 +83,20 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
         finishButton.setOnClickListener(v -> {
             Log.i("TextView Click", "Finish clicked");
             if (task.isCompleted() == false) {
-                onTaskClick.accept(task.id());
+                onTaskClickComplete.accept(task.id());
             }
             dismiss();
         });
 
         deleteButton.setOnClickListener(v -> {
             Log.i("TextView Click", "Delete clicked");
-            if (task.exists() == true) {
-                onTaskPressDelete.accept(task.id());
-            }
+            onTaskPressDelete.accept(task.id());
             dismiss();
         });
 
         //moveToTodayButton.setEnabled(task.due() == LocalDate.now());
         //moveToTomorrowButton.setEnabled(task.due() == (LocalDate.now() + 1));
         finishButton.setEnabled(task.isCompleted() == false);
-        deleteButton.setEnabled(task.exists() == true);
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(task.getDescription())

@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.successorator.lib.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.data.MemoryDataSource;
@@ -36,6 +37,9 @@ public class MemoryTaskRepository implements TaskRepository {
     public int generateNextId() {
         return dataSource.getMaxId() + 1;
     }
+
+    @Override
+    public void moveTaskToToday(int id) { }
 
     public int taskListSize() {
         return dataSource.taskListSize();

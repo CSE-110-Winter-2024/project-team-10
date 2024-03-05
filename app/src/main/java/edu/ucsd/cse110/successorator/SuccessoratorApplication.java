@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.room.Room;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -47,9 +48,9 @@ public class SuccessoratorApplication extends Application {
         return taskRepository;
     }
     public static final List<Task> DEFAULT_TASKS = List.of(
-            new Task(1, "Task 1", new Date(), false, true),
-            new Task(2, "Task 2", new Date(), false, true),
-            new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true, true),
-            new Task(4, "Prev Day: uncompleted", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false, true)
+            new Task(1, "Task 1", new Date(), false, LocalDate.now()),
+            new Task(2, "Task 2", new Date(), false, LocalDate.now()),
+            new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true, LocalDate.now()),
+            new Task(4, "Prev Day: uncompleted", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false, LocalDate.now())
     );
 }

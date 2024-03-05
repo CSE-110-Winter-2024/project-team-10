@@ -9,4 +9,5 @@ java {
 
 dependencies {
     implementation("androidx.annotation:annotation:1.7.1")
+    implementation("androidx.room:room-common:2.6.1")
 }

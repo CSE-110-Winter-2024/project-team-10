@@ -1,7 +1,10 @@
 package edu.ucsd.cse110.successorator.data.db;
 
+import static edu.ucsd.cse110.successorator.lib.util.LocalDateConvereter.LocalDateToString;
+
 import androidx.lifecycle.Transformations;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +40,11 @@ public class RoomTaskRepository implements TaskRepository {
     @Override
     public void removeTask(int id) {
         dao.delete(id);
+    }
+
+    @Override
+    public void moveTaskToToday(int id) {
+        dao.setDue(id, LocalDateToString(LocalDate.now()));
     }
 
     @Override
