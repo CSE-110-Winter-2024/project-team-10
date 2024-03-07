@@ -3,6 +3,8 @@ package edu.ucsd.cse110.successorator.lib.domain;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.jetbrains.annotations.NonNls;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -15,11 +17,14 @@ public class Task {
 
     private boolean isCompleted;
 
-    public Task(@Nullable Integer id, @NonNull String description, @NonNull Date dateCreated, boolean isCompleted) {
+    private @NonNull Date resetDate;
+
+    public Task(@Nullable Integer id, @NonNull String description, @NonNull Date dateCreated, boolean isCompleted, @NonNull Date resetDate) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.isCompleted = isCompleted;
+        this.resetDate = resetDate;
     }
 
     public Integer id() { return id; }
@@ -45,5 +50,8 @@ public class Task {
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
+
+    @NonNull
+    public Date getResetDate() { return resetDate; }
 
 }

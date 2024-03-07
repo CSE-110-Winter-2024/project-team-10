@@ -26,18 +26,23 @@ public class TaskEntity {
     @ColumnInfo(name = "isCompleted")
     public Boolean isCompleted;
 
-    public TaskEntity(@NonNull Integer id, @NonNull String description, @NonNull Long dateCreated, boolean isCompleted) {
+    @ColumnInfo(name = "resetDate")
+    public Long resetDate;
+
+
+    public TaskEntity(@NonNull Integer id, @NonNull String description, @NonNull Long dateCreated, boolean isCompleted, @NonNull Long resetDate) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.isCompleted = isCompleted;
+         this.resetDate = resetDate;
     }
 
     public @NonNull Task toTask() {
-        return new Task(id, description, Date.from(Instant.ofEpochSecond(dateCreated)), isCompleted);
+        return new Task(id, description, Date.from(Instant.ofEpochSecond(dateCreated)), isCompleted, Date.from(Instant.ofEpochSecond(resetDate)));
     }
 
     public static TaskEntity fromTask(@NonNull Task task) {
-        return new TaskEntity(task.id(), task.getDescription(), task.getDateCreated().toInstant().getEpochSecond(), task.isCompleted());
+        return new TaskEntity(task.id(), task.getDescription(), task.getDateCreated().toInstant().getEpochSecond(), task.isCompleted(), task.getResetDate().toInstant().getEpochSecond());
     }
 }

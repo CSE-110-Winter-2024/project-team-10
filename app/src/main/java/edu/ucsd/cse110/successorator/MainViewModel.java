@@ -42,8 +42,8 @@ public class MainViewModel extends ViewModel {
         taskRepository.completeTask(id);
     }
 
-    public void createTask(String description) {
-        var task = new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false);
+    public void createTask(String description, Date resetDate) {
+        var task = new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false, resetDate);
         taskRepository.saveTask(task);
     }
 
@@ -56,6 +56,7 @@ public class MainViewModel extends ViewModel {
     }
 
     private Date LocalDateToDate() {
+        setCurrentDate(LocalDate.now());
         return Date.from(currentDate.atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());

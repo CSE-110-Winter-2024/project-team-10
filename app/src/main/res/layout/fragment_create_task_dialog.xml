@@ -33,6 +33,46 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/descriptionTagText"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/repeatOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/descriptionText"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="20dp">
+
+            <RadioButton
+                android:id="@+id/oneTimeOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="One Time" />
+
+            <RadioButton
+                android:id="@+id/dailyOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Daily" />
+
+            <RadioButton
+                android:id="@+id/weeklyOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Weekly" />
+
+            <RadioButton
+                android:id="@+id/monthlyOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Monthly" />
+
+            <RadioButton
+                android:id="@+id/yearlyOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Yearly" />
+        </RadioGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
