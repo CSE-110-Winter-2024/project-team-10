@@ -13,10 +13,4 @@ public interface TaskRepository {
     int generateNextId();
     void moveTaskToToday(int id);
     void moveTaskToTomorrow(int id);
-
-
-    //public boolean isCompleted();
-    //public void setCompleted(boolean completed);
-    //public boolean exists();
-    //public void setExists(boolean exists);
 }

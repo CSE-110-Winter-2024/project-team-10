@@ -37,6 +37,9 @@ android {
 }
 
 dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.mockito:mockito-core:3.12.4")
+
     val room_version ="2.6.1"
 
     implementation(project(":lib"))

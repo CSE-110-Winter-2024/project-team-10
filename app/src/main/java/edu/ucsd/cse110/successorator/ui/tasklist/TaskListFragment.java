@@ -75,9 +75,15 @@ public class TaskListFragment extends Fragment {
         List<Task> filteredList = new ArrayList<>();
         for (Task task : tasks) {
             Log.i("date", "date: " + date);
-            if (!task.isCompleted() || !task.getDateCreated().toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate().isBefore(date)) {
+//            if (!task.isCompleted() || !task.getDateCreated().toInstant()
+//                    .atZone(ZoneId.systemDefault())
+//                    .toLocalDate().isBefore(date)) {
+//                filteredList.add(task);
+//            }
+            if (!task.isCompleted() && task.due().isBefore(date)) {
+                task.setDue(LocalDate.now());
+            }
+            if (!task.isCompleted() || !task.due().isBefore(date)) {
                 filteredList.add(task);
             }
         }
