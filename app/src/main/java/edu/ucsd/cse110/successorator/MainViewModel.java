@@ -51,10 +51,6 @@ public class MainViewModel extends ViewModel {
         currentDate = date;
     }
 
-    public LocalDate getCurrentDate() {
-        return currentDate;
-    }
-
     private Date LocalDateToDate() {
         return Date.from(currentDate.atStartOfDay()
                 .atZone(ZoneId.systemDefault())

@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         date = LocalDate.now();
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        mainViewModel.setCurrentDate(date);
 
         TopBarFragment topBarFragment = TopBarFragment.newInstance(date);
         getSupportFragmentManager().beginTransaction().replace(R.id.top_bar, topBarFragment).commit();
@@ -36,14 +37,12 @@ public class MainActivity extends AppCompatActivity {
     public void onTopBarNextButtonClicked() {
         date = date.plusDays(1);
         mainViewModel.setCurrentDate(date);
-        Log.i("date:", "tomo: " + date);
         passDateToTasks();
     }
 
     public void onTopBarTodayButtonClicked() {
         date = LocalDate.now();
         mainViewModel.setCurrentDate(date);
-        Log.i("date:", "today: " + date);
         passDateToTasks();
     }
 
