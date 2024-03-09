@@ -13,11 +13,13 @@ import android.view.ViewGroup;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 import edu.ucsd.cse110.successorator.MainActivity;
 import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.FragmentTopBarBinding;
+import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.CreateTaskDialogFragment;
 
 public class TopBarFragment extends Fragment {
@@ -47,11 +49,11 @@ public class TopBarFragment extends Fragment {
             if (getActivity() instanceof MainActivity) ((MainActivity) getActivity()).onTopBarNextButtonClicked();
         });
 
-        view.todayButton.setOnClickListener(v -> {
-            tomorrow = LocalDate.now();
-            updateDateText(view, formatter);
-            if (getActivity() instanceof MainActivity) ((MainActivity) getActivity()).onTopBarTodayButtonClicked();
-        });
+//        view.todayButton.setOnClickListener(v -> {
+//            tomorrow = LocalDate.now();
+//            updateDateText(view, formatter);
+//            if (getActivity() instanceof MainActivity) ((MainActivity) getActivity()).onTopBarTodayButtonClicked();
+//        });
 
         view.addButton.setOnClickListener(v -> {
             Log.i("addButton", "adding task");

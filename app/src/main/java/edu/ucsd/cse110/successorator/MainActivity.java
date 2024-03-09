@@ -17,8 +17,10 @@ import edu.ucsd.cse110.successorator.ui.tasklist.TaskListFragment;
 import edu.ucsd.cse110.successorator.ui.tasklist.TopBarFragment;
 
 public class MainActivity extends AppCompatActivity {
+    private TaskListFragment taskListFragment;
     LocalDate date;
     private MainViewModel mainViewModel;
+    private TopBarFragment topBarFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,26 +31,44 @@ public class MainActivity extends AppCompatActivity {
         date = LocalDate.now();
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        TopBarFragment topBarFragment = TopBarFragment.newInstance(date);
-        getSupportFragmentManager().beginTransaction().replace(R.id.top_bar, topBarFragment).commit();
+        topBarFragment = TopBarFragment.newInstance(date);
+        taskListFragment = TaskListFragment.newInstance(date);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.top_bar, topBarFragment)
+                .replace(R.id.task_list, taskListFragment)
+                .commit();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.task_list, taskListFragment).commit();
     }
+
+//    public void onDateChanged(LocalDate newDate){
+//        date = newDate;
+//        passDateToTasks();
+//    }
 
     public void onTopBarNextButtonClicked() {
         date = date.plusDays(1);
         mainViewModel.setCurrentDate(date);
         Log.i("date:", "tomo: " + date);
-        passDateToTasks();
+//        passDateToTasks();
+        taskListFragment.setDate(date);
     }
 
-    public void onTopBarTodayButtonClicked() {
-        date = LocalDate.now();
-        mainViewModel.setCurrentDate(date);
-        Log.i("date:", "today: " + date);
-        passDateToTasks();
-    }
+//    public void onTopBarTodayButtonClicked() {
+//        date = LocalDate.now();
+//        mainViewModel.setCurrentDate(date);
+//        Log.i("date:", "today: " + date);
+////        passDateToTasks();
+//        taskListFragment.setDate(date);
+//    }
 
     private void passDateToTasks() {
-        TaskListFragment taskListFragment = TaskListFragment.newInstance(date);
+        taskListFragment = TaskListFragment.newInstance(date);
         getSupportFragmentManager().beginTransaction().replace(R.id.task_list, taskListFragment).commit();
+
+        if (taskListFragment != null) {
+            taskListFragment.setDate(date);
+        }
     }
+
 }

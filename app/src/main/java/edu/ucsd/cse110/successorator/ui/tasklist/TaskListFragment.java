@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.Observer;
+
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -22,8 +25,11 @@ import edu.ucsd.cse110.successorator.lib.domain.Task;
 
 public class TaskListFragment extends Fragment {
     private LocalDate date;
-
     private TaskListAdapter adapter;
+    private FragmentActivity modelOwner;
+    private ViewModelProvider.Factory modelFactory;
+    private ViewModelProvider modelProvider;
+    private MainViewModel activityModel;
 
     public TaskListFragment() {}
 
@@ -43,14 +49,21 @@ public class TaskListFragment extends Fragment {
         else date = LocalDate.now();
 
         // Initialize the model
-        var modelOwner = requireActivity();
-        var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
-        var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
+        modelOwner = requireActivity();
+        modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
+        modelProvider = new ViewModelProvider(modelOwner, modelFactory);
+        activityModel = modelProvider.get(MainViewModel.class);
 
-        var activityModel = modelProvider.get(MainViewModel.class);
+        // Initialize the adapter
+        this.adapter = new TaskListAdapter(
+                        requireContext(),
+                        List.of(),
+                        activityModel::toggleTaskCompletion,
+                        getParentFragmentManager(),
+                        activityModel::toggleTaskDeletion,
+                        activityModel::toggleTaskMoveToToday,
+                        activityModel::toggleTaskMoveToTomorrow);
 
-        // Initializer the adapter
-        this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion, getParentFragmentManager(), activityModel::toggleTaskDeletion, activityModel::toggleTaskMoveToToday, activityModel::toggleTaskMoveToTomorrow);
         activityModel.getTaskList().observe(list -> {
             Log.i("TaskListFragment", "change value, list = " + list);
             if (list == null) return;
@@ -80,13 +93,43 @@ public class TaskListFragment extends Fragment {
 //                    .toLocalDate().isBefore(date)) {
 //                filteredList.add(task);
 //            }
-            if (!task.isCompleted() && task.due().isBefore(date)) {
-                task.setDue(LocalDate.now());
-            }
-            if (!task.isCompleted() || !task.due().isBefore(date)) {
+
+//            if (!task.isCompleted() && task.due().isBefore(date)) {
+//                task.setDue(date);
+//            }
+
+            if (!task.isCompleted() || task.due().isEqual(date)) {
+                // If the task is due yesterday but not completed, update its due date to today
+                if (!task.isCompleted() && task.due().isBefore(date)) {
+                    activityModel.toggleTaskMoveToToday(task.id());
+                }
                 filteredList.add(task);
             }
         }
         return filteredList;
     }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+        updateTaskDueDates();
+    }
+
+    public void updateTaskDueDates() {
+        List<Task> tasks = activityModel.getTaskList().getValue();
+        for (Task task : tasks) {
+            if (!task.isCompleted() && task.due().isBefore(date)) {
+                activityModel.toggleTaskMoveToTomorrow(task.id());
+            }
+
+            //might need to be deleted
+//            if (!task.isCompleted() && task.due().isAfter(date)) {
+//                // If the task is due after the date, move it to today
+//                activityModel.toggleTaskMoveToToday(task.id());
+//            }
+        }
+    }
+    public LocalDate getDate() {
+        return this.date;
+    }
+
 }

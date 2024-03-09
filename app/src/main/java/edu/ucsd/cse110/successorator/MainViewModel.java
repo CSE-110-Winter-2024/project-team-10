@@ -2,6 +2,8 @@ package edu.ucsd.cse110.successorator;
 
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
@@ -18,6 +20,8 @@ public class MainViewModel extends ViewModel {
     private LocalDate currentDate = LocalDate.now();
     private final TaskRepository taskRepository;
     private final Subject<List<Task>> taskListSubject;
+//    private MutableLiveData<LocalDate> currentDate = new MutableLiveData<>();
+//    private final LiveData<LocalDate> currentDateLiveData;
 
     public static final ViewModelInitializer<MainViewModel> initializer =
             new ViewModelInitializer<>(
@@ -32,6 +36,7 @@ public class MainViewModel extends ViewModel {
     public MainViewModel(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
         this.taskListSubject = taskRepository.fetchSubjectList();
+//        currentDateLiveData = taskRepository.getCurrentDate();
     }
 
     public Subject<List<Task>> getTaskList() {
@@ -54,26 +59,37 @@ public class MainViewModel extends ViewModel {
 
     //Used for long press move to tomorrow
     public void toggleTaskMoveToTomorrow(int id) {
-        taskRepository.moveTaskToTomorrow(id);
+        taskRepository.moveTaskToTomorrow(id, currentDate);
     }
 
     public void createTask(String description) {
-        var task =
-                new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false, currentDate);
+        var task = new Task(
+                taskRepository.generateNextId(),
+                description, new Date(),
+                false,
+                currentDate);
         taskRepository.saveTask(task);
     }
 
     public void setCurrentDate(LocalDate date) {
         currentDate = date;
+//        currentDate.setValue(date);
     }
 
     public LocalDate getCurrentDate() {
         return currentDate;
     }
 
-    private Date LocalDateToDate() {
-        return Date.from(currentDate.atStartOfDay()
+//    private Date LocalDateToDate() {
+//        return Date.from(currentDate.atStartOfDay()
+//                .atZone(ZoneId.systemDefault())
+//                .toInstant());
+//    }
+
+    private Date localDateToDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
     }
+
 }

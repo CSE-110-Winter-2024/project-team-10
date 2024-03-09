@@ -12,6 +12,7 @@ import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
 import edu.ucsd.cse110.successorator.util.LiveDataSubject;
+import edu.ucsd.cse110.successorator.MainViewModel;
 
 public class RoomTaskRepository implements TaskRepository {
     private final TaskDao dao;
@@ -48,8 +49,8 @@ public class RoomTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void moveTaskToTomorrow(int id) {
-        dao.setDue(id, LocalDateToString(LocalDate.now().plusDays(1)));
+    public void moveTaskToTomorrow(int id, LocalDate date) {
+        dao.setDue(id, LocalDateToString(date));
     }
 
     @Override
