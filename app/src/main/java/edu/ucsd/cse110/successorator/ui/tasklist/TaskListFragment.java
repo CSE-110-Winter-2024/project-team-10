@@ -21,17 +21,13 @@ import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 
 public class TaskListFragment extends Fragment {
-    // TODO: remove...
-    private LocalDate date;
-
     private TaskListAdapter adapter;
 
     public TaskListFragment() {}
 
-    public static TaskListFragment newInstance(LocalDate date) {
+    public static TaskListFragment newInstance() {
         TaskListFragment fragment = new TaskListFragment();
         Bundle args = new Bundle();
-        args.putSerializable("date_key", date);
         fragment.setArguments(args);
         return fragment;
     }
@@ -39,12 +35,6 @@ public class TaskListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            date = (LocalDate) getArguments().getSerializable("date_key");
-        } else {
-            date = LocalDate.now();
-        }
 
         // Obtain the main view model
         var modelOwner = requireActivity();
@@ -56,15 +46,19 @@ public class TaskListFragment extends Fragment {
         // Initializer the adapter
         this.adapter = new TaskListAdapter(requireContext(), List.of(), activityModel::toggleTaskCompletion);
 
-        activityModel.getTaskList().observe(list -> {
-            if (list == null) {
+        activityModel.getDateTaskPacketSubject().observe(packet -> {
+            boolean isNull = (packet == null)
+                    || (packet.first == null)
+                    || (packet.second == null);
+
+            if (isNull) {
                 return;
             }
 
-            List<Task> filteredList = filterTasks(list);
+            var filteredTasks = filterTaskList(packet.second, packet.first);
 
             adapter.clear();
-            adapter.addAll(filteredList);
+            adapter.addAll(filteredTasks);
             adapter.notifyDataSetChanged();
         });
     }
@@ -77,13 +71,19 @@ public class TaskListFragment extends Fragment {
         return view.getRoot();
     }
 
-    private List<Task> filterTasks(List<Task> tasks) {
+    static private List<Task> filterTaskList(List<Task> tasks, LocalDate currentDate) {
         List<Task> filteredList = new ArrayList<>();
+
         // TODO: via streams/maps?
         for (Task task : tasks) {
-            if (!task.isCompleted() || !task.getDateCreated().toInstant()
+            var isComplete = task.isCompleted();
+            var isBeforeDate = task.getDateCreated()
+                    .toInstant()
                     .atZone(ZoneId.systemDefault())
-                    .toLocalDate().isBefore(date)) {
+                    .toLocalDate()
+                    .isBefore(currentDate);
+
+            if (!(isComplete && isBeforeDate)) {
                 filteredList.add(task);
             }
         }
