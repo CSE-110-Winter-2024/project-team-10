@@ -17,37 +17,10 @@ import edu.ucsd.cse110.successorator.ui.tasklist.TaskListFragment;
 import edu.ucsd.cse110.successorator.ui.tasklist.TopBarFragment;
 
 public class MainActivity extends AppCompatActivity {
-    LocalDate date;
-    private MainViewModel mainViewModel;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         var view = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(view.getRoot());
-
-        date = LocalDate.now();
-        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        mainViewModel.setCurrentDate(date);
-
-        TopBarFragment topBarFragment = TopBarFragment.newInstance(date);
-        getSupportFragmentManager().beginTransaction().replace(R.id.top_bar, topBarFragment).commit();
-    }
-
-    public void onTopBarNextButtonClicked() {
-        date = date.plusDays(1);
-        mainViewModel.setCurrentDate(date);
-        passDateToTasks();
-    }
-
-    public void onTopBarTodayButtonClicked() {
-        date = LocalDate.now();
-        mainViewModel.setCurrentDate(date);
-        passDateToTasks();
-    }
-
-    private void passDateToTasks() {
-        TaskListFragment taskListFragment = TaskListFragment.newInstance(date);
-        getSupportFragmentManager().beginTransaction().replace(R.id.task_list, taskListFragment).commit();
     }
 }
