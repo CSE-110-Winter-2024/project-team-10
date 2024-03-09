@@ -2,7 +2,6 @@ package edu.ucsd.cse110.successorator;
 
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.lifecycle.ViewModel;
@@ -48,6 +47,7 @@ public class MainViewModel extends ViewModel {
         dateTaskPacketSubject = new SimpleSubject<>();
         dateTaskPacketSubject.setValue(currentPacket);
 
+        // Needs to update itself if either component changes
         taskListSubject.observe(list -> {
             var currentValue = dateTaskPacketSubject.getValue();
             if (list == null || currentValue == null) {
@@ -55,7 +55,6 @@ public class MainViewModel extends ViewModel {
             }
 
             var newValue = new Pair<>(currentValue.first, list);
-            Log.d("MainViewModel", "[1] newValue=" + newValue.toString());
             dateTaskPacketSubject.setValue(newValue);
         });
 
@@ -66,13 +65,8 @@ public class MainViewModel extends ViewModel {
             }
 
             var newValue = new Pair<>(date, currentValue.second);
-            Log.d("MainViewModel", "[2] newValue=" + newValue.toString());
             dateTaskPacketSubject.setValue(newValue);
         });
-    }
-
-    public Subject<List<Task>> getTaskListSubject() {
-        return taskListSubject;
     }
 
     public Subject<LocalDate> getCurrentDateSubject() {
@@ -89,10 +83,18 @@ public class MainViewModel extends ViewModel {
     }
 
     public void createTask(String description) {
-        var task = new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false);
+        var nowDate = currentDateSubject.getValue();
+        var nowLocalDate = Date.from(
+                nowDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant()
+        );
+
+        var task = new Task(taskRepository.generateNextId(), description, nowLocalDate, false);
         taskRepository.saveTask(task);
     }
 
+    // Advancing the date forward OR backwards
     public void moveNextDay() {
         var now = currentDateSubject.getValue();
         now = now.plusDays(1);
@@ -103,13 +105,5 @@ public class MainViewModel extends ViewModel {
         var now = currentDateSubject.getValue();
         now = now.minusDays(1);
         currentDateSubject.setValue(now);
-    }
-
-    // TODO: remove this?
-    private Date LocalDateToDate() {
-        var now = currentDateSubject.getValue();
-        return Date.from(now.atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant());
     }
 }
