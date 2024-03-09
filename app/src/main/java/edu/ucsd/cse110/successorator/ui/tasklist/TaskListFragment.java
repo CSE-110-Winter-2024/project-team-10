@@ -87,23 +87,20 @@ public class TaskListFragment extends Fragment {
     private List<Task> filterTasks(List<Task> tasks) {
         List<Task> filteredList = new ArrayList<>();
         for (Task task : tasks) {
-            Log.i("date", "date: " + date);
 //            if (!task.isCompleted() || !task.getDateCreated().toInstant()
 //                    .atZone(ZoneId.systemDefault())
 //                    .toLocalDate().isBefore(date)) {
 //                filteredList.add(task);
 //            }
 
-//            if (!task.isCompleted() && task.due().isBefore(date)) {
-//                task.setDue(date);
-//            }
+            if (!task.isCompleted() && task.due().isBefore(date)) {
+                activityModel.toggleTaskMoveToToday(task.id());
+            }
 
-            if (!task.isCompleted() || task.due().isEqual(date)) {
-                // If the task is due yesterday but not completed, update its due date to today
-                if (!task.isCompleted() && task.due().isBefore(date)) {
-                    activityModel.toggleTaskMoveToToday(task.id());
-                }
+            if (!task.isCompleted() && task.due().isEqual(date)) {
                 filteredList.add(task);
+                Log.i("filtered task", "date: " + date +" | " + "task: " + task.getDescription());
+
             }
         }
         return filteredList;

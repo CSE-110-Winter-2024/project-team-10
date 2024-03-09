@@ -116,7 +116,4 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
     private void onCancelButtonClick(DialogInterface dialog, int which) {
         dialog.cancel();
     }
-    private void onOkayButtonClick(DialogInterface dialog, int which) {
-        dialog.dismiss();
-    }
 }

@@ -41,17 +41,13 @@ public class MainActivity extends AppCompatActivity {
 //        getSupportFragmentManager().beginTransaction().replace(R.id.task_list, taskListFragment).commit();
     }
 
-//    public void onDateChanged(LocalDate newDate){
-//        date = newDate;
-//        passDateToTasks();
-//    }
-
     public void onTopBarNextButtonClicked() {
         date = date.plusDays(1);
         mainViewModel.setCurrentDate(date);
         Log.i("date:", "tomo: " + date);
 //        passDateToTasks();
         taskListFragment.setDate(date);
+        mainViewModel.toggleTaskMoveToToday(0);
     }
 
 //    public void onTopBarTodayButtonClicked() {

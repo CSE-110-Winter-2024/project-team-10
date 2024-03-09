@@ -73,18 +73,12 @@ public class MainViewModel extends ViewModel {
 
     public void setCurrentDate(LocalDate date) {
         currentDate = date;
-//        currentDate.setValue(date);
     }
 
     public LocalDate getCurrentDate() {
         return currentDate;
     }
 
-//    private Date LocalDateToDate() {
-//        return Date.from(currentDate.atStartOfDay()
-//                .atZone(ZoneId.systemDefault())
-//                .toInstant());
-//    }
 
     private Date localDateToDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay()
