@@ -29,7 +29,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="text"
-            android:text="New Task"
+            android:hint="New Task"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/descriptionTagText"
             app:layout_constraintTop_toTopOf="parent" />
