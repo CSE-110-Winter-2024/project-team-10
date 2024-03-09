@@ -12,10 +12,12 @@ import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
+import edu.ucsd.cse110.successorator.lib.util.MutableSubject;
+import edu.ucsd.cse110.successorator.lib.util.SimpleSubject;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
 
 public class MainViewModel extends ViewModel {
-    private LocalDate currentDate;
+    private final SimpleSubject<LocalDate> currentDateSubject;
     private final TaskRepository taskRepository;
     private final Subject<List<Task>> taskListSubject;
 
@@ -32,28 +34,47 @@ public class MainViewModel extends ViewModel {
     public MainViewModel(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
         this.taskListSubject = taskRepository.fetchSubjectList();
+
+        // Configure the date to today
+        var now = LocalDate.now();
+        currentDateSubject = new SimpleSubject<>();
+        currentDateSubject.setValue(now);
     }
 
     public Subject<List<Task>> getTaskList() {
         return taskListSubject;
     }
 
+    public Subject<LocalDate> getCurrentDateSubject() {
+        return currentDateSubject;
+    }
+
+    // TODO: move outta here
     public void toggleTaskCompletion(int id) {
         taskRepository.completeTask(id);
     }
 
-    public void createTask(String description, Date resetDate) {
-        var task = new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false, resetDate);
+    public void createTask(String description) {
+        var task = new Task(taskRepository.generateNextId(), description, LocalDateToDate(), false);
         taskRepository.saveTask(task);
     }
 
-    public void setCurrentDate(LocalDate date) {
-        currentDate = date;
+    public void moveNextDay() {
+        var now = currentDateSubject.getValue();
+        now = now.plusDays(1);
+        currentDateSubject.setValue(now);
     }
 
+    public void movePreviousDay() {
+        var now = currentDateSubject.getValue();
+        now = now.minusDays(1);
+        currentDateSubject.setValue(now);
+    }
+
+    // TODO: remove this?
     private Date LocalDateToDate() {
-        setCurrentDate(LocalDate.now());
-        return Date.from(currentDate.atStartOfDay()
+        var now = currentDateSubject.getValue();
+        return Date.from(now.atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
     }
