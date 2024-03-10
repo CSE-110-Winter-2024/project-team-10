@@ -13,6 +13,7 @@ import java.util.List;
 import edu.ucsd.cse110.successorator.lib.data.MemoryDataSource;
 import edu.ucsd.cse110.successorator.lib.domain.MemoryTaskRepository;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskBuilder;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 
 /**
@@ -22,11 +23,11 @@ import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
  */
 public class SuccessoratorUnitTests {
     public static final List<Task> DEFAULT_TASKS = List.of(
-            new Task(1, "One-time task", LocalDate.now(), null, TaskRecurrence.ONE_TIME),
-            new Task(2, "Daily task", LocalDate.now(), null, TaskRecurrence.DAILY),
-            new Task(3, "Weekly task", LocalDate.now(), null, TaskRecurrence.WEEKLY),
-            new Task(4, "Monthly task", LocalDate.now(), null, TaskRecurrence.MONTHLY),
-            new Task(5, "Yearly task", LocalDate.now(), null, TaskRecurrence.YEARLY)
+            TaskBuilder.from(1).describe("One-time task").build(),
+            TaskBuilder.from(2).describe("Daily task").schedule(TaskRecurrence.DAILY).build(),
+            TaskBuilder.from(3).describe("Weekly task").schedule(TaskRecurrence.WEEKLY).build(),
+            TaskBuilder.from(4).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).build(),
+            TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).build()
     );
 
     public static MemoryTaskRepository listRepository(List<Task> taskList) {
@@ -37,7 +38,7 @@ public class SuccessoratorUnitTests {
     // Tests isComplete()
     @Test
     public void isCompleteFalseTest() {
-        Task task = new Task(1, "One-time task", LocalDate.now(), null, TaskRecurrence.ONE_TIME);
+        Task task = TaskBuilder.from(1).describe("One-time task").build();
 
         var expected = false;
         var actual = task.isCompleted();
@@ -47,7 +48,7 @@ public class SuccessoratorUnitTests {
     // Tests isComplete()
     @Test
     public void isCompleteTrueTest() {
-        Task task = new Task(1, "One-time task", LocalDate.now(), LocalDate.now(), TaskRecurrence.ONE_TIME);
+        Task task = TaskBuilder.from(1).describe("One-time task").completeOn(LocalDate.now()).build();
 
         var expected = true;
         var actual = task.isCompleted();
@@ -57,7 +58,7 @@ public class SuccessoratorUnitTests {
     // Tests task description
     @Test
     public void descriptionTest() {
-        Task task = new Task(1, "Task 1", LocalDate.now(), null, TaskRecurrence.ONE_TIME);
+        Task task = TaskBuilder.from(1).describe("Task 1").build();
 
         var expected = "Task 1";
         var actual = task.getDescription();
@@ -67,7 +68,7 @@ public class SuccessoratorUnitTests {
     // Tests task id
     @Test
     public void idTest() {
-        Task task = new Task(1, "Task 1", LocalDate.now(), null, TaskRecurrence.ONE_TIME);
+        Task task = TaskBuilder.from(1).describe("One-time task").build();
 
         int expected = 1;
         int actual = task.id();
@@ -78,7 +79,7 @@ public class SuccessoratorUnitTests {
     @Test
     public void dateTest() {
         LocalDate date = LocalDate.now();
-        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.ONE_TIME);
+        Task task = TaskBuilder.from(1).describe("One-time task").createOn(date).build();
 
         var expected = date;
         var actual = task.getDateCreated();
@@ -91,7 +92,7 @@ public class SuccessoratorUnitTests {
         LocalDate date = LocalDate.now();
         LocalDate moved = date.plusDays(5);
 
-        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.ONE_TIME);
+        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).build();
         assertEquals(date, task.getDateCreated());
 
         task.refreshDateCreated(moved);
@@ -103,7 +104,7 @@ public class SuccessoratorUnitTests {
         LocalDate date = LocalDate.now();
         LocalDate moved = date.plusDays(5);
 
-        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.DAILY);
+        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.DAILY).build();
         assertEquals(date, task.getDateCreated());
 
         task.refreshDateCreated(moved);
@@ -117,7 +118,7 @@ public class SuccessoratorUnitTests {
         LocalDate movedSameWeek = date.plusDays(5);
         LocalDate movedNextWeek = date.plusDays(9);
 
-        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.WEEKLY);
+        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.WEEKLY).build();
         assertEquals(date, task.getDateCreated());
 
         task.refreshDateCreated(movedSameWeek);
@@ -134,7 +135,7 @@ public class SuccessoratorUnitTests {
         LocalDate movedSameMonth = date.plusDays(5);
         LocalDate movedNextMonth = date.plusMonths(1).plusDays(2);
 
-        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.MONTHLY);
+        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.MONTHLY).build();
         assertEquals(date, task.getDateCreated());
 
         task.refreshDateCreated(movedSameMonth);
@@ -151,7 +152,7 @@ public class SuccessoratorUnitTests {
         LocalDate movedSameYear = date.plusMonths(7).plusDays(5);
         LocalDate movedNextYear = date.plusYears(1).plusMonths(5).plusDays(2);
 
-        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.YEARLY);
+        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.YEARLY).build();
         assertEquals(date, task.getDateCreated());
 
         task.refreshDateCreated(movedSameYear);
@@ -167,13 +168,13 @@ public class SuccessoratorUnitTests {
         var repo = listRepository(DEFAULT_TASKS);
 
         Task task;
-        task = new Task(5, "Task 3", LocalDate.now(), null, TaskRecurrence.ONE_TIME);
+        task = TaskBuilder.from(5).describe("Task 3").build();
         repo.saveTask(task);
 
         // The task "Prev Day: completed" should not be there anymore
         assertEquals(6, repo.taskListSize());
 
-        task = new Task(6, "Task 4", LocalDate.now(), null, TaskRecurrence.ONE_TIME);
+        task = TaskBuilder.from(6).describe("Task 3").build();
         repo.saveTask(task);
 
         assertEquals(7, repo.taskListSize());
@@ -213,19 +214,34 @@ public class SuccessoratorUnitTests {
     @Test
     public void repositoryRolloverTest() {
         final List<Task> TEST_LIST1 = List.of(
-                new Task(1, "Task 1", LocalDate.now(), null, TaskRecurrence.ONE_TIME),
-                new Task(2, "Task 2", LocalDate.now(), null, TaskRecurrence.ONE_TIME),
-                new Task(3, "Prev Day: complete", LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), TaskRecurrence.ONE_TIME),
-                new Task(4, "Prev Day: uncompleted", LocalDate.now().minusDays(1), null, TaskRecurrence.ONE_TIME)
+                TaskBuilder.from(1).describe("Task 1").build(),
+                TaskBuilder.from(2).describe("Task 2").build(),
+                TaskBuilder.from(3).describe("Previous Day: complete")
+                        .createOn(LocalDate.now().minusDays(1))
+                        .completeOn(LocalDate.now().minusDays(1))
+                        .build(),
+                TaskBuilder.from(4).describe("Previous Day: incomplete")
+                        .createOn(LocalDate.now().minusDays(1))
+                        .build()
         );
 
         final List<Task> TEST_LIST2 = List.of(
-                new Task(1, "Task 1", LocalDate.now(), null, TaskRecurrence.ONE_TIME),
-                new Task(2, "Task 2", LocalDate.now(), null, TaskRecurrence.ONE_TIME),
-                new Task(3, "Prev Day: complete", LocalDate.now().minusDays(1), LocalDate.now(), TaskRecurrence.ONE_TIME),
-                new Task(4, "Prev Day: complete (2)", LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), TaskRecurrence.ONE_TIME),
-                new Task(5, "Prev Day: uncompleted", LocalDate.now().minusDays(1), null, TaskRecurrence.ONE_TIME),
-                new Task(6, "Prev Day: uncompleted (2)", LocalDate.now().minusDays(2), null, TaskRecurrence.ONE_TIME)
+                TaskBuilder.from(1).describe("Task 1").build(),
+                TaskBuilder.from(2).describe("Task 2").build(),
+                TaskBuilder.from(3).describe("Previous Day: complete (1)")
+                        .createOn(LocalDate.now().minusDays(1))
+                        .completeOn(LocalDate.now())
+                        .build(),
+                TaskBuilder.from(4).describe("Previous Day: complete (2)")
+                        .createOn(LocalDate.now().minusDays(1))
+                        .completeOn(LocalDate.now().minusDays(1))
+                        .build(),
+                TaskBuilder.from(5).describe("Previous Day: incomplete (1)")
+                        .createOn(LocalDate.now().minusDays(1))
+                        .build(),
+                TaskBuilder.from(6).describe("Previous Day: incomplete (2)")
+                        .createOn(LocalDate.now().minusDays(2))
+                        .build()
         );
 
         var repo1 = listRepository(TEST_LIST1);

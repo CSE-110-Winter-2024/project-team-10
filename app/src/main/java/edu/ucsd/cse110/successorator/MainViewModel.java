@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskBuilder;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.SimpleSubject;
@@ -98,9 +100,14 @@ public class MainViewModel extends ViewModel {
         taskRepository.toggleTaskCompletion(currentDateSubject.getValue(), id);
     }
 
-    public void createTask(String description, TaskRecurrence recurrence) {
+    public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
         var now = currentDateSubject.getValue();
-        var task = new Task(taskRepository.generateNextId(), description, now, null, recurrence);
+        var task = TaskBuilder.from(taskRepository)
+                .describe(description)
+                .createOn(now)
+                .schedule(recurrence)
+                .clarify(context)
+                .build();
         taskRepository.saveTask(task);
     }
 

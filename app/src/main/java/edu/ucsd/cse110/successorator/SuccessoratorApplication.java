@@ -13,6 +13,8 @@ import java.util.List;
 import edu.ucsd.cse110.successorator.data.db.RoomTaskRepository;
 import edu.ucsd.cse110.successorator.data.db.SuccessoratorDatabase;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskBuilder;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 
@@ -50,10 +52,10 @@ public class SuccessoratorApplication extends Application {
         return taskRepository;
     }
     public static final List<Task> DEFAULT_TASKS = List.of(
-            new Task(1, "One-time task", LocalDate.now(), null, TaskRecurrence.ONE_TIME),
-            new Task(2, "Daily task", LocalDate.now(), null, TaskRecurrence.DAILY),
-            new Task(3, "Weekly task", LocalDate.now(), null, TaskRecurrence.WEEKLY),
-            new Task(4, "Monthly task", LocalDate.now(), null, TaskRecurrence.MONTHLY),
-            new Task(5, "Yearly task", LocalDate.now(), null, TaskRecurrence.YEARLY)
+            TaskBuilder.from(1).describe("One-time task").build(),
+            TaskBuilder.from(2).describe("Daily task").schedule(TaskRecurrence.DAILY).clarify(TaskContext.WORK).build(),
+            TaskBuilder.from(3).describe("Weekly task").schedule(TaskRecurrence.WEEKLY).build(),
+            TaskBuilder.from(4).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).clarify(TaskContext.ERRAND).build(),
+            TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).clarify(TaskContext.SCHOOL).build()
     );
 }

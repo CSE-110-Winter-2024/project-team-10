@@ -10,6 +10,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <RadioGroup
+            android:id="@+id/context_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description_stack">
+
+            <RadioButton
+                android:id="@+id/home_context"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Home" />
+
+            <RadioButton
+                android:id="@+id/work_context"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Work" />
+
+            <RadioButton
+                android:id="@+id/school_context"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="School" />
+
+            <RadioButton
+                android:id="@+id/errands_context"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Errands" />
+        </RadioGroup>
+
         <LinearLayout
             android:id="@+id/description_stack"
             android:layout_width="match_parent"
@@ -42,9 +78,10 @@
             android:id="@+id/recurrence_buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/description_stack">
+            app:layout_constraintTop_toBottomOf="@+id/context_buttons">
 
             <RadioButton
                 android:id="@+id/onetime_task"

@@ -32,13 +32,19 @@ public interface TaskDao {
 
     @Transaction
     default int append(TaskEntity task) {
-        var newTask = new TaskEntity(1 + getMaxId(), task.description, task.dateCreated, task.dateCompleted, task.taskRecurrence);
+        var newTask = new TaskEntity(
+                1 + getMaxId(), task.description,
+                task.dateCreated, task.dateCompleted,
+                task.taskRecurrence, task.taskContext);
         return Math.toIntExact(insert(newTask));
     }
 
     @Transaction
     default int prepend(TaskEntity task) {
-        var newTask = new TaskEntity(getMinId() - 1, task.description, task.dateCreated, task.dateCompleted, task.taskRecurrence);
+        var newTask = new TaskEntity(
+                getMinId() - 1, task.description,
+                task.dateCreated, task.dateCompleted,
+                task.taskRecurrence, task.taskContext);
         return Math.toIntExact(insert(newTask));
     }
 

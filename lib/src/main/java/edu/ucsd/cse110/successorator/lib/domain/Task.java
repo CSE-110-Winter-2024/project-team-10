@@ -17,14 +17,22 @@ public class Task {
     private @NonNull LocalDate dateCreated;
     private @Nullable LocalDate dateCompleted;
     private @NonNull TaskRecurrence taskRecurrence;
+    private @NonNull TaskContext taskContext;
 
-    // TODO: builder?
-    public Task(@Nullable Integer id, @NonNull String description, @NonNull LocalDate dateCreated, @Nullable LocalDate dateCompleted, @NonNull TaskRecurrence taskRecurrence) {
+    // TODO: create a builder class
+    public Task
+            (@Nullable Integer id,
+             @NonNull String description,
+             @NonNull LocalDate dateCreated,
+             @Nullable LocalDate dateCompleted,
+             @NonNull TaskRecurrence taskRecurrence,
+             @NonNull TaskContext taskContext) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.dateCompleted = dateCompleted;
         this.taskRecurrence = taskRecurrence;
+        this.taskContext = taskContext;
     }
 
     public Integer id() { return id; }
@@ -47,6 +55,11 @@ public class Task {
     @NonNull
     public TaskRecurrence getTaskRecurrence() {
         return taskRecurrence;
+    }
+
+    @NonNull
+    public TaskContext getTaskContext() {
+        return taskContext;
     }
 
     public String getDateCreatedString() {
@@ -128,6 +141,7 @@ public class Task {
     }
 
     // The following method decides whether to display a task or not at a specific date
+    // TODO: pass the current task context
     public boolean displaySelf(LocalDate currentDate) {
         // Always show if not completed
         if (isCompleted()) {
