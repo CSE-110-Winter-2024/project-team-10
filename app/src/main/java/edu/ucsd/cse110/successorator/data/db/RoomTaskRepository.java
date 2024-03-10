@@ -46,10 +46,8 @@ public class RoomTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void toggleTaskCompletion(@NonNull  LocalDate dateCompleted, int id) {
+    public void toggleTaskCompletion(@NonNull LocalDate dateCompleted, int id) {
         var task = dao.find(id).toTask();
-
-        // TODO: toggle function
         task.toggleDateCompleted(dateCompleted);
 
         dao.delete(id);

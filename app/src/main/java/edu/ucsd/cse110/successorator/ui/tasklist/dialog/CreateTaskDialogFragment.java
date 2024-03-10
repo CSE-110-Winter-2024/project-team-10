@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentCreateTaskDialogBinding;
+import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 
 public class CreateTaskDialogFragment extends DialogFragment {
     MainViewModel activityModel;
@@ -49,7 +50,26 @@ public class CreateTaskDialogFragment extends DialogFragment {
     }
 
     private void onPositiveButtonClick(DialogInterface dialog, int which) {
-        activityModel.createTask(view.descriptionText.getText().toString());
+        String description = view.descriptionText.getText().toString();
+
+        int recurrenceSelected = view.recurrenceButtons.getCheckedRadioButtonId();
+        TaskRecurrence recurrence = TaskRecurrence.ONE_TIME;
+
+        if (recurrenceSelected == view.onetimeTask.getId()) {
+            recurrence = TaskRecurrence.ONE_TIME;
+        } else if (recurrenceSelected == view.dailyTask.getId()) {
+            recurrence = TaskRecurrence.DAILY;
+        } else if (recurrenceSelected == view.weeklyTask.getId()) {
+            recurrence = TaskRecurrence.WEEKLY;
+        } else if (recurrenceSelected == view.monthlyTask.getId()) {
+            recurrence = TaskRecurrence.MONTHLY;
+        } else if (recurrenceSelected == view.yearlyTask.getId()) {
+            recurrence = TaskRecurrence.YEARLY;
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        activityModel.createTask(description, recurrence);
         dialog.dismiss();
     }
     private void onNegativeButtonClick(DialogInterface dialog, int which) {

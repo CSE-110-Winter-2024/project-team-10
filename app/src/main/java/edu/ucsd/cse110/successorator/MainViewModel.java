@@ -2,6 +2,7 @@ package edu.ucsd.cse110.successorator;
 
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.lifecycle.ViewModel;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.SimpleSubject;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
@@ -67,6 +69,21 @@ public class MainViewModel extends ViewModel {
             var newValue = new Pair<>(date, currentValue.second);
             dateTaskPacketSubject.setValue(newValue);
         });
+
+        // Update the list of tasks on date change
+        currentDateSubject.observe(date -> {
+            var list = taskListSubject.getValue();
+            if (list == null) {
+                return;
+            }
+
+            Log.d("MainViewModel", "refreshing task list due to date change");
+            for (Task task : list) {
+                taskRepository.removeTask(task.id());
+                task.refreshDateCreated(date);
+                taskRepository.saveTask(task);
+            }
+        });
     }
 
     public Subject<LocalDate> getCurrentDateSubject() {
@@ -77,14 +94,13 @@ public class MainViewModel extends ViewModel {
         return dateTaskPacketSubject;
     }
 
-    // TODO: move outta here?
     public void toggleTaskCompletion(int id) {
         taskRepository.toggleTaskCompletion(currentDateSubject.getValue(), id);
     }
 
-    public void createTask(String description) {
+    public void createTask(String description, TaskRecurrence recurrence) {
         var now = currentDateSubject.getValue();
-        var task = new Task(taskRepository.generateNextId(), description, now, null);
+        var task = new Task(taskRepository.generateNextId(), description, now, null, recurrence);
         taskRepository.saveTask(task);
     }
 

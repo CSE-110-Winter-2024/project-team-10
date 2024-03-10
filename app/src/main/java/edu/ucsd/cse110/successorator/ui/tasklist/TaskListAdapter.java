@@ -42,7 +42,9 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         }
 
         binding.description.setText(task.getDescription());
-        binding.date.setText(task.getDateCreatedString());
+
+        String dateText = task.getTaskRecurrence() + " " + task.getDateCreatedString();
+        binding.date.setText(dateText);
         binding.dateCompleted.setText(task.getDateCompletedString());
 
         // Set appearance depending on task completion status

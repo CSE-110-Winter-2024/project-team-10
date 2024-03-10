@@ -13,6 +13,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 
 @Entity(tableName = "tasks")
 public class TaskEntity {
@@ -31,11 +32,16 @@ public class TaskEntity {
     @ColumnInfo(name = "dateCompleted")
     public Long dateCompleted;
 
-    public TaskEntity(@NonNull Integer id, @NonNull String description, @NonNull Long dateCreated, @NonNull Long dateCompleted) {
+    // Task recurrence as an integer
+    @ColumnInfo(name = "taskRecurrence")
+    public Integer taskRecurrence;
+
+    public TaskEntity(@NonNull Integer id, @NonNull String description, @NonNull Long dateCreated, @NonNull Long dateCompleted, @NonNull Integer taskRecurrence) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.dateCompleted = dateCompleted;
+        this.taskRecurrence = taskRecurrence;
     }
 
     public @NonNull Task toTask() {
@@ -47,7 +53,7 @@ public class TaskEntity {
             dateCompleted = Instant.ofEpochSecond(this.dateCompleted).atZone(zone).toLocalDate();
         }
 
-        return new Task(id, description, dateCreated, dateCompleted);
+        return new Task(id, description, dateCreated, dateCompleted, TaskRecurrence.fetch(taskRecurrence));
     }
 
     public static TaskEntity fromTask(@NonNull Task task) {
@@ -65,6 +71,6 @@ public class TaskEntity {
                     .getEpochSecond();
         }
 
-        return new TaskEntity(task.id(), task.getDescription(), epochSecondsCreated, epochSecondsCompleted);
+        return new TaskEntity(task.id(), task.getDescription(), epochSecondsCreated, epochSecondsCompleted, task.getTaskRecurrence().value());
     }
 }
