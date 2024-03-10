@@ -48,12 +48,6 @@ public class SuccessoratorApplication extends Application {
         return taskRepository;
     }
     public static final List<Task> DEFAULT_TASKS = List.of(
-            // task with id=0 is used to proct the list observer in TaskListFragment
-            // by changing its due date everytime we move forward in day. This is
-            // to make sure that if all tasks are due ahead of today, it will be displayed
-            // once the date in TopBarFragment = the tasks due dates.
-            // Never set its complete status to false so it won't show up in the UI
-            new Task(0, "Proct list observer", new Date(), true, LocalDate.now()),
             new Task(1, "Task 1", new Date(), false, LocalDate.now()),
             new Task(2, "Task 2", new Date(), false, LocalDate.now()),
             new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true, LocalDate.now().minusDays(1)),

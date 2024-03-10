@@ -1,7 +1,6 @@
 package edu.ucsd.cse110.successorator.ui.tasklist;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.Observer;
-
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,19 +20,18 @@ import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 
 public class TaskListFragment extends Fragment {
-    private LocalDate date;
+    private LocalDate currentDate;
     private TaskListAdapter adapter;
     private FragmentActivity modelOwner;
     private ViewModelProvider.Factory modelFactory;
     private ViewModelProvider modelProvider;
-    private MainViewModel activityModel;
+    private static MainViewModel activityModel;
 
     public TaskListFragment() {}
 
-    public static TaskListFragment newInstance(LocalDate date) {
+    public static TaskListFragment newInstance() {
         TaskListFragment fragment = new TaskListFragment();
         Bundle args = new Bundle();
-        args.putSerializable("date_key", date);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,8 +40,8 @@ public class TaskListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) date = (LocalDate) getArguments().getSerializable("date_key");
-        else date = LocalDate.now();
+//        if (getArguments() != null) date = (LocalDate) getArguments().getSerializable("date_key");
+//        else date = LocalDate.now();
 
         // Initialize the model
         modelOwner = requireActivity();
@@ -64,14 +59,23 @@ public class TaskListFragment extends Fragment {
                         activityModel::toggleTaskMoveToToday,
                         activityModel::toggleTaskMoveToTomorrow);
 
-        activityModel.getTaskList().observe(list -> {
-            Log.i("TaskListFragment", "change value, list = " + list);
-            if (list == null) return;
+//        activityModel.getTaskList().observe(list -> {
+//            Log.i("TaskListFragment", "change value, list = " + list);
+//            if (list == null) return;
 
-            List<Task> filteredList = filterTasks(list);
+        activityModel.getDateTaskPacketSubject().observe(packet -> {
+            boolean isNull = (packet == null)
+                    || (packet.first == null)
+                    || (packet.second == null);
+
+            if (isNull) {
+                return;
+            }
+
+            var filteredTasks = filterTaskList(packet.second, packet.first);
 
             adapter.clear();
-            adapter.addAll(filteredList);
+            adapter.addAll(filteredTasks);
             adapter.notifyDataSetChanged();
         });
     }
@@ -84,37 +88,49 @@ public class TaskListFragment extends Fragment {
         return view.getRoot();
     }
 
-    private List<Task> filterTasks(List<Task> tasks) {
+    static private List<Task> filterTaskList(List<Task> tasks, LocalDate currentDate) {
         List<Task> filteredList = new ArrayList<>();
+
+        // TODO: via streams/maps?
         for (Task task : tasks) {
 //            if (!task.isCompleted() || !task.getDateCreated().toInstant()
 //                    .atZone(ZoneId.systemDefault())
 //                    .toLocalDate().isBefore(date)) {
 //                filteredList.add(task);
 //            }
-
-            if (!task.isCompleted() && task.due().isBefore(date)) {
+            if (!task.isCompleted() && task.due().isBefore(currentDate)) {
                 activityModel.toggleTaskMoveToToday(task.id());
+//                task.setDue(currentDate);
             }
 
-            if (!task.isCompleted() && task.due().isEqual(date)) {
+            if (task.due().isEqual(currentDate)) {
                 filteredList.add(task);
-                Log.i("filtered task", "date: " + date +" | " + "task: " + task.getDescription());
-
             }
+
+//            var isComplete = task.isCompleted();
+//            var isBeforeDate = task.getDateCreated()
+//                    .toInstant()
+//                    .atZone(ZoneId.systemDefault())
+//                    .toLocalDate()
+//                    .isBefore(currentDate);
+//            if (!(isComplete && isBeforeDate)) {
+//                filteredList.add(task);
+//                Log.i("filtered task", "date: " + currentDate +" | " + "task: " + task.getDescription());
+//            }
         }
+
         return filteredList;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDate(LocalDate currentDate) {
+        this.currentDate = currentDate;
         updateTaskDueDates();
     }
 
     public void updateTaskDueDates() {
-        List<Task> tasks = activityModel.getTaskList().getValue();
+        List<Task> tasks = activityModel.getDateTaskPacketSubject().getValue().second;
         for (Task task : tasks) {
-            if (!task.isCompleted() && task.due().isBefore(date)) {
+            if (!task.isCompleted() && task.due().isBefore(currentDate)) {
                 activityModel.toggleTaskMoveToTomorrow(task.id());
             }
 
@@ -126,7 +142,7 @@ public class TaskListFragment extends Fragment {
         }
     }
     public LocalDate getDate() {
-        return this.date;
+        return this.currentDate;
     }
 
 }
