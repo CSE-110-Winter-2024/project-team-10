@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.data.MemoryDataSource;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
+import kotlin.NotImplementedError;
 
 public class MemoryTaskRepository implements TaskRepository {
     private final MemoryDataSource dataSource;
@@ -26,6 +27,11 @@ public class MemoryTaskRepository implements TaskRepository {
     @Override
     public void removeTask(int id) {
         dataSource.removeTask(id);
+    }
+
+    @Override
+    public void replaceTask(Task task) {
+        throw new NotImplementedError();
     }
 
     @Override

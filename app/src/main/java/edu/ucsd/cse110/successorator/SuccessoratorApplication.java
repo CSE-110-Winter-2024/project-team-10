@@ -74,7 +74,7 @@ public class SuccessoratorApplication extends Application {
             TaskBuilder.from(1).describe("One-time task").build(),
             TaskBuilder.from(2).describe("Daily task").schedule(TaskRecurrence.DAILY).clarify(TaskContext.WORK).build(),
             TaskBuilder.from(3).describe("Weekly task").schedule(TaskRecurrence.WEEKLY).build(),
-            TaskBuilder.from(4).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).clarify(TaskContext.ERRAND).build(),
-            TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).clarify(TaskContext.SCHOOL).build()
+            TaskBuilder.from(4).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).completeOn(LocalDate.now().minusDays(1)).clarify(TaskContext.ERRAND).build(),
+            TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).completeOn(LocalDate.now().minusWeeks(2)).clarify(TaskContext.SCHOOL).build()
     );
 }

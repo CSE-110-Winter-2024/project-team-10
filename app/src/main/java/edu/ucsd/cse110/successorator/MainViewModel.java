@@ -44,7 +44,6 @@ public class MainViewModel extends ViewModel {
         // Configure the date to today
         var now = LocalDate.now();
         currentDateSubject = new SimpleSubject<>();
-        currentDateSubject.setValue(now);
 
         // Configure a subject for the combination of date and task list
         var currentPacket = new Pair<LocalDate, List<Task>>(null, null);
@@ -75,17 +74,19 @@ public class MainViewModel extends ViewModel {
         // Update the list of tasks on date change
         currentDateSubject.observe(date -> {
             var list = taskListSubject.getValue();
-            if (list == null) {
+            if (date == null || list == null) {
                 return;
             }
 
             Log.d("MainViewModel", "refreshing task list due to date change");
             for (Task task : list) {
-                taskRepository.removeTask(task.id());
                 task.refreshDateCreated(date);
-                taskRepository.saveTask(task);
+                taskRepository.replaceTask(task);
             }
         });
+
+        // Trigger date update after all the setup
+        currentDateSubject.setValue(now);
     }
 
     public Subject<LocalDate> getCurrentDateSubject() {

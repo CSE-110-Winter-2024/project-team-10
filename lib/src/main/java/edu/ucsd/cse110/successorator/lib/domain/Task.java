@@ -105,27 +105,21 @@ public class Task {
             case WEEKLY:
                 // Find the corresponding day of the week in currentDate
                 long weeksBetween = ChronoUnit.WEEKS.between(dateCreated, currentDate);
-                if (currentDate.isBefore(dateCreated)) {
-                    dateCreated = dateCreated.minusWeeks(weeksBetween);
-                } else {
+                if (currentDate.isAfter(dateCreated)) {
                     dateCreated = dateCreated.plusWeeks(weeksBetween);
                 }
                 break;
             case MONTHLY:
                 // Find the corresponding day of the month in currentDate
                 long monthsBetween = ChronoUnit.MONTHS.between(dateCreated, currentDate);
-                if (currentDate.isBefore(dateCreated)) {
-                    dateCreated = dateCreated.minusMonths(monthsBetween);
-                } else {
+                if (currentDate.isAfter(dateCreated)) {
                     dateCreated = dateCreated.plusMonths(monthsBetween);
                 }
                 break;
             case YEARLY:
                 // Find the corresponding day of the year in currentDate
                 long yearsBetween = ChronoUnit.YEARS.between(dateCreated, currentDate);
-                if (currentDate.isBefore(dateCreated)) {
-                    dateCreated = dateCreated.minusYears(yearsBetween);
-                } else {
+                if (currentDate.isAfter(dateCreated)) {
                     dateCreated = dateCreated.plusYears(yearsBetween);
                 }
                 break;
