@@ -93,30 +93,13 @@ public class TaskListFragment extends Fragment {
 
         // TODO: via streams/maps?
         for (Task task : tasks) {
-//            if (!task.isCompleted() || !task.getDateCreated().toInstant()
-//                    .atZone(ZoneId.systemDefault())
-//                    .toLocalDate().isBefore(date)) {
-//                filteredList.add(task);
-//            }
             if (!task.isCompleted() && task.due().isBefore(currentDate)) {
                 activityModel.toggleTaskMoveToToday(task.id());
-//                task.setDue(currentDate);
             }
 
             if (task.due().isEqual(currentDate)) {
                 filteredList.add(task);
             }
-
-//            var isComplete = task.isCompleted();
-//            var isBeforeDate = task.getDateCreated()
-//                    .toInstant()
-//                    .atZone(ZoneId.systemDefault())
-//                    .toLocalDate()
-//                    .isBefore(currentDate);
-//            if (!(isComplete && isBeforeDate)) {
-//                filteredList.add(task);
-//                Log.i("filtered task", "date: " + currentDate +" | " + "task: " + task.getDescription());
-//            }
         }
 
         return filteredList;
