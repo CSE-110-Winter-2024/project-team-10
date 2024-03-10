@@ -3,23 +3,28 @@ package edu.ucsd.cse110.successorator.lib.domain;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 public class Task {
+    // A task is complete if dateCompleted != null
     private final @Nullable Integer id;
     private final @NonNull String description;
-    private final @NonNull Date dateCreated;
+    private @NonNull LocalDate dateCreated;
+    private @Nullable LocalDate dateCompleted;
+    private @NonNull TaskRecurrence taskRecurrence;
 
-    private boolean isCompleted;
-
-    public Task(@Nullable Integer id, @NonNull String description, @NonNull Date dateCreated, boolean isCompleted) {
+    // TODO: builder?
+    public Task(@Nullable Integer id, @NonNull String description, @NonNull LocalDate dateCreated, @Nullable LocalDate dateCompleted, @NonNull TaskRecurrence taskRecurrence) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
-        this.isCompleted = isCompleted;
+        this.dateCompleted = dateCompleted;
+        this.taskRecurrence = taskRecurrence;
     }
 
     public Integer id() { return id; }
@@ -30,20 +35,109 @@ public class Task {
     }
 
     @NonNull
-    public Date getDateCreated() {
+    public LocalDate getDateCreated() {
         return dateCreated;
     }
 
-    public String getDateString() {
-        return new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(dateCreated);
+    @Nullable
+    public LocalDate getDateCompleted() {
+        return dateCompleted;
+    }
+
+    @NonNull
+    public TaskRecurrence getTaskRecurrence() {
+        return taskRecurrence;
+    }
+
+    public String getDateCreatedString() {
+        var formatter = DateTimeFormatter.ofPattern("EEEE, MMM dd");
+        return dateCreated.format(formatter);
+    }
+
+    // For debugging only
+    public String getDateCompletedString() {
+        if (dateCompleted == null) {
+            return "";
+        }
+
+        var formatter = DateTimeFormatter.ofPattern("EEEE, MMM dd");
+        return dateCompleted.format(formatter);
     }
 
     public boolean isCompleted() {
-        return isCompleted;
+        return dateCompleted != null;
     }
 
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
+    public void toggleDateCompleted(@NonNull LocalDate dateCompleted) {
+        if (isCompleted()) {
+            this.dateCompleted = null;
+        } else {
+            this.dateCompleted = dateCompleted;
+        }
     }
 
+    // Checks if dateCreated should be refreshed based on the current date (triggered on date changes)
+    public void refreshDateCreated(LocalDate currentDate) {
+        var previousDateCreated = dateCreated;
+
+        switch (taskRecurrence) {
+            case ONE_TIME:
+                // Never refresh one-time tasks
+                break;
+            case DAILY:
+                // Refresh to the currentDate
+                // Need a local copy so evaluate a dummy expression
+                dateCreated = currentDate.minusDays(0);
+                break;
+            case WEEKLY:
+                // Find the corresponding day of the week in currentDate
+                long weeksBetween = ChronoUnit.WEEKS.between(dateCreated, currentDate);
+                if (currentDate.isBefore(dateCreated)) {
+                    dateCreated = dateCreated.minusWeeks(weeksBetween);
+                } else {
+                    dateCreated = dateCreated.plusWeeks(weeksBetween);
+                }
+                break;
+            case MONTHLY:
+                // Find the corresponding day of the month in currentDate
+                long monthsBetween = ChronoUnit.MONTHS.between(dateCreated, currentDate);
+                if (currentDate.isBefore(dateCreated)) {
+                    dateCreated = dateCreated.minusMonths(monthsBetween);
+                } else {
+                    dateCreated = dateCreated.plusMonths(monthsBetween);
+                }
+                break;
+            case YEARLY:
+                // Find the corresponding day of the year in currentDate
+                long yearsBetween = ChronoUnit.YEARS.between(dateCreated, currentDate);
+                if (currentDate.isBefore(dateCreated)) {
+                    dateCreated = dateCreated.minusYears(yearsBetween);
+                } else {
+                    dateCreated = dateCreated.plusYears(yearsBetween);
+                }
+                break;
+            default:
+                break;
+        }
+
+        // Reset the completion date if needed
+        // This is only when the date of creation changes
+        if (!previousDateCreated.equals(dateCreated)) {
+            dateCompleted = null;
+        }
+    }
+
+    // The following method decides whether to display a task or not at a specific date
+    public boolean displaySelf(LocalDate currentDate) {
+        // Always show if not completed
+        if (isCompleted()) {
+            // Show if the completion date is before or at the current one
+            ZoneId zone = ZoneId.systemDefault();
+            long currentEpochSeconds = currentDate.atStartOfDay(zone).toInstant().getEpochSecond();
+            long completedEpochSeconds = dateCompleted.atStartOfDay(zone).toInstant().getEpochSecond();
+            return currentEpochSeconds <= completedEpochSeconds;
+        } else {
+            return true;
+        }
+    }
 }

@@ -4,12 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Insert;
 import androidx.room.PrimaryKey;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 
 @Entity(tableName = "tasks")
 public class TaskEntity {
@@ -20,24 +24,53 @@ public class TaskEntity {
     @ColumnInfo(name = "description")
     public String description;
 
+    // Dates are represented as integers, specifically time from EPOCH in SECONDS
     @ColumnInfo(name = "dateCreated")
     public Long dateCreated;
 
-    @ColumnInfo(name = "isCompleted")
-    public Boolean isCompleted;
+    // If the task has not been completed, this will be -1
+    @ColumnInfo(name = "dateCompleted")
+    public Long dateCompleted;
 
-    public TaskEntity(@NonNull Integer id, @NonNull String description, @NonNull Long dateCreated, boolean isCompleted) {
+    // Task recurrence as an integer
+    @ColumnInfo(name = "taskRecurrence")
+    public Integer taskRecurrence;
+
+    public TaskEntity(@NonNull Integer id, @NonNull String description, @NonNull Long dateCreated, @NonNull Long dateCompleted, @NonNull Integer taskRecurrence) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
-        this.isCompleted = isCompleted;
+        this.dateCompleted = dateCompleted;
+        this.taskRecurrence = taskRecurrence;
     }
 
     public @NonNull Task toTask() {
-        return new Task(id, description, Date.from(Instant.ofEpochSecond(dateCreated)), isCompleted);
+        ZoneId zone = ZoneId.systemDefault();
+        LocalDate dateCreated = Instant.ofEpochSecond(this.dateCreated).atZone(zone).toLocalDate();
+        LocalDate dateCompleted = null;
+
+        if (this.dateCompleted >= 0) {
+            dateCompleted = Instant.ofEpochSecond(this.dateCompleted).atZone(zone).toLocalDate();
+        }
+
+        return new Task(id, description, dateCreated, dateCompleted, TaskRecurrence.fetch(taskRecurrence));
     }
 
     public static TaskEntity fromTask(@NonNull Task task) {
-        return new TaskEntity(task.id(), task.getDescription(), task.getDateCreated().toInstant().getEpochSecond(), task.isCompleted());
+        ZoneId zone = ZoneId.systemDefault();
+        long epochSecondsCreated = task.getDateCreated()
+                .atStartOfDay(zone)
+                .toInstant()
+                .getEpochSecond();
+
+        long epochSecondsCompleted = -1;
+        if (task.isCompleted()) {
+            epochSecondsCompleted = task.getDateCompleted()
+                    .atStartOfDay(zone)
+                    .toInstant()
+                    .getEpochSecond();
+        }
+
+        return new TaskEntity(task.id(), task.getDescription(), epochSecondsCreated, epochSecondsCompleted, task.getTaskRecurrence().value());
     }
 }

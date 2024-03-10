@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.successorator.lib.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.data.MemoryDataSource;
@@ -28,8 +29,8 @@ public class MemoryTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void completeTask(int id) {
-        dataSource.markTaskCompleted(id);
+    public void toggleTaskCompletion(LocalDate dateCompleted, int id) {
+        dataSource.toggleTaskComplettion(dateCompleted, id);
     }
 
     @Override

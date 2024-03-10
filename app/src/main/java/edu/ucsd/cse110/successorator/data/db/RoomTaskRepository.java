@@ -1,7 +1,9 @@
 package edu.ucsd.cse110.successorator.data.db;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Transformations;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,11 @@ public class RoomTaskRepository implements TaskRepository {
 
     @Override
     public void saveTask(Task task) {
-        dao.insert(TaskEntity.fromTask(task));
+        if (task.isCompleted()) {
+            dao.append(TaskEntity.fromTask(task));
+        } else {
+            dao.prepend(TaskEntity.fromTask(task));
+        }
     }
 
     @Override
@@ -40,11 +46,9 @@ public class RoomTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void completeTask(int id) {
+    public void toggleTaskCompletion(@NonNull LocalDate dateCompleted, int id) {
         var task = dao.find(id).toTask();
-
-        // TODO: toggle function
-        task.setCompleted(!task.isCompleted());
+        task.toggleDateCompleted(dateCompleted);
 
         dao.delete(id);
         if (task.isCompleted()) {
