@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.room.Room;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -34,8 +35,9 @@ public class SuccessoratorApplication extends Application {
         var isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
 
         if (isFirstRun && database.dao().size() == 0) {
-            for (Task task : DEFAULT_TASKS)
+            for (Task task : DEFAULT_TASKS) {
                 taskRepository.saveTask(task);
+            }
 
             sharedPreferences.edit()
                     .putBoolean("isFirstRun", false)
@@ -47,9 +49,20 @@ public class SuccessoratorApplication extends Application {
         return taskRepository;
     }
     public static final List<Task> DEFAULT_TASKS = List.of(
-            new Task(1, "Task 1", new Date(), false),
-            new Task(2, "Task 2", new Date(), false),
-            new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true),
-            new Task(4, "Prev Day: uncompleted", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false)
+            new Task(1, "Task 1", LocalDate.now(), null),
+
+            new Task(2, "Task 2", LocalDate.now(), null),
+
+            new Task(3, "Prev Day: complete",
+                    new GregorianCalendar(2024, Calendar.FEBRUARY, 15)
+                            .toZonedDateTime()
+                            .toLocalDate(),
+                    LocalDate.now()),
+
+            new Task(4, "Prev Day: uncompleted",
+                    new GregorianCalendar(2024, Calendar.FEBRUARY, 15)
+                            .toZonedDateTime()
+                            .toLocalDate(),
+                    null)
     );
 }

@@ -73,16 +73,8 @@ public class TaskListFragment extends Fragment {
     static private List<Task> filterTaskList(List<Task> tasks, LocalDate currentDate) {
         List<Task> filteredList = new ArrayList<>();
 
-        // TODO: via streams/maps?
         for (Task task : tasks) {
-            var isComplete = task.isCompleted();
-            var isBeforeDate = task.getDateCreated()
-                    .toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate()
-                    .isBefore(currentDate);
-
-            if (!(isComplete && isBeforeDate)) {
+            if (task.displaySelf(currentDate)) {
                 filteredList.add(task);
             }
         }

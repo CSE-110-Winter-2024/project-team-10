@@ -79,18 +79,12 @@ public class MainViewModel extends ViewModel {
 
     // TODO: move outta here?
     public void toggleTaskCompletion(int id) {
-        taskRepository.completeTask(id);
+        taskRepository.toggleTaskCompletion(currentDateSubject.getValue(), id);
     }
 
     public void createTask(String description) {
-        var nowDate = currentDateSubject.getValue();
-        var nowLocalDate = Date.from(
-                nowDate.atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant()
-        );
-
-        var task = new Task(taskRepository.generateNextId(), description, nowLocalDate, false);
+        var now = currentDateSubject.getValue();
+        var task = new Task(taskRepository.generateNextId(), description, now, null);
         taskRepository.saveTask(task);
     }
 

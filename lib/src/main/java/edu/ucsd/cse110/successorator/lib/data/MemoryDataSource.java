@@ -5,9 +5,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
@@ -25,7 +23,7 @@ public class MemoryDataSource {
         var data = new MemoryDataSource();
         var currentDate = new Date().toInstant().atZone(ZoneId.systemDefault());
         for (Task task : taskList) {
-            LocalDate taskDate = task.getDateCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate taskDate = task.getDateCreated();
             if (taskDate.isAfter(ChronoLocalDate.from(currentDate)) || !task.isCompleted()) {
                 data.addTask(task);
             }
@@ -47,12 +45,12 @@ public class MemoryDataSource {
         return max;
     }
 
-    public void markTaskCompleted(int id) {
+    public void toggleTaskComplettion(LocalDate dateCompleted, int id) {
         var task = findTask(id);
-        task.setCompleted(!task.isCompleted());
+        task.toggleDateCompleted(dateCompleted);
 
         removeTask(task.id());
-        if (task.isCompleted()){
+        if (task.isCompleted()) {
             addTask(task);
         } else {
             prependTask(task);

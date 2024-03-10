@@ -42,7 +42,8 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         }
 
         binding.description.setText(task.getDescription());
-        binding.date.setText(task.getDateString());
+        binding.date.setText(task.getDateCreatedString());
+        binding.dateCompleted.setText(task.getDateCompletedString());
 
         // Set appearance depending on task completion status
         var paintFlags = binding.description.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG);
@@ -59,11 +60,8 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         binding.task.setOnClickListener(v -> {
             var id = task.id();
             assert id != null;
-
-            Log.i("Click", "id " + task.id() + ", completed? " + task.isCompleted());
             // (un)marks a task as complete
             onTaskClick.accept(id);
-            Log.i("Click (After accept)", "id " + task.id() + ", completed? " + task.isCompleted());
         });
 
         return binding.getRoot();
