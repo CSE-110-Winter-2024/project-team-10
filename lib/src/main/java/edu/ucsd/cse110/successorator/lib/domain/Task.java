@@ -14,17 +14,15 @@ public class Task {
     private final @Nullable Integer id;
     private final @NonNull String description;
     private final @NonNull Date dateCreated;
-
-    private boolean isCompleted;
-
     private @NonNull Date resetDate;
+    private boolean isCompleted;
 
     public Task(@Nullable Integer id, @NonNull String description, @NonNull Date dateCreated, boolean isCompleted, @NonNull Date resetDate) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
-        this.isCompleted = isCompleted;
         this.resetDate = resetDate;
+        this.isCompleted = isCompleted;
     }
 
     public Integer id() { return id; }
@@ -39,6 +37,11 @@ public class Task {
         return dateCreated;
     }
 
+    @NonNull
+    public Date getResetDate() {
+        return resetDate;
+    }
+
     public String getDateString() {
         return new SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH).format(dateCreated);
     }
@@ -50,8 +53,4 @@ public class Task {
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
-
-    @NonNull
-    public Date getResetDate() { return resetDate; }
-
 }

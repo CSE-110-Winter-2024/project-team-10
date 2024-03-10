@@ -82,7 +82,7 @@ public class MainViewModel extends ViewModel {
         taskRepository.completeTask(id);
     }
 
-    public void createTask(String description) {
+    public void createTask(String description, Date resetDate) {
         var nowDate = currentDateSubject.getValue();
         var nowLocalDate = Date.from(
                 nowDate.atStartOfDay()
@@ -90,7 +90,7 @@ public class MainViewModel extends ViewModel {
                 .toInstant()
         );
 
-        var task = new Task(taskRepository.generateNextId(), description, nowLocalDate, false);
+        var task = new Task(taskRepository.generateNextId(), description, nowLocalDate, false, resetDate);
         taskRepository.saveTask(task);
     }
 
