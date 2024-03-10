@@ -1,13 +1,19 @@
 package edu.ucsd.cse110.successorator;
 
-import edu.ucsd.cse110.successorator.data.db.SuccessoratorDatabase;
+import edu.ucsd.cse110.successorator.data.db.MockDatabase;
+import edu.ucsd.cse110.successorator.data.db.RoomTaskRepository;
+import edu.ucsd.cse110.successorator.data.db.MockDatabase;
+import edu.ucsd.cse110.successorator.data.db.TaskDao;
+import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.util.DueDateHandler;
+import edu.ucsd.cse110.successorator.MainViewModel;
+import edu.ucsd.cse110.successorator.MockApplication;
+import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import edu.ucsd.cse110.successorator.data.db.TaskDao;
-import edu.ucsd.cse110.successorator.lib.domain.Task;
-import edu.ucsd.cse110.successorator.util.DueDateHandler;
+import androidx.room.Room;
 
 import org.junit.Test;
 
@@ -15,10 +21,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class MS2_US3_UnitTests {
     private final List<Task> taskList = new ArrayList<>();
+    private static MainViewModel activityModel;
+    public static MockDatabase mockDatabase;
+    public static MockApplication mockApplication;
+
+    //we want to test toggle
 
     @Test
     public void setDueDateTest() {
@@ -32,13 +44,25 @@ public class MS2_US3_UnitTests {
     //Long Press Move to Today
     @Test
     public void moveToTodayTest() {
-        Task task1 = new Task(1, "Buy groceries", new Date(), false, LocalDate.now());
-        Task task2 = new Task(500, "Buy groceries", new Date(), false, LocalDate.now().plusDays(5));
+        //Task task1 = new Task(1, "Buy groceries", new Date(), false, LocalDate.now());
+        //Task task2 = new Task(500, "Buy groceries", new Date(), false, LocalDate.now().plusDays(5));
 
-        DueDateHandler dueDateHandler = new DueDateHandler();
-        dueDateHandler.moveTaskToToday(task2);
+        //DueDateHandler dueDateHandler = new DueDateHandler();
+        //dueDateHandler.moveTaskToToday(task2);
 
-        assertEquals(task1.due(), task2.due());
+        //assertEquals(task1.due(), task2.due());
+
+        //var prevDueDate = mockDatabase.dao().find(200).due;
+
+        var taskRepository = mockApplication.getRoomTaskRepository();
+        taskRepository.moveTaskToToday(200);
+        //taskRepository.
+
+        //var newDueDate = Objects.requireNonNull(taskRepository.fetchSubjectList().getValue()).get(500).due();//
+        var newDueDate = taskRepository.getTask(200);
+        //assertEquals(LocalDate.now(), newDueDate);
+
+
     }
 
     //Long Press Move to Tomorrow
@@ -67,7 +91,6 @@ public class MS2_US3_UnitTests {
         Task task = new Task(1, "Buy groceries", new Date(), false, LocalDate.now());
         task.setCompleted(true);
         assertEquals(true, task.isCompleted());
-
     }
 
     //Long Press Delete

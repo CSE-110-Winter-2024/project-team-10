@@ -40,7 +40,8 @@ public class MainViewModel extends ViewModel {
         this.taskRepository = taskRepository;
         this.taskListSubject = taskRepository.fetchSubjectList();
 
-        // Configure the date to today
+//        // Configure the date to "today" within the app
+//        // This is where the app can keep changes when refreshed
         var now = LocalDate.now();
         currentDateSubject = new SimpleSubject<>();
         currentDateSubject.setValue(now);
@@ -106,6 +107,8 @@ public class MainViewModel extends ViewModel {
         taskRepository.moveTaskToTomorrow(id, currentDate.plusDays(1));
     }
 
+
+    //Where tasks are created
     public void createTask(String description) {
         var nowDate = currentDateSubject.getValue();
         var nowLocalDate = Date.from(
@@ -118,7 +121,7 @@ public class MainViewModel extends ViewModel {
                 taskRepository.generateNextId(),
                 description, nowLocalDate,
                 false,
-                LocalDate.now());
+                currentDateSubject.getValue());
 
         taskRepository.saveTask(task);
     }

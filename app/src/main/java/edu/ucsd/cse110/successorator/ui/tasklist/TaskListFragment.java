@@ -60,10 +60,6 @@ public class TaskListFragment extends Fragment {
                         activityModel::toggleTaskMoveToTomorrow,
                         activityModel::toggleSingleTaskMoveToTomorrow);
 
-//        activityModel.getTaskList().observe(list -> {
-//            Log.i("TaskListFragment", "change value, list = " + list);
-//            if (list == null) return;
-
         activityModel.getDateTaskPacketSubject().observe(packet -> {
             boolean isNull = (packet == null)
                     || (packet.first == null)
@@ -117,12 +113,6 @@ public class TaskListFragment extends Fragment {
             if (!task.isCompleted() && task.due().isBefore(currentDate)) {
                 activityModel.toggleTaskMoveToTomorrow(task.id());
             }
-
-            //might need to be deleted
-//            if (!task.isCompleted() && task.due().isAfter(date)) {
-//                // If the task is due after the date, move it to today
-//                activityModel.toggleTaskMoveToToday(task.id());
-//            }
         }
     }
     public LocalDate getDate() {
