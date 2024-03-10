@@ -33,11 +33,7 @@ public class RoomTaskRepository implements TaskRepository {
 
     @Override
     public void saveTask(Task task) {
-        if (task.isCompleted()) {
-            dao.append(TaskEntity.fromTask(task));
-        } else {
-            dao.prepend(TaskEntity.fromTask(task));
-        }
+        dao.append(TaskEntity.fromTask(task));
     }
 
     @Override

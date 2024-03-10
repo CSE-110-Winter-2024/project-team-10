@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.room.Room;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -38,11 +39,29 @@ public class SuccessoratorApplication extends Application {
         var isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
 
         if (isFirstRun && database.dao().size() == 0) {
+            // Properly loading dummy tasks
+            List<Task> completed = new ArrayList<>();
+            List<Task> uncompleted = new ArrayList<>();
             for (Task task : DEFAULT_TASKS) {
+                if (task.isCompleted()) {
+                    completed.add(task);
+                } else {
+                    uncompleted.add(task);
+                }
+            }
+
+            // Uncompleted tasks first, then completed ones
+            for (Task task : uncompleted) {
                 taskRepository.saveTask(task);
             }
 
-            sharedPreferences.edit()
+            for (Task task : completed) {
+                taskRepository.saveTask(task);
+            }
+
+            // Unmark first run status
+            sharedPreferences
+                    .edit()
                     .putBoolean("isFirstRun", false)
                     .apply();
         }
