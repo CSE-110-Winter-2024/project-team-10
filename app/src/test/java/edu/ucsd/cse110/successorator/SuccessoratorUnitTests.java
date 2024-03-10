@@ -85,6 +85,82 @@ public class SuccessoratorUnitTests {
         assertEquals(expected, actual);
     }
 
+    // Tests task refreshing for recurrence
+    @Test
+    public void onetimeRecurrenceTest() {
+        LocalDate date = LocalDate.now();
+        LocalDate moved = date.plusDays(5);
+
+        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.ONE_TIME);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(moved);
+        assertEquals(date, task.getDateCreated());
+    }
+
+    @Test
+    public void dailyRecurrenceTest() {
+        LocalDate date = LocalDate.now();
+        LocalDate moved = date.plusDays(5);
+
+        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.DAILY);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(moved);
+        assertEquals(moved, task.getDateCreated());
+    }
+
+    @Test
+    public void weeklyRecurrenceTest() {
+        LocalDate date = LocalDate.now();
+        LocalDate dateNextWeek = LocalDate.now().plusWeeks(1);
+        LocalDate movedSameWeek = date.plusDays(5);
+        LocalDate movedNextWeek = date.plusDays(9);
+
+        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.WEEKLY);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedSameWeek);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedNextWeek);
+        assertEquals(dateNextWeek, task.getDateCreated());
+    }
+
+    @Test
+    public void monthlyRecurrenceTest() {
+        LocalDate date = LocalDate.now();
+        LocalDate dateNextMonth = LocalDate.now().plusMonths(1);
+        LocalDate movedSameMonth = date.plusDays(5);
+        LocalDate movedNextMonth = date.plusMonths(1).plusDays(2);
+
+        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.MONTHLY);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedSameMonth);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedNextMonth);
+        assertEquals(dateNextMonth, task.getDateCreated());
+    }
+
+    @Test
+    public void yearlyRecurrenceTest() {
+        LocalDate date = LocalDate.now();
+        LocalDate dateNextYear = LocalDate.now().plusYears(1);
+        LocalDate movedSameYear = date.plusMonths(7).plusDays(5);
+        LocalDate movedNextYear = date.plusYears(1).plusMonths(5).plusDays(2);
+
+        Task task = new Task(1, "Task 1", date, null, TaskRecurrence.YEARLY);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedSameYear);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedNextYear);
+        assertEquals(dateNextYear, task.getDateCreated());
+    }
+
     // Checking repository saveTask functionality
     @Test
     public void repositoryAddTest() {

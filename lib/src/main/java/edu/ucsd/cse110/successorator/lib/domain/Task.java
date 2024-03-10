@@ -7,6 +7,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 public class Task {
@@ -90,18 +91,30 @@ public class Task {
                 break;
             case WEEKLY:
                 // Find the corresponding day of the week in currentDate
-                DayOfWeek dow = dateCreated.getDayOfWeek();
-                dateCreated = currentDate.with(dow);
+                long weeksBetween = ChronoUnit.WEEKS.between(dateCreated, currentDate);
+                if (currentDate.isBefore(dateCreated)) {
+                    dateCreated = dateCreated.minusWeeks(weeksBetween);
+                } else {
+                    dateCreated = dateCreated.plusWeeks(weeksBetween);
+                }
                 break;
             case MONTHLY:
                 // Find the corresponding day of the month in currentDate
-                int dom = dateCreated.getDayOfMonth();
-                dateCreated = currentDate.withDayOfMonth(dom);
+                long monthsBetween = ChronoUnit.MONTHS.between(dateCreated, currentDate);
+                if (currentDate.isBefore(dateCreated)) {
+                    dateCreated = dateCreated.minusMonths(monthsBetween);
+                } else {
+                    dateCreated = dateCreated.plusMonths(monthsBetween);
+                }
                 break;
             case YEARLY:
                 // Find the corresponding day of the year in currentDate
-                int doy = dateCreated.getDayOfYear();
-                dateCreated = currentDate.withDayOfYear(doy);
+                long yearsBetween = ChronoUnit.YEARS.between(dateCreated, currentDate);
+                if (currentDate.isBefore(dateCreated)) {
+                    dateCreated = dateCreated.minusYears(yearsBetween);
+                } else {
+                    dateCreated = dateCreated.plusYears(yearsBetween);
+                }
                 break;
             default:
                 break;
