@@ -57,7 +57,8 @@ public class TaskListFragment extends Fragment {
                         getParentFragmentManager(),
                         activityModel::toggleTaskDeletion,
                         activityModel::toggleTaskMoveToToday,
-                        activityModel::toggleTaskMoveToTomorrow);
+                        activityModel::toggleTaskMoveToTomorrow,
+                        activityModel::toggleSingleTaskMoveToTomorrow);
 
 //        activityModel.getTaskList().observe(list -> {
 //            Log.i("TaskListFragment", "change value, list = " + list);

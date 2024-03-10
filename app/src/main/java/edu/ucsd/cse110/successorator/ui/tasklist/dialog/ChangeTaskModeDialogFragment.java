@@ -31,22 +31,37 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
     private Consumer<Integer> onTaskPressDelete;
     private Consumer<Integer> onTaskPressMoveToToday;
     private Consumer<Integer> onTaskPressMoveToTomorrow;
+    private Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow;
 
 
     public ChangeTaskModeDialogFragment(Task task,
                                         Consumer<Integer> onTaskClickComplete,
                                         Consumer<Integer> onTaskPressDelete,
                                         Consumer<Integer> onTaskPressMoveToToday,
-                                        Consumer<Integer> onTaskPressMoveToTomorrow) {
+                                        Consumer<Integer> onTaskPressMoveToTomorrow,
+                                        Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow) {
         this.task = task;
         this.onTaskClickComplete = onTaskClickComplete;
         this.onTaskPressDelete = onTaskPressDelete;
         this.onTaskPressMoveToToday = onTaskPressMoveToToday;
         this.onTaskPressMoveToTomorrow = onTaskPressMoveToTomorrow;
+        this.onTaskPressMoveSingleTaskToTomorrow = onTaskPressMoveSingleTaskToTomorrow;
     }
 
-    public static ChangeTaskModeDialogFragment newInstance(Task task, Consumer<Integer> onTaskClick, Consumer<Integer> onTaskPressDelete, Consumer<Integer> onTaskPressMoveToToday, Consumer<Integer> onTaskPressMoveToTomorrow) {
-        ChangeTaskModeDialogFragment fragment = new ChangeTaskModeDialogFragment(task, onTaskClick, onTaskPressDelete, onTaskPressMoveToToday, onTaskPressMoveToTomorrow);
+    public static ChangeTaskModeDialogFragment newInstance(
+            Task task,
+            Consumer<Integer> onTaskClick,
+            Consumer<Integer> onTaskPressDelete,
+            Consumer<Integer> onTaskPressMoveToToday,
+            Consumer<Integer> onTaskPressMoveToTomorrow,
+            Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow) {
+        ChangeTaskModeDialogFragment fragment = new ChangeTaskModeDialogFragment(
+                task,
+                onTaskClick,
+                onTaskPressDelete,
+                onTaskPressMoveToToday,
+                onTaskPressMoveToTomorrow,
+                onTaskPressMoveSingleTaskToTomorrow);
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -83,7 +98,7 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
 
         moveToTomorrowButton.setOnClickListener(v -> {
             Log.i("TextView Click", "Move to Tomorrow clicked");
-            onTaskPressMoveToTomorrow.accept(task.id());
+            onTaskPressMoveSingleTaskToTomorrow.accept(task.id());
             dismiss();
         });
 

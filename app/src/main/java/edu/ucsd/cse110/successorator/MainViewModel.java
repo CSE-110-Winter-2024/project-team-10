@@ -101,6 +101,11 @@ public class MainViewModel extends ViewModel {
         taskRepository.moveTaskToTomorrow(id, currentDate);
     }
 
+    public void toggleSingleTaskMoveToTomorrow(int id) {
+        LocalDate currentDate = currentDateSubject.getValue();
+        taskRepository.moveTaskToTomorrow(id, currentDate.plusDays(1));
+    }
+
     public void createTask(String description) {
         var nowDate = currentDateSubject.getValue();
         var nowLocalDate = Date.from(

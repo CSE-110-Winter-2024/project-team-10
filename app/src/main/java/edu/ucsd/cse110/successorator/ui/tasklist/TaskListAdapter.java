@@ -26,6 +26,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
     private Consumer<Integer> onTaskPressDelete;
     private Consumer<Integer> onTaskPressMoveToToday;
     private Consumer<Integer> onTaskPressMoveToTomorrow;
+    private Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow;
     private FragmentManager fragmentManager;
 
     public TaskListAdapter(Context context, List<Task> taskList,
@@ -33,13 +34,15 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
                            FragmentManager fragmentManager,
                            Consumer<Integer> onTaskPressDelete,
                            Consumer<Integer> onTaskPressMoveToToday,
-                           Consumer<Integer> onTaskPressMoveToTomorrow) {
+                           Consumer<Integer> onTaskPressMoveToTomorrow,
+                           Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow) {
         super(context, 0, new ArrayList<>(taskList));
         this.onTaskClickComplete = onTaskClickComplete;
         this.fragmentManager = fragmentManager;
         this.onTaskPressDelete = onTaskPressDelete;
         this.onTaskPressMoveToToday = onTaskPressMoveToToday;
         this.onTaskPressMoveToTomorrow = onTaskPressMoveToTomorrow;
+        this.onTaskPressMoveSingleTaskToTomorrow = onTaskPressMoveSingleTaskToTomorrow;
     }
 
     @NonNull
@@ -92,7 +95,13 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
     // Method to show the ChangeTaskModeDialogFragment
     private void showChangeTaskModeDialog(Task task) {
-        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(task, onTaskClickComplete, onTaskPressDelete, onTaskPressMoveToToday, onTaskPressMoveToTomorrow);
+        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(
+                task,
+                onTaskClickComplete,
+                onTaskPressDelete,
+                onTaskPressMoveToToday,
+                onTaskPressMoveToTomorrow,
+                onTaskPressMoveSingleTaskToTomorrow);
         dialogFragment.show(fragmentManager, "ChangeTaskModeDialogFragment");
     }
 
