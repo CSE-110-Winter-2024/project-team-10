@@ -92,16 +92,67 @@ public class TaskListFragment extends Fragment {
 //                    .toLocalDate().isBefore(date)) {
 //                filteredList.add(task);
 //            }
+            //Tasks should not vanish the moment you complete it
+            if (task.isCompleted() && date.isAfter(task.due())) {
+                task.setDue(date.minusDays(1));
 
-            if (!task.isCompleted() && task.due().isBefore(date)) {
-                activityModel.toggleTaskMoveToToday(task.id());
+            //save date before refresh
+            //if date before refresh != current date, continue and don't add
+            //if date before refresh == current date, let it add
+
+               continue; //moves onto next task, doesn't add current task
             }
 
-            if (!task.isCompleted() && task.due().isEqual(date)) {
+
+
+            //roll over task mode from "move to today" to "move to today"
+            if (!task.isCompleted() && (task.due() == date)) {
+                task.setDue(date);
+            }
+            //roll over task mode from "move to tomorrow" to "move to today"
+            else if (!task.isCompleted() && (task.due()== date.plusDays(1))) {
+                task.setDue(date);
+            }
+            //from setting the date in the phone settings
+            else if (!task.isCompleted() && (task.due().isBefore(date))) {
+                task.setDue(date);
+            }
+
+            //This is the previous way we were doing the rollover
+//            Log.i("date", "date: " + date);
+//        for (Task task : tasks) {
+//            if (!task.isCompleted() || !task.getDateCreated().toInstant()
+//                    .atZone(ZoneId.systemDefault())
+//                    .toLocalDate().isBefore(date)) {
+//                filteredList.add(task);
+//            }
+
+            /* Get rid of tasks that are completed and from previous date
+             * Tasks should not vanish the moment you complete it
+             *
+             * save date before refresh
+             * if date before refresh != current date, don't add
+             * if date before refresh == current date, let it add
+             */
+            if (!task.isCompleted() && (dateBeforeClick == date) && (dateBeforeRefresh == date)) {
+            //click won't vanish task
+            //save refresh date
+
                 filteredList.add(task);
-                Log.i("filtered task", "date: " + date +" | " + "task: " + task.getDescription());
-
             }
+
+
+
+
+//            if (!task.isCompleted() && task.due().isBefore(date)) {
+//                activityModel.toggleTaskMoveToToday(task.id());
+//            }
+//
+//            if (!task.isCompleted() && task.due().isEqual(date)) {
+//                filteredList.add(task);
+//                Log.i("filtered task", "date: " + date +" | " + "task: " + task.getDescription());
+//
+//            }
         }
         return filteredList;
     }
