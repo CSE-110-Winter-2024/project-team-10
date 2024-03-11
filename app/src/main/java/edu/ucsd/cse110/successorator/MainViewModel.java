@@ -108,23 +108,10 @@ public class MainViewModel extends ViewModel {
         taskRepository.removeTask(id);
     }
 
-//    //    Used for long press move to today
-//    public void toggleTaskMoveToToday(int id) {
-//        taskRepository.moveTaskToToday(id);
-//    }
-//
-//    //    Used for long press move to tomorrow
-//    public void toggleTaskMoveToTomorrow(int id) {
-//        LocalDate currentDate = currentDateSubject.getValue();
-//        taskRepository.moveTaskToTomorrow(id, currentDate);
-//    }
-
-//    Used for long press move to today
     public void toggleTaskMoveToToday(int id) {
         taskRepository.moveTaskToToday(id);
     }
 
-//    Used for long press move to tomorrow
     public void toggleTaskMoveToTomorrow(int id) {
         taskRepository.moveTaskToTomorrow(id, getCurrentDateSubject().getValue().plusDays(1));
     }

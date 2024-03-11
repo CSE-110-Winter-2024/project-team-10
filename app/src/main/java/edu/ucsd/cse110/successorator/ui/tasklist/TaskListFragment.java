@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.time.LocalDate;
@@ -19,7 +20,6 @@ import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
-import edu.ucsd.cse110.successorator.ui.tasklist.dialog.FocusMenuDialogFragment;
 
 public class TaskListFragment extends Fragment {
     private TaskListAdapter adapter;
@@ -28,6 +28,7 @@ public class TaskListFragment extends Fragment {
     private ViewModelProvider modelProvider;
     private MainViewModel activityModel;
     private List<Task> filteredTasks;
+    private static MutableLiveData<TaskContext> taskContextMutableLiveData;
 
     public TaskListFragment() {}
 
@@ -48,6 +49,9 @@ public class TaskListFragment extends Fragment {
         modelProvider = new ViewModelProvider(modelOwner, modelFactory);
         activityModel = modelProvider.get(MainViewModel.class);
 
+        taskContextMutableLiveData = new MutableLiveData<>();
+        taskContextMutableLiveData.setValue(null);
+
         // Initializer the adapter
         this.adapter = new TaskListAdapter(
                 requireContext(),
@@ -58,32 +62,32 @@ public class TaskListFragment extends Fragment {
                 activityModel::toggleTaskMoveToToday,
                 activityModel::toggleTaskMoveToTomorrow);
 
-        activityModel.getDateTaskPacketSubject().observe(packet -> {
-            boolean isNull = (packet == null)
-                    || (packet.first == null)
-                    || (packet.second == null);
-
-            if (isNull) {
-                return;
-            }
-
-            filteredTasks = filterTaskList(packet.second, packet.first);
-
-            adapter.clear();
-            adapter.addAll(filteredTasks);
-            adapter.notifyDataSetChanged();
-        });
-
         //TODO: create an observer for taskContext
-        FocusMenuDialogFragment focusFragment = FocusMenuDialogFragment.newInstance();
-//        TaskContext taskContext = focusFragment.getTaskContextLiveData().getValue();
-        focusFragment.getTaskContextLiveData().observe( taskContext -> {
-            List<Task> tasklist = focusFragment.getTaskListSubject().getValue();
+        taskContextMutableLiveData.observe(this, taskContext -> {
+            if (taskContextMutableLiveData.getValue() != null){
+                List<Task> tasklist = activityModel.getDateTaskPacketSubject().getValue().second;
 
-            filteredTasks = filterTaskList(tasklist, taskContext);
-            adapter.clear();
-            adapter.addAll(filteredTasks);
-            adapter.notifyDataSetChanged();
+                filteredTasks = filterTaskList(tasklist, taskContext);
+                adapter.clear();
+                adapter.addAll(filteredTasks);
+                adapter.notifyDataSetChanged();
+            }else {
+                activityModel.getDateTaskPacketSubject().observe(packet -> {
+                    boolean isNull = (packet == null)
+                            || (packet.first == null)
+                            || (packet.second == null);
+
+                    if (isNull) {
+                        return;
+                    }
+
+                    filteredTasks = filterTaskList(packet.second, packet.first);
+
+                    adapter.clear();
+                    adapter.addAll(filteredTasks);
+                    adapter.notifyDataSetChanged();
+                });
+            }
         });
     }
 
@@ -105,7 +109,10 @@ public class TaskListFragment extends Fragment {
         return filteredList;
     }
 
-    static private List<Task> filterTaskList(List<Task> tasks, TaskContext taskContext) {
+    public static List<Task> filterTaskList(List<Task> tasks, TaskContext taskContext) {
+        if (tasks == null) {
+            return null;
+        }
         List<Task> filteredList = new ArrayList<>();
         for (Task task : tasks) {
             if (task.getTaskContext() == taskContext) {
@@ -113,6 +120,10 @@ public class TaskListFragment extends Fragment {
             }
         }
         return filteredList;
+    }
+
+    public static void setTaskContextMutableLiveData(TaskContext taskContext) {
+        taskContextMutableLiveData.setValue(taskContext);
     }
 }
 
