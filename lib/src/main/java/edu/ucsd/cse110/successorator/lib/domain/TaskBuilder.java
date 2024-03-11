@@ -13,7 +13,6 @@ public class TaskBuilder {
     private @NonNull TaskRecurrence taskRecurrence;
     private @NonNull TaskMode taskMode;
     private @NonNull TaskContext taskContext;
-    private @NonNull LocalDate dueDate;
 
     public TaskBuilder(int id) {
         this.id = id;
@@ -24,7 +23,6 @@ public class TaskBuilder {
         taskRecurrence = TaskRecurrence.ONE_TIME;
         taskMode = TaskMode.PENDING;
         taskContext = TaskContext.HOME;
-        dueDate = LocalDate.now();
     }
 
     // Manual ID

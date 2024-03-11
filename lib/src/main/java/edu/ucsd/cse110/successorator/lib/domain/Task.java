@@ -22,13 +22,13 @@ public class Task {
 
     // TODO: create a builder class
     public Task
-    (@Nullable Integer id,
-     @NonNull String description,
-     @NonNull LocalDate dateCreated,
-     @Nullable LocalDate dateCompleted,
-     @NonNull TaskRecurrence taskRecurrence,
-     @NonNull TaskMode taskMode,
-     @NonNull TaskContext taskContext) {
+            (@Nullable Integer id,
+             @NonNull String description,
+             @NonNull LocalDate dateCreated,
+             @Nullable LocalDate dateCompleted,
+             @NonNull TaskRecurrence taskRecurrence,
+             @NonNull TaskMode taskMode,
+             @NonNull TaskContext taskContext) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
@@ -65,8 +65,7 @@ public class Task {
         return taskMode;
     }
 
-    @NonNull
-    public void setTaskMode(TaskMode newMode) {
+    public void setTaskMode(@NonNull TaskMode newMode) {
         this.taskMode = newMode;
     }
 
@@ -143,8 +142,6 @@ public class Task {
             default:
                 break;
         }
-
-
 
         // Reset the completion date if needed
         // This is only when the date of creation changes

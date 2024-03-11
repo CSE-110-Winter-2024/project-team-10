@@ -54,10 +54,10 @@ public class CreateTaskDialogFragment extends DialogFragment {
         String description = view.descriptionText.getText().toString();
 
         int recurrenceSelected = view.recurrenceButtons.getCheckedRadioButtonId();
-        TaskRecurrence recurrence = TaskRecurrence.ONE_TIME;
+        TaskRecurrence recurrence;
 
         int contextSelected = view.contextButtons.getCheckedRadioButtonId();
-        TaskContext context = TaskContext.HOME;
+        TaskContext context;
 
         if (recurrenceSelected == view.onetimeTask.getId()) {
             recurrence = TaskRecurrence.ONE_TIME;

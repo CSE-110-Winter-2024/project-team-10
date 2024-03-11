@@ -36,7 +36,6 @@ public enum TaskMode {
                 return PENDING;
             case 1:
                 return TODAY;
-
             case 2:
                 return TOMORROW;
         }

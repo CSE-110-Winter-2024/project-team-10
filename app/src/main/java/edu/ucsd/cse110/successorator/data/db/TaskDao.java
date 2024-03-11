@@ -30,6 +30,12 @@ public interface TaskDao {
     @Query("SELECT MIN(id) FROM tasks")
     int getMinId();
 
+    @Query("SELECT COUNT(*) FROM tasks")
+    int size();
+
+    @Query("UPDATE tasks SET taskMode = :mode WHERE id = :id")
+    void changeTaskMode(int id, int mode);
+
     @Transaction
     default int append(TaskEntity task) {
         var newTask = new TaskEntity(
@@ -47,13 +53,4 @@ public interface TaskDao {
                 task.taskRecurrence, task.taskMode, task.taskContext);
         return Math.toIntExact(insert(newTask));
     }
-
-    @Query("SELECT COUNT(*) FROM tasks")
-    int size();
-
-    @Query("UPDATE tasks SET taskMode = :mode WHERE id = :id")
-    void daoMoveToToday(int id, int mode);
-
-    @Query("UPDATE tasks SET taskMode = :mode WHERE id = :id")
-    void daoMoveToTomorrow(int id, int mode);
 }

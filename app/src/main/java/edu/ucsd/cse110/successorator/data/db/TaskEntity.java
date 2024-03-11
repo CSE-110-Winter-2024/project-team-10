@@ -62,17 +62,19 @@ public class TaskEntity {
 
     public @NonNull Task toTask() {
         ZoneId zone = ZoneId.systemDefault();
-        LocalDate dateCreated = Instant.ofEpochSecond(this.dateCreated).atZone(zone).toLocalDate();
-        LocalDate dateCompleted = null;
+        LocalDate created = Instant.ofEpochSecond(this.dateCreated).atZone(zone).toLocalDate();
+        LocalDate completed = null;
 
         if (this.dateCompleted >= 0) {
-            dateCompleted = Instant.ofEpochSecond(this.dateCompleted).atZone(zone).toLocalDate();
+            completed = Instant.ofEpochSecond(this.dateCompleted).atZone(zone).toLocalDate();
         }
 
         return new Task(
                 id, description,
-                dateCreated, dateCompleted,
-                TaskRecurrence.fetch(taskRecurrence), TaskMode.fetch(taskMode), TaskContext.fetch(taskContext)
+                created, completed,
+                TaskRecurrence.fetch(taskRecurrence),
+                TaskMode.fetch(taskMode),
+                TaskContext.fetch(taskContext)
         );
     }
 

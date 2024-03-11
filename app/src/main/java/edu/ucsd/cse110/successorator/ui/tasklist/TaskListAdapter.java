@@ -29,15 +29,15 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
     private FragmentManager fragmentManager;
 
-    private ChangeTaskModeDialogFragment dialogFragment;
 
-    public TaskListAdapter(Context context, List<Task> taskList,
-                           FragmentManager fragmentManager,
-                           Consumer<Integer> onTaskClickComplete,
-                           Consumer<Integer> onTaskPressDelete,
-                           Consumer<Integer> onTaskPressMoveToToday,
-                           Consumer<Integer> onTaskPressMoveToTomorrow,
-                           Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow) {
+    public TaskListAdapter
+            (Context context, List<Task> taskList,
+             FragmentManager fragmentManager,
+             Consumer<Integer> onTaskClickComplete,
+             Consumer<Integer> onTaskPressDelete,
+             Consumer<Integer> onTaskPressMoveToToday,
+             Consumer<Integer> onTaskPressMoveToTomorrow,
+             Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow) {
         super(context, 0, new ArrayList<>(taskList));
         this.fragmentManager = fragmentManager;
         this.onTaskClickComplete = onTaskClickComplete;
