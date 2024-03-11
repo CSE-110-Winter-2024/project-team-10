@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentCreateTaskDialogBinding;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
+import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 
 public class CreateTaskDialogFragment extends DialogFragment {
     MainViewModel activityModel;
@@ -48,11 +50,46 @@ public class CreateTaskDialogFragment extends DialogFragment {
                 .create();
     }
 
-    private void onPositiveButtonClick(@NonNull DialogInterface dialog, int which) {
-        activityModel.createTask(view.descriptionText.getText().toString());
+    private void onPositiveButtonClick(DialogInterface dialog, int which) {
+        String description = view.descriptionText.getText().toString();
+
+        int recurrenceSelected = view.recurrenceButtons.getCheckedRadioButtonId();
+        TaskRecurrence recurrence = TaskRecurrence.ONE_TIME;
+
+        int contextSelected = view.contextButtons.getCheckedRadioButtonId();
+        TaskContext context = TaskContext.HOME;
+
+        if (recurrenceSelected == view.onetimeTask.getId()) {
+            recurrence = TaskRecurrence.ONE_TIME;
+        } else if (recurrenceSelected == view.dailyTask.getId()) {
+            recurrence = TaskRecurrence.DAILY;
+        } else if (recurrenceSelected == view.weeklyTask.getId()) {
+            recurrence = TaskRecurrence.WEEKLY;
+        } else if (recurrenceSelected == view.monthlyTask.getId()) {
+            recurrence = TaskRecurrence.MONTHLY;
+        } else if (recurrenceSelected == view.yearlyTask.getId()) {
+            recurrence = TaskRecurrence.YEARLY;
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        if (contextSelected == view.homeContext.getId()) {
+            context = TaskContext.HOME;
+        } else if (contextSelected == view.workContext.getId()) {
+            context = TaskContext.WORK;
+        } else if (contextSelected == view.schoolContext.getId()) {
+            context = TaskContext.SCHOOL;
+        } else if (contextSelected == view.errandsContext.getId()) {
+            context = TaskContext.ERRAND;
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        activityModel.createTask(description, recurrence, context);
         dialog.dismiss();
     }
-    private void onNegativeButtonClick(@NonNull DialogInterface dialog, int which) {
+
+    private void onNegativeButtonClick(DialogInterface dialog, int which) {
         dialog.cancel();
     }
 }

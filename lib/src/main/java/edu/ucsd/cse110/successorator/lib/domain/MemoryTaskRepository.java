@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.data.MemoryDataSource;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
+import kotlin.NotImplementedError;
 
 public class MemoryTaskRepository implements TaskRepository {
     private final MemoryDataSource dataSource;
@@ -29,8 +30,13 @@ public class MemoryTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void completeTask(int id) {
-        dataSource.markTaskCompleted(id);
+    public void replaceTask(Task task) {
+        throw new NotImplementedError();
+    }
+
+    @Override
+    public void toggleTaskCompletion(LocalDate dateCompleted, int id) {
+        dataSource.toggleTaskComplettion(dateCompleted, id);
     }
 
     @Override
@@ -42,7 +48,7 @@ public class MemoryTaskRepository implements TaskRepository {
     public void moveTaskToToday(int id) { }
 
     @Override
-    public void moveTaskToTomorrow(int id, LocalDate currentDate) { }
+    public void moveTaskToTomorrow(int id) { }
 
     public int taskListSize() {
         return dataSource.taskListSize();

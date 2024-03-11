@@ -59,9 +59,9 @@ public class TopBarFragment extends Fragment {
             activityModel.moveNextDay();
         });
 
-        //view.prevButton.setOnClickListener(v -> {
-        //    activityModel.movePreviousDay();
-        //});
+        view.prevButton.setOnClickListener(v -> {
+            activityModel.movePreviousDay();
+        });
 
         view.addButton.setOnClickListener(v -> {
             var dialogFragment = CreateTaskDialogFragment.newInstance();

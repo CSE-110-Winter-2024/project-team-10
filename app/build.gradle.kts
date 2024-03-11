@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    implementation("org.jetbrains:annotations:15.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     testImplementation("org.mockito:mockito-core:3.12.4")
 

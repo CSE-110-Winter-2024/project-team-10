@@ -1,159 +1,253 @@
-//package edu.ucsd.cse110.successorator;
-//
-//import org.junit.Test;
-//
-//import static org.junit.Assert.*;
-//
-//import java.util.Calendar;
-//import java.util.Date;
-//import java.util.GregorianCalendar;
-//import java.util.List;
-//
-//import edu.ucsd.cse110.successorator.lib.data.MemoryDataSource;
-//import edu.ucsd.cse110.successorator.lib.domain.MemoryTaskRepository;
-//import edu.ucsd.cse110.successorator.lib.domain.Task;
-//
-///**
-// * Example local unit test, which will execute on the development machine (host).
-// *
-// * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
-// */
-//public class SuccessoratorUnitTests {
-//    public static final List<Task> DEFAULT_TASKS = List.of(
-//            new Task(1, "Task 1", new Date(), false),
-//            new Task(2, "Task 2", new Date(), false),
-//            new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true),
-//            new Task(4, "Prev Day: uncompleted", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false)
-//    );
-//
-//    public static MemoryTaskRepository listRepository(List<Task> taskList) {
-//        MemoryDataSource dataSource = MemoryDataSource.fromList(taskList);
-//        return new MemoryTaskRepository(dataSource);
-//    }
-//
-//    // Tests isComplete()
-//    @Test
-//    public void isCompleteFalseTest() {
-//        Task task = new Task(1, "Task 1", new Date(), false);
-//
-//        var expected = false;
-//        var actual = task.isCompleted();
-//        assertEquals(expected, actual);
-//    }
-//
-//    // Tests isComplete()
-//    @Test
-//    public void isCompleteTrueTest() {
-//        Task task = new Task(1, "Task 1", new Date(), true);
-//
-//        var expected = true;
-//        var actual = task.isCompleted();
-//        assertEquals(expected, actual);
-//    }
-//
-//    // Tests task description
-//    @Test
-//    public void descriptionTest() {
-//        Task task = new Task(1, "Task 1", new Date(), true);
-//
-//        var expected = "Task 1";
-//        var actual = task.getDescription();
-//        assertEquals(expected, actual);
-//    }
-//
-//    // Tests task id
-//    @Test
-//    public void idTest() {
-//        Task task = new Task(1, "Task 1", new Date(), true);
-//
-//        int expected = 1;
-//        int actual = task.id();
-//        assertEquals(expected, actual);
-//    }
-//
-//    // Tests task date
-//    @Test
-//    public void dateTest() {
-//        Date date = new Date();
-//        Task task = new Task(1, "Task 1", date, true);
-//
-//        var expected = date;
-//        var actual = task.getDateCreated();
-//        assertEquals(expected, actual);
-//    }
-//
-//    // Checking repository saveTask functionality
-//    @Test
-//    public void repositoryAddTest() {
-//        var repo = listRepository(DEFAULT_TASKS);
-//
-//        Task task;
-//        task = new Task(5, "Task 3", new Date(), false);
-//        repo.saveTask(task);
-//
-//        // The task "Prev Day: completed" should not be there anymore
-//        assertEquals(4, repo.taskListSize());
-//
-//        task = new Task(6, "Task 4", new Date(), false);
-//        repo.saveTask(task);
-//
-//        assertEquals(5, repo.taskListSize());
-//    }
-//
-//    // Checking repository removeTask functionality
-//    @Test
-//    public void repositoryRemoveTest() {
-//        var repo = listRepository(DEFAULT_TASKS);
-//
-//        repo.removeTask(1);
-//        assertEquals(2, repo.taskListSize());
-//
-//        repo.removeTask(4);
-//        assertEquals(1, repo.taskListSize());
-//    }
-//
-//    // Checking repository ID generation functionality
-//    @Test
-//    public void repositoryIdGenerationTest() {
-//        var repo = listRepository(DEFAULT_TASKS);
-//
-//        int nextId;
-//        nextId = repo.generateNextId();
-//        assertEquals(5, nextId);
-//
-//        repo.removeTask(2);
-//        nextId = repo.generateNextId();
-//        assertEquals(5, nextId);
-//
-//        repo.removeTask(4);
-//        nextId = repo.generateNextId();
-//        assertEquals(2, nextId);
-//    }
-//
-//    // Checking the rollover during creation
-//    @Test
-//    public void repositoryRolloverTest() {
-//        final List<Task> TEST_LIST1 = List.of(
-//                new Task(1, "Task 1", new Date(), false),
-//                new Task(2, "Task 2", new Date(), false),
-//                new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true),
-//                new Task(4, "Prev Day: uncompleted", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false)
-//        );
-//
-//        final List<Task> TEST_LIST2 = List.of(
-//                new Task(1, "Task 1", new Date(), false),
-//                new Task(2, "Task 2", new Date(), false),
-//                new Task(3, "Prev Day: complete", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), true),
-//                new Task(4, "Prev Day: complete (2)", new GregorianCalendar(2024, Calendar.FEBRUARY, 14).getTime(), true),
-//                new Task(5, "Prev Day: uncompleted", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false),
-//                new Task(6, "Prev Day: uncompleted (2)", new GregorianCalendar(2024, Calendar.FEBRUARY, 15).getTime(), false)
-//        );
-//
-//        var repo1 = listRepository(TEST_LIST1);
-//        var repo2 = listRepository(TEST_LIST2);
-//
-//        assertEquals(3, repo1.taskListSize());
-//        assertEquals(4, repo2.taskListSize());
-//    }
-//}
-//
+package edu.ucsd.cse110.successorator;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import edu.ucsd.cse110.successorator.lib.data.MemoryDataSource;
+import edu.ucsd.cse110.successorator.lib.domain.MemoryTaskRepository;
+import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskBuilder;
+import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
+
+/**
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ */
+public class SuccessoratorUnitTests {
+    public static final List<Task> DEFAULT_TASKS = List.of(
+            TaskBuilder.from(1).describe("One-time task").build(),
+            TaskBuilder.from(2).describe("Daily task").schedule(TaskRecurrence.DAILY).build(),
+            TaskBuilder.from(3).describe("Weekly task").schedule(TaskRecurrence.WEEKLY).build(),
+            TaskBuilder.from(4).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).build(),
+            TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).build()
+    );
+
+    public static MemoryTaskRepository listRepository(List<Task> taskList) {
+        MemoryDataSource dataSource = MemoryDataSource.fromList(taskList);
+        return new MemoryTaskRepository(dataSource);
+    }
+
+    // Tests isComplete()
+    @Test
+    public void isCompleteFalseTest() {
+        Task task = TaskBuilder.from(1).describe("One-time task").build();
+
+        var expected = false;
+        var actual = task.isCompleted();
+        assertEquals(expected, actual);
+    }
+
+    // Tests isComplete()
+    @Test
+    public void isCompleteTrueTest() {
+        Task task = TaskBuilder.from(1).describe("One-time task").completeOn(LocalDate.now()).build();
+
+        var expected = true;
+        var actual = task.isCompleted();
+        assertEquals(expected, actual);
+    }
+
+    // Tests task description
+    @Test
+    public void descriptionTest() {
+        Task task = TaskBuilder.from(1).describe("Task 1").build();
+
+        var expected = "Task 1";
+        var actual = task.getDescription();
+        assertEquals(expected, actual);
+    }
+
+    // Tests task id
+    @Test
+    public void idTest() {
+        Task task = TaskBuilder.from(1).describe("One-time task").build();
+
+        int expected = 1;
+        int actual = task.id();
+        assertEquals(expected, actual);
+    }
+
+    // Tests task date
+    @Test
+    public void dateTest() {
+        LocalDate date = LocalDate.now();
+        Task task = TaskBuilder.from(1).describe("One-time task").createOn(date).build();
+
+        var expected = date;
+        var actual = task.getDateCreated();
+        assertEquals(expected, actual);
+    }
+
+    // Tests task refreshing for recurrence
+    @Test
+    public void onetimeRecurrenceTest() {
+        LocalDate date = LocalDate.now();
+        LocalDate moved = date.plusDays(5);
+
+        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).build();
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(moved);
+        assertEquals(date, task.getDateCreated());
+    }
+
+    @Test
+    public void dailyRecurrenceTest() {
+        LocalDate date = LocalDate.now();
+        LocalDate moved = date.plusDays(5);
+
+        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.DAILY).build();
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(moved);
+        assertEquals(moved, task.getDateCreated());
+    }
+
+    @Test
+    public void weeklyRecurrenceTest() {
+        LocalDate date = LocalDate.now();
+        LocalDate dateNextWeek = LocalDate.now().plusWeeks(1);
+        LocalDate movedSameWeek = date.plusDays(5);
+        LocalDate movedNextWeek = date.plusDays(9);
+
+        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.WEEKLY).build();
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedSameWeek);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedNextWeek);
+        assertEquals(dateNextWeek, task.getDateCreated());
+    }
+
+    @Test
+    public void monthlyRecurrenceTest() {
+        LocalDate date = LocalDate.now();
+        LocalDate dateNextMonth = LocalDate.now().plusMonths(1);
+        LocalDate movedSameMonth = date.plusDays(5);
+        LocalDate movedNextMonth = date.plusMonths(1).plusDays(2);
+
+        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.MONTHLY).build();
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedSameMonth);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedNextMonth);
+        assertEquals(dateNextMonth, task.getDateCreated());
+    }
+
+    @Test
+    public void yearlyRecurrenceTest() {
+        LocalDate date = LocalDate.now();
+        LocalDate dateNextYear = LocalDate.now().plusYears(1);
+        LocalDate movedSameYear = date.plusMonths(7).plusDays(5);
+        LocalDate movedNextYear = date.plusYears(1).plusMonths(5).plusDays(2);
+
+        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.YEARLY).build();
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedSameYear);
+        assertEquals(date, task.getDateCreated());
+
+        task.refreshDateCreated(movedNextYear);
+        assertEquals(dateNextYear, task.getDateCreated());
+    }
+
+    // Checking repository saveTask functionality
+    @Test
+    public void repositoryAddTest() {
+        var repo = listRepository(DEFAULT_TASKS);
+
+        Task task;
+        task = TaskBuilder.from(5).describe("Task 3").build();
+        repo.saveTask(task);
+
+        // The task "Prev Day: completed" should not be there anymore
+        assertEquals(6, repo.taskListSize());
+
+        task = TaskBuilder.from(6).describe("Task 3").build();
+        repo.saveTask(task);
+
+        assertEquals(7, repo.taskListSize());
+    }
+
+    // Checking repository removeTask functionality
+    @Test
+    public void repositoryRemoveTest() {
+        var repo = listRepository(DEFAULT_TASKS);
+
+        repo.removeTask(1);
+        assertEquals(4, repo.taskListSize());
+
+        repo.removeTask(4);
+        assertEquals(3, repo.taskListSize());
+    }
+
+    // Checking repository ID generation functionality
+    @Test
+    public void repositoryIdGenerationTest() {
+        var repo = listRepository(DEFAULT_TASKS);
+
+        int nextId;
+        nextId = repo.generateNextId();
+        assertEquals(6, nextId);
+
+        repo.removeTask(2);
+        nextId = repo.generateNextId();
+        assertEquals(6, nextId);
+
+        repo.removeTask(4);
+        nextId = repo.generateNextId();
+        assertEquals(6, nextId);
+    }
+
+    // Checking the rollover during creation
+    @Test
+    public void repositoryRolloverTest() {
+        final List<Task> TEST_LIST1 = List.of(
+                TaskBuilder.from(1).describe("Task 1").build(),
+                TaskBuilder.from(2).describe("Task 2").build(),
+                TaskBuilder.from(3).describe("Previous Day: complete")
+                        .createOn(LocalDate.now().minusDays(1))
+                        .completeOn(LocalDate.now().minusDays(1))
+                        .build(),
+                TaskBuilder.from(4).describe("Previous Day: incomplete")
+                        .createOn(LocalDate.now().minusDays(1))
+                        .build()
+        );
+
+        final List<Task> TEST_LIST2 = List.of(
+                TaskBuilder.from(1).describe("Task 1").build(),
+                TaskBuilder.from(2).describe("Task 2").build(),
+                TaskBuilder.from(3).describe("Previous Day: complete (1)")
+                        .createOn(LocalDate.now().minusDays(1))
+                        .completeOn(LocalDate.now())
+                        .build(),
+                TaskBuilder.from(4).describe("Previous Day: complete (2)")
+                        .createOn(LocalDate.now().minusDays(1))
+                        .completeOn(LocalDate.now().minusDays(1))
+                        .build(),
+                TaskBuilder.from(5).describe("Previous Day: incomplete (1)")
+                        .createOn(LocalDate.now().minusDays(1))
+                        .build(),
+                TaskBuilder.from(6).describe("Previous Day: incomplete (2)")
+                        .createOn(LocalDate.now().minusDays(2))
+                        .build()
+        );
+
+        var repo1 = listRepository(TEST_LIST1);
+        var repo2 = listRepository(TEST_LIST2);
+
+        assertEquals(3, repo1.taskListSize());
+        assertEquals(4, repo2.taskListSize());
+    }
+}

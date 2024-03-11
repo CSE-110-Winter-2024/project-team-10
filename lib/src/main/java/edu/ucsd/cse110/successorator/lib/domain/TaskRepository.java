@@ -9,8 +9,9 @@ public interface TaskRepository {
     Subject<List<Task>> fetchSubjectList();
     void saveTask(Task task);
     void removeTask(int id);
-    void completeTask(int id);
+    void replaceTask(Task task);
+    void toggleTaskCompletion(LocalDate dateCompleted, int id);
     int generateNextId();
     void moveTaskToToday(int id);
-    void moveTaskToTomorrow(int id, LocalDate currentDate);
+    void moveTaskToTomorrow(int id);
 }

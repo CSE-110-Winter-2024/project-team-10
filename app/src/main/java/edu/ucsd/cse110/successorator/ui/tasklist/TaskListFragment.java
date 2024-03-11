@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +20,7 @@ import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 
 public class TaskListFragment extends Fragment {
-    private LocalDate currentDate;
     private TaskListAdapter adapter;
-    private FragmentActivity modelOwner;
-    private ViewModelProvider.Factory modelFactory;
-    private ViewModelProvider modelProvider;
-    private static MainViewModel activityModel;
 
     public TaskListFragment() {}
 
@@ -40,25 +35,21 @@ public class TaskListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        if (getArguments() != null) date = (LocalDate) getArguments().getSerializable("date_key");
-//        else date = LocalDate.now();
+        // Obtain the main view model
+        var modelOwner = requireActivity();
+        var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
+        var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
 
-        // Initialize the model
-        modelOwner = requireActivity();
-        modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
-        modelProvider = new ViewModelProvider(modelOwner, modelFactory);
-        activityModel = modelProvider.get(MainViewModel.class);
+        var activityModel = modelProvider.get(MainViewModel.class);
 
-        // Initialize the adapter
-        this.adapter = new TaskListAdapter(
-                        requireContext(),
-                        List.of(),
-                        activityModel::toggleTaskCompletion,
-                        getParentFragmentManager(),
-                        activityModel::toggleTaskDeletion,
-                        activityModel::toggleTaskMoveToToday,
-                        activityModel::toggleTaskMoveToTomorrow,
-                        activityModel::toggleSingleTaskMoveToTomorrow);
+        // Initializer the adapter
+        this.adapter = new TaskListAdapter(requireContext(), List.of(),
+                getParentFragmentManager(),
+                activityModel::toggleTaskCompletion,
+                activityModel::toggleTaskDeletion,
+                activityModel::toggleTaskMoveToToday,
+                activityModel::toggleTaskMoveToTomorrow,
+                activityModel::toggleSingleTaskMoveToTomorrow);
 
         activityModel.getDateTaskPacketSubject().observe(packet -> {
             boolean isNull = (packet == null)
@@ -88,35 +79,12 @@ public class TaskListFragment extends Fragment {
     static private List<Task> filterTaskList(List<Task> tasks, LocalDate currentDate) {
         List<Task> filteredList = new ArrayList<>();
 
-        // TODO: via streams/maps?
         for (Task task : tasks) {
-            if (!task.isCompleted() && task.due().isBefore(currentDate)) {
-                activityModel.toggleTaskMoveToToday(task.id());
-            }
-
-            if (task.due().isEqual(currentDate)) {
+            if (task.displaySelf(currentDate)) {
                 filteredList.add(task);
             }
         }
 
         return filteredList;
     }
-
-    public void setDate(LocalDate currentDate) {
-        this.currentDate = currentDate;
-        updateTaskDueDates();
-    }
-
-    public void updateTaskDueDates() {
-        List<Task> tasks = activityModel.getDateTaskPacketSubject().getValue().second;
-        for (Task task : tasks) {
-            if (!task.isCompleted() && task.due().isBefore(currentDate)) {
-                activityModel.toggleTaskMoveToTomorrow(task.id());
-            }
-        }
-    }
-    public LocalDate getDate() {
-        return this.currentDate;
-    }
-
 }

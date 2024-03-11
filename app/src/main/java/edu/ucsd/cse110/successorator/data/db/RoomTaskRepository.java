@@ -2,6 +2,8 @@ package edu.ucsd.cse110.successorator.data.db;
 
 import static edu.ucsd.cse110.successorator.lib.util.LocalDateConvereter.LocalDateToString;
 
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Transformations;
 
 import java.time.LocalDate;
@@ -12,7 +14,6 @@ import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
 import edu.ucsd.cse110.successorator.util.LiveDataSubject;
-import edu.ucsd.cse110.successorator.MainViewModel;
 
 public class RoomTaskRepository implements TaskRepository {
     private final TaskDao dao;
@@ -35,7 +36,7 @@ public class RoomTaskRepository implements TaskRepository {
 
     @Override
     public void saveTask(Task task) {
-        dao.insert(TaskEntity.fromTask(task));
+        dao.append(TaskEntity.fromTask(task));
     }
 
     @Override
@@ -44,25 +45,14 @@ public class RoomTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void moveTaskToToday(int id) {
-        dao.setDue(id, LocalDateToString(LocalDate.now()));
+    public void replaceTask(Task task) {
+        dao.insert(TaskEntity.fromTask(task));
     }
 
     @Override
-    public void moveTaskToTomorrow(int id, LocalDate date) {
-        dao.setDue(id, LocalDateToString(date));
-    }
-
-    public void getTask(int id) {
-        dao.find(id);
-    }
-
-    @Override
-    public void completeTask(int id) {
+    public void toggleTaskCompletion(@NonNull LocalDate dateCompleted, int id) {
         var task = dao.find(id).toTask();
-
-        // TODO: toggle function
-        task.setCompleted(!task.isCompleted());
+        task.toggleDateCompleted(dateCompleted);
 
         dao.delete(id);
         if (task.isCompleted()) {
@@ -75,5 +65,17 @@ public class RoomTaskRepository implements TaskRepository {
     @Override
     public int generateNextId() {
         return 1 + dao.getMaxId();
+    }
+
+    @Override
+    public void moveTaskToToday(int id) {
+        //dao.setDue(id, LocalDateToString(LocalDate.now()));
+        dao.daoMoveToToday(id, 1);
+    }
+
+    @Override
+    public void moveTaskToTomorrow(int id) {
+        //dao.setDue(id, LocalDateToString(date));
+        dao.daoMoveToTomorrow(id, 2);
     }
 }

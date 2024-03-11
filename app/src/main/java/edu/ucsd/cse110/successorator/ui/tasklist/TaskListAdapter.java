@@ -2,7 +2,6 @@ package edu.ucsd.cse110.successorator.ui.tasklist;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,18 +26,21 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
     private Consumer<Integer> onTaskPressMoveToToday;
     private Consumer<Integer> onTaskPressMoveToTomorrow;
     private Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow;
+
     private FragmentManager fragmentManager;
 
+    private ChangeTaskModeDialogFragment dialogFragment;
+
     public TaskListAdapter(Context context, List<Task> taskList,
-                           Consumer<Integer> onTaskClickComplete,
                            FragmentManager fragmentManager,
+                           Consumer<Integer> onTaskClickComplete,
                            Consumer<Integer> onTaskPressDelete,
                            Consumer<Integer> onTaskPressMoveToToday,
                            Consumer<Integer> onTaskPressMoveToTomorrow,
                            Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow) {
         super(context, 0, new ArrayList<>(taskList));
-        this.onTaskClickComplete = onTaskClickComplete;
         this.fragmentManager = fragmentManager;
+        this.onTaskClickComplete = onTaskClickComplete;
         this.onTaskPressDelete = onTaskPressDelete;
         this.onTaskPressMoveToToday = onTaskPressMoveToToday;
         this.onTaskPressMoveToTomorrow = onTaskPressMoveToTomorrow;
@@ -60,7 +62,13 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         }
 
         binding.description.setText(task.getDescription());
-        binding.date.setText(task.getDateString());
+
+        String dateText = task.getTaskRecurrence() + " " + task.getDateCreatedString();
+        binding.date.setText(dateText);
+        binding.dateCompleted.setText(task.getDateCompletedString());
+
+        String contextText = "[" + task.getTaskContext().symbol() + "]";
+        binding.context.setText(contextText);
 
         // Set appearance depending on task completion status
         var paintFlags = binding.description.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG);
@@ -84,10 +92,8 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
             var id = task.id();
             assert id != null;
 
-            Log.i("Click", "id " + task.id() + ", completed? " + task.isCompleted());
             // (un)marks a task as complete
             onTaskClickComplete.accept(id);
-            Log.i("Click (After accept)", "id " + task.id() + ", completed? " + task.isCompleted());
         });
 
         return binding.getRoot();

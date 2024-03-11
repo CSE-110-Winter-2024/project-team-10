@@ -6,18 +6,13 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
-import androidx.room.Update;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Dao
 public interface TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Long insert(TaskEntity task);
-
-    @Query("UPDATE tasks SET due = :due WHERE id = :id")
-    void setDue(int id, String due);
 
     @Query("DELETE FROM tasks WHERE id = :id")
     void delete(int id);
@@ -37,16 +32,28 @@ public interface TaskDao {
 
     @Transaction
     default int append(TaskEntity task) {
-        var newTask = new TaskEntity(1 + getMaxId(), task.description, task.dateCreated, task.isCompleted, task.due);
+        var newTask = new TaskEntity(
+                1 + getMaxId(), task.description,
+                task.dateCreated, task.dateCompleted,
+                task.taskRecurrence, task.taskMode, task.taskContext);
         return Math.toIntExact(insert(newTask));
     }
 
     @Transaction
     default int prepend(TaskEntity task) {
-        var newTask = new TaskEntity(getMinId() - 1, task.description, task.dateCreated, task.isCompleted, task.due);
+        var newTask = new TaskEntity(
+                getMinId() - 1, task.description,
+                task.dateCreated, task.dateCompleted,
+                task.taskRecurrence, task.taskMode, task.taskContext);
         return Math.toIntExact(insert(newTask));
     }
 
     @Query("SELECT COUNT(*) FROM tasks")
     int size();
+
+    @Query("UPDATE tasks SET taskMode = :mode WHERE id = :id")
+    void daoMoveToToday(int id, int mode);
+
+    @Query("UPDATE tasks SET taskMode = :mode WHERE id = :id")
+    void daoMoveToTomorrow(int id, int mode);
 }

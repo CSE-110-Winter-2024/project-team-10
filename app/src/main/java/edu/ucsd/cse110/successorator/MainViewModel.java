@@ -2,6 +2,7 @@ package edu.ucsd.cse110.successorator;
 
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.lifecycle.ViewModel;
@@ -13,14 +14,14 @@ import java.util.Date;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskBuilder;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
+import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.SimpleSubject;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
-import edu.ucsd.cse110.successorator.ui.tasklist.TaskListFragment;
-import edu.ucsd.cse110.successorator.ui.tasklist.TopBarFragment;
 
 public class MainViewModel extends ViewModel {
-    private TaskListFragment taskListFragment = new TaskListFragment();
     private final SimpleSubject<LocalDate> currentDateSubject;
     private final TaskRepository taskRepository;
     private final Subject<List<Task>> taskListSubject;
@@ -40,11 +41,9 @@ public class MainViewModel extends ViewModel {
         this.taskRepository = taskRepository;
         this.taskListSubject = taskRepository.fetchSubjectList();
 
-//        // Configure the date to "today" within the app
-//        // This is where the app can keep changes when refreshed
+        // Configure the date to today
         var now = LocalDate.now();
         currentDateSubject = new SimpleSubject<>();
-        currentDateSubject.setValue(now);
 
         // Configure a subject for the combination of date and task list
         var currentPacket = new Pair<LocalDate, List<Task>>(null, null);
@@ -71,6 +70,23 @@ public class MainViewModel extends ViewModel {
             var newValue = new Pair<>(date, currentValue.second);
             dateTaskPacketSubject.setValue(newValue);
         });
+
+        // Update the list of tasks on date change
+        currentDateSubject.observe(date -> {
+            var list = taskListSubject.getValue();
+            if (date == null || list == null) {
+                return;
+            }
+
+            Log.d("MainViewModel", "refreshing task list due to date change");
+            for (Task task : list) {
+                task.refreshDateCreated(date);
+                taskRepository.replaceTask(task);
+            }
+        });
+
+        // Trigger date update after all the setup
+        currentDateSubject.setValue(now);
     }
 
     public Subject<LocalDate> getCurrentDateSubject() {
@@ -81,13 +97,13 @@ public class MainViewModel extends ViewModel {
         return dateTaskPacketSubject;
     }
 
-    // TODO: move outta here?
     public void toggleTaskCompletion(int id) {
-        taskRepository.completeTask(id);
+        taskRepository.toggleTaskCompletion(currentDateSubject.getValue(), id);
     }
 
     //Used for long press to delete
     public void toggleTaskDeletion(int id) {
+
         taskRepository.removeTask(id);
     }
 
@@ -98,31 +114,21 @@ public class MainViewModel extends ViewModel {
 
     //Used for long press move to tomorrow
     public void toggleTaskMoveToTomorrow(int id) {
-        LocalDate currentDate = currentDateSubject.getValue();
-        taskRepository.moveTaskToTomorrow(id, currentDate);
+        taskRepository.moveTaskToTomorrow(id);
     }
 
     public void toggleSingleTaskMoveToTomorrow(int id) {
-        LocalDate currentDate = currentDateSubject.getValue();
-        taskRepository.moveTaskToTomorrow(id, currentDate.plusDays(1));
+        taskRepository.moveTaskToTomorrow(id);
     }
 
-
-    //Where tasks are created
-    public void createTask(String description) {
-        var nowDate = currentDateSubject.getValue();
-        var nowLocalDate = Date.from(
-                nowDate.atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant()
-        );
-
-        var task = new Task(
-                taskRepository.generateNextId(),
-                description, nowLocalDate,
-                false,
-                currentDateSubject.getValue());
-
+    public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
+        var now = currentDateSubject.getValue();
+        var task = TaskBuilder.from(taskRepository)
+                .describe(description)
+                .createOn(now)
+                .schedule(recurrence)
+                .clarify(context)
+                .build();
         taskRepository.saveTask(task);
     }
 
@@ -131,7 +137,6 @@ public class MainViewModel extends ViewModel {
         var now = currentDateSubject.getValue();
         now = now.plusDays(1);
         currentDateSubject.setValue(now);
-        taskListFragment.setDate(now);
     }
 
     public void movePreviousDay() {
