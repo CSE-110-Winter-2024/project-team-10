@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.successorator.data.db;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Transformations;
 
@@ -33,16 +34,17 @@ public class RoomTaskRepository implements TaskRepository {
 
     @Override
     public void saveTask(Task task) {
-        if (task.isCompleted()) {
-            dao.append(TaskEntity.fromTask(task));
-        } else {
-            dao.prepend(TaskEntity.fromTask(task));
-        }
+        dao.append(TaskEntity.fromTask(task));
     }
 
     @Override
     public void removeTask(int id) {
         dao.delete(id);
+    }
+
+    @Override
+    public void replaceTask(Task task) {
+        dao.insert(TaskEntity.fromTask(task));
     }
 
     @Override

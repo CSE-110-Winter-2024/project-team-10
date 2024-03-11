@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentCreateTaskDialogBinding;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 
 public class CreateTaskDialogFragment extends DialogFragment {
@@ -55,6 +56,9 @@ public class CreateTaskDialogFragment extends DialogFragment {
         int recurrenceSelected = view.recurrenceButtons.getCheckedRadioButtonId();
         TaskRecurrence recurrence = TaskRecurrence.ONE_TIME;
 
+        int contextSelected = view.contextButtons.getCheckedRadioButtonId();
+        TaskContext context = TaskContext.HOME;
+
         if (recurrenceSelected == view.onetimeTask.getId()) {
             recurrence = TaskRecurrence.ONE_TIME;
         } else if (recurrenceSelected == view.dailyTask.getId()) {
@@ -69,7 +73,19 @@ public class CreateTaskDialogFragment extends DialogFragment {
             throw new IllegalArgumentException();
         }
 
-        activityModel.createTask(description, recurrence);
+        if (contextSelected == view.homeContext.getId()) {
+            context = TaskContext.HOME;
+        } else if (contextSelected == view.workContext.getId()) {
+            context = TaskContext.WORK;
+        } else if (contextSelected == view.schoolContext.getId()) {
+            context = TaskContext.SCHOOL;
+        } else if (contextSelected == view.errandsContext.getId()) {
+            context = TaskContext.ERRAND;
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        activityModel.createTask(description, recurrence, context);
         dialog.dismiss();
     }
     private void onNegativeButtonClick(DialogInterface dialog, int which) {

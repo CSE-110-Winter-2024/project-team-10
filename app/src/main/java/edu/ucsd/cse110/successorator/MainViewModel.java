@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskBuilder;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.SimpleSubject;
@@ -42,7 +44,6 @@ public class MainViewModel extends ViewModel {
         // Configure the date to today
         var now = LocalDate.now();
         currentDateSubject = new SimpleSubject<>();
-        currentDateSubject.setValue(now);
 
         // Configure a subject for the combination of date and task list
         var currentPacket = new Pair<LocalDate, List<Task>>(null, null);
@@ -73,17 +74,19 @@ public class MainViewModel extends ViewModel {
         // Update the list of tasks on date change
         currentDateSubject.observe(date -> {
             var list = taskListSubject.getValue();
-            if (list == null) {
+            if (date == null || list == null) {
                 return;
             }
 
             Log.d("MainViewModel", "refreshing task list due to date change");
             for (Task task : list) {
-                taskRepository.removeTask(task.id());
                 task.refreshDateCreated(date);
-                taskRepository.saveTask(task);
+                taskRepository.replaceTask(task);
             }
         });
+
+        // Trigger date update after all the setup
+        currentDateSubject.setValue(now);
     }
 
     public Subject<LocalDate> getCurrentDateSubject() {
@@ -98,9 +101,14 @@ public class MainViewModel extends ViewModel {
         taskRepository.toggleTaskCompletion(currentDateSubject.getValue(), id);
     }
 
-    public void createTask(String description, TaskRecurrence recurrence) {
+    public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
         var now = currentDateSubject.getValue();
-        var task = new Task(taskRepository.generateNextId(), description, now, null, recurrence);
+        var task = TaskBuilder.from(taskRepository)
+                .describe(description)
+                .createOn(now)
+                .schedule(recurrence)
+                .clarify(context)
+                .build();
         taskRepository.saveTask(task);
     }
 

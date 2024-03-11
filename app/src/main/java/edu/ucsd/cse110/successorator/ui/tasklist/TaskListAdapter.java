@@ -47,6 +47,9 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         binding.date.setText(dateText);
         binding.dateCompleted.setText(task.getDateCompletedString());
 
+        String contextText = "[" + task.getTaskContext().symbol() + "]";
+        binding.context.setText(contextText);
+
         // Set appearance depending on task completion status
         var paintFlags = binding.description.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG);
         var backgroundColor = ContextCompat.getColor(getContext(), android.R.color.white);
