@@ -31,7 +31,7 @@ public class MockApplication extends Application {
         var database = Room.databaseBuilder(
                 getApplicationContext(),
                 MockDatabase.class,
-                "successorator-database"
+                "mock-database"
         ).allowMainThreadQueries().build();
 
         this.taskRepository = new RoomTaskRepository(database.dao());

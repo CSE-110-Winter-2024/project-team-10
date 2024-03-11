@@ -24,11 +24,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+// Notes: mockApplication cannot be null
+// must make it something
+
 public class MS2_US3_UnitTests {
     private final List<Task> taskList = new ArrayList<>();
     private static MainViewModel activityModel;
     public static MockDatabase mockDatabase;
-    public static MockApplication mockApplication;
+    public static MockApplication mockApplication = new MockApplication();
+
+    @Test
+    public void testOnCreateCalled() {
+        // Ensure that onCreate() has been called by verifying that the task repository is not null
+        assertNotNull(mockApplication.getTaskRepository());
+    }
 
     //we want to test toggle
 
@@ -54,12 +63,15 @@ public class MS2_US3_UnitTests {
 
         //var prevDueDate = mockDatabase.dao().find(200).due;
 
-        var taskRepository = mockApplication.getRoomTaskRepository();
-        taskRepository.moveTaskToToday(200);
-        //taskRepository.
 
-        //var newDueDate = Objects.requireNonNull(taskRepository.fetchSubjectList().getValue()).get(500).due();//
-        var newDueDate = taskRepository.getTask(200);
+        var taskRepository = mockApplication.getTaskRepository();
+        taskRepository.moveTaskToToday(200);
+
+        var newDueDate = taskRepository.fetchSubjectList().getValue().get(200).due();
+
+
+        //LocalDate newDueDate = taskRepository.getTask(200).;
+
         //assertEquals(LocalDate.now(), newDueDate);
 
 
