@@ -12,13 +12,14 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
+import edu.ucsd.cse110.successorator.ui.tasklist.dialog.FocusMenuDialogFragment;
 
 public class TaskListFragment extends Fragment {
     private TaskListAdapter adapter;
@@ -26,6 +27,7 @@ public class TaskListFragment extends Fragment {
     private ViewModelProvider.Factory modelFactory;
     private ViewModelProvider modelProvider;
     private MainViewModel activityModel;
+    private List<Task> filteredTasks;
 
     public TaskListFragment() {}
 
@@ -65,8 +67,20 @@ public class TaskListFragment extends Fragment {
                 return;
             }
 
-            var filteredTasks = filterTaskList(packet.second, packet.first);
+            filteredTasks = filterTaskList(packet.second, packet.first);
 
+            adapter.clear();
+            adapter.addAll(filteredTasks);
+            adapter.notifyDataSetChanged();
+        });
+
+        //TODO: create an observer for taskContext
+        FocusMenuDialogFragment focusFragment = FocusMenuDialogFragment.newInstance();
+//        TaskContext taskContext = focusFragment.getTaskContextLiveData().getValue();
+        focusFragment.getTaskContextLiveData().observe( taskContext -> {
+            List<Task> tasklist = focusFragment.getTaskListSubject().getValue();
+
+            filteredTasks = filterTaskList(tasklist, taskContext);
             adapter.clear();
             adapter.addAll(filteredTasks);
             adapter.notifyDataSetChanged();
@@ -83,13 +97,22 @@ public class TaskListFragment extends Fragment {
 
     static private List<Task> filterTaskList(List<Task> tasks, LocalDate currentDate) {
         List<Task> filteredList = new ArrayList<>();
-
         for (Task task : tasks) {
             if (task.displaySelf(currentDate)) {
                 filteredList.add(task);
             }
         }
+        return filteredList;
+    }
 
+    static private List<Task> filterTaskList(List<Task> tasks, TaskContext taskContext) {
+        List<Task> filteredList = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getTaskContext() == taskContext) {
+                filteredList.add(task);
+            }
+        }
         return filteredList;
     }
 }
+
