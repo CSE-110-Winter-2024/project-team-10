@@ -7,11 +7,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
@@ -47,11 +52,33 @@ public class TopBarFragment extends Fragment {
         activityModel = modelProvider.get(MainViewModel.class);
 
         // Make a date formatter
-        dateTimeFormatter = DateTimeFormatter.ofPattern("EE, MMM dd", Locale.ENGLISH);
+        dateTimeFormatter = DateTimeFormatter.ofPattern("EE MM/dd", Locale.ENGLISH);
 
-        // Update the date text whenever the date changes
+        // Drop down handler
+        Spinner spinner = view.spinner;
+
         activityModel.getCurrentDateSubject().observe(v -> {
-            view.dateText.setText(v.format(dateTimeFormatter));
+            ArrayList<String> headers = new ArrayList<>();
+            headers.add("Today, " + v.format(dateTimeFormatter));
+            headers.add("Tomorrow, " + v.plusDays(1).format(dateTimeFormatter));
+            headers.add("Pending");
+            headers.add("Recurring");
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, headers);
+
+            spinner.setAdapter(adapter);
+        });
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("Spinner selected", "position:" + position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
 
         // Button handlers
