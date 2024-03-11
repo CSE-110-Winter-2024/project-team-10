@@ -97,35 +97,34 @@ public class MainViewModel extends ViewModel {
         return dateTaskPacketSubject;
     }
 
-    public void toggleTaskCompletion(int id) {
-        taskRepository.completeTask(currentDateSubject.getValue(), id);
+    public void completeTask(Task task) {
+        if (task.isCompleted()) {
+            // Already completed
+            return;
+        }
+
+        taskRepository.toggleTaskCompletion(task.id(), currentDateSubject.getValue());
     }
 
-    public void toggleTaskDeletion(int id) {
-        taskRepository.removeTask(id);
+    public void toggleTaskCompletion(Task task) {
+        taskRepository.toggleTaskCompletion(task.id(), currentDateSubject.getValue());
     }
 
-//    //    Used for long press move to today
-//    public void toggleTaskMoveToToday(int id) {
-//        taskRepository.moveTaskToToday(id);
-//    }
-//
-//    //    Used for long press move to tomorrow
-//    public void toggleTaskMoveToTomorrow(int id) {
-//        LocalDate currentDate = currentDateSubject.getValue();
-//        taskRepository.moveTaskToTomorrow(id, currentDate);
-//    }
-
-//    Used for long press move to today
-    public void toggleTaskMoveToToday(int id) {
-        taskRepository.moveTaskToToday(id);
+    public void removeTask(Task task) {
+        taskRepository.removeTask(task.id());
     }
 
-//    Used for long press move to tomorrow
-    public void toggleTaskMoveToTomorrow(int id) {
-        taskRepository.moveTaskToTomorrow(id, getCurrentDateSubject().getValue().plusDays(1));
+    // Used for long press move to today
+    public void changeTaskDateToday(Task task) {
+        LocalDate today = LocalDate.now();
+        taskRepository.changeTaskDate(task.id(), today);
     }
 
+    // Used for long press move to tomorrow
+    public void changeTaskDateTomorrow(Task task) {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        taskRepository.changeTaskDate(task.id(), tomorrow);
+    }
 
     public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
         var now = currentDateSubject.getValue();
@@ -139,13 +138,13 @@ public class MainViewModel extends ViewModel {
     }
 
     // Advancing the date forward OR backwards
-    public void moveNextDay() {
+    public void advanceNextDay() {
         var now = currentDateSubject.getValue();
         now = now.plusDays(1);
         currentDateSubject.setValue(now);
     }
 
-    public void movePreviousDay() {
+    public void advancePreviousDay() {
         var now = currentDateSubject.getValue();
         now = now.minusDays(1);
         currentDateSubject.setValue(now);

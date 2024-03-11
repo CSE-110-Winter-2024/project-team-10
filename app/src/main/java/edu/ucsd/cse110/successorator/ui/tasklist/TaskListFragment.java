@@ -22,10 +22,6 @@ import edu.ucsd.cse110.successorator.lib.domain.Task;
 
 public class TaskListFragment extends Fragment {
     private TaskListAdapter adapter;
-    private FragmentActivity modelOwner;
-    private ViewModelProvider.Factory modelFactory;
-    private ViewModelProvider modelProvider;
-    private MainViewModel activityModel;
 
     public TaskListFragment() {}
 
@@ -41,20 +37,13 @@ public class TaskListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Obtain the main view model
-        modelOwner = requireActivity();
-        modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
-        modelProvider = new ViewModelProvider(modelOwner, modelFactory);
-        activityModel = modelProvider.get(MainViewModel.class);
+        var modelOwner = requireActivity();
+        var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
+        var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
+        var activityModel = modelProvider.get(MainViewModel.class);
 
         // Initializer the adapter
-        this.adapter = new TaskListAdapter(
-                requireContext(),
-                List.of(),
-                getParentFragmentManager(),
-                activityModel::toggleTaskCompletion,
-                activityModel::toggleTaskDeletion,
-                activityModel::toggleTaskMoveToToday,
-                activityModel::toggleTaskMoveToTomorrow);
+        this.adapter = new TaskListAdapter(requireContext(), List.of(), getParentFragmentManager(), activityModel::toggleTaskCompletion);
 
         activityModel.getDateTaskPacketSubject().observe(packet -> {
             boolean isNull = (packet == null)

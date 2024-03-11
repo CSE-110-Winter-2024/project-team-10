@@ -56,11 +56,11 @@ public class TopBarFragment extends Fragment {
 
         // Button handlers
         view.nextButton.setOnClickListener(v -> {
-            activityModel.moveNextDay();
+            activityModel.advanceNextDay();
         });
 
         view.prevButton.setOnClickListener(v -> {
-            activityModel.movePreviousDay();
+            activityModel.advancePreviousDay();
         });
 
         view.addButton.setOnClickListener(v -> {

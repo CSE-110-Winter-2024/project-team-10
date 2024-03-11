@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.successorator.lib.domain;
 
+import androidx.annotation.NonNull;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -35,18 +37,13 @@ public class MemoryTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void completeTask(LocalDate dateCompleted, int id) {
-        dataSource.toggleTaskComplettion(dateCompleted, id);
+    public void toggleTaskCompletion(int id, @NonNull LocalDate dateCompleted) {
+        dataSource.toggleTaskCompletion(id, dateCompleted);
     }
 
     @Override
-    public void moveTaskToToday(int id) {
-
-    }
-
-    @Override
-    public void moveTaskToTomorrow(int id, LocalDate date) {
-
+    public void changeTaskDate(int id, LocalDate date) {
+        throw new NotImplementedError();
     }
 
     @Override
