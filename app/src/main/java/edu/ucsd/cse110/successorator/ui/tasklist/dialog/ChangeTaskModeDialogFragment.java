@@ -11,9 +11,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.time.LocalDate;
@@ -25,18 +23,15 @@ import edu.ucsd.cse110.successorator.databinding.FragmentChangeTaskmodeDialogBin
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 
-
 public class ChangeTaskModeDialogFragment extends DialogFragment {
     MainViewModel activityModel;
     FragmentChangeTaskmodeDialogBinding view;
-
-
     private Task task;
     private Consumer<Integer> onTaskClickComplete;
     private Consumer<Integer> onTaskPressDelete;
     private Consumer<Integer> onTaskPressMoveToToday;
     private Consumer<Integer> onTaskPressMoveToTomorrow;
-    private Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow;
+//    private Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow;
     private FragmentActivity modelOwner;
     private ViewModelProvider.Factory modelFactory;
     private ViewModelProvider modelProvider;
@@ -46,30 +41,27 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
                                         Consumer<Integer> onTaskClickComplete,
                                         Consumer<Integer> onTaskPressDelete,
                                         Consumer<Integer> onTaskPressMoveToToday,
-                                        Consumer<Integer> onTaskPressMoveToTomorrow,
-                                        Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow) {
-        this.task = task;
-        this.onTaskClickComplete = onTaskClickComplete;
-        this.onTaskPressDelete = onTaskPressDelete;
-        this.onTaskPressMoveToToday = onTaskPressMoveToToday;
-        this.onTaskPressMoveToTomorrow = onTaskPressMoveToTomorrow;
-        this.onTaskPressMoveSingleTaskToTomorrow = onTaskPressMoveSingleTaskToTomorrow;
-    }
+                                        Consumer<Integer> onTaskPressMoveToTomorrow) {
+            this.task = task;
+            this.onTaskClickComplete = onTaskClickComplete;
+            this.onTaskPressDelete = onTaskPressDelete;
+            this.onTaskPressMoveToToday = onTaskPressMoveToToday;
+            this.onTaskPressMoveToTomorrow = onTaskPressMoveToTomorrow;
+//            this.onTaskPressMoveSingleTaskToTomorrow = onTaskPressMoveSingleTaskToTomorrow;
+        }
 
     public static ChangeTaskModeDialogFragment newInstance(
             Task task,
-            Consumer<Integer> onTaskClick,
+            Consumer<Integer> onTaskClickComplete,
             Consumer<Integer> onTaskPressDelete,
             Consumer<Integer> onTaskPressMoveToToday,
-            Consumer<Integer> onTaskPressMoveToTomorrow,
-            Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow) {
+            Consumer<Integer> onTaskPressMoveToTomorrow) {
         ChangeTaskModeDialogFragment fragment = new ChangeTaskModeDialogFragment(
                 task,
-                onTaskClick,
+                onTaskClickComplete,
                 onTaskPressDelete,
                 onTaskPressMoveToToday,
-                onTaskPressMoveToTomorrow,
-                onTaskPressMoveSingleTaskToTomorrow);
+                onTaskPressMoveToTomorrow);
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -78,7 +70,6 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         modelOwner = requireActivity();
         modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
         modelProvider = new ViewModelProvider(modelOwner, modelFactory);
@@ -106,13 +97,13 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
 
         moveToTomorrowButton.setOnClickListener(v -> {
             Log.i("TextView Click", "Move to Tomorrow clicked");
-            onTaskPressMoveSingleTaskToTomorrow.accept(task.id());
+            onTaskPressMoveToTomorrow.accept(task.id());
             dismiss();
         });
 
         finishButton.setOnClickListener(v -> {
             Log.i("TextView Click", "Finish clicked");
-            if (task.isCompleted() == false) {
+            if (!task.isCompleted()) {
                 onTaskClickComplete.accept(task.id());
             }
             dismiss();
@@ -126,7 +117,7 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
 
         moveToTodayButton.setEnabled(task.getTaskRecurrence() != TaskRecurrence.DAILY);
         moveToTomorrowButton.setEnabled(task.getTaskRecurrence() != TaskRecurrence.DAILY);
-        finishButton.setEnabled(task.isCompleted() == false);
+        finishButton.setEnabled(!task.isCompleted());
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(task.getDescription())

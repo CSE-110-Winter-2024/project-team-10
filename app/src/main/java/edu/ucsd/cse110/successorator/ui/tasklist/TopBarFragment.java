@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -18,6 +19,13 @@ import edu.ucsd.cse110.successorator.databinding.FragmentTopBarBinding;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.CreateTaskDialogFragment;
 
 public class TopBarFragment extends Fragment {
+
+    private FragmentActivity modelOwner;
+    private ViewModelProvider.Factory modelFactory;
+    private ViewModelProvider modelProvider;
+    private MainViewModel activityModel;
+    private DateTimeFormatter dateTimeFormatter;
+
     public TopBarFragment() {}
 
     public static TopBarFragment newInstance() {
@@ -32,18 +40,18 @@ public class TopBarFragment extends Fragment {
         var view = FragmentTopBarBinding.inflate(inflater, container, false);
 
         // Obtain the main view model
-        var modelOwner = requireActivity();
-        var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
-        var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
+        modelOwner = requireActivity();
+        modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
+        modelProvider = new ViewModelProvider(modelOwner, modelFactory);
 
-        var activityModel = modelProvider.get(MainViewModel.class);
+        activityModel = modelProvider.get(MainViewModel.class);
 
         // Make a date formatter
-        var formatter = DateTimeFormatter.ofPattern("EE, MMM dd", Locale.ENGLISH);
+        dateTimeFormatter = DateTimeFormatter.ofPattern("EE, MMM dd", Locale.ENGLISH);
 
         // Update the date text whenever the date changes
         activityModel.getCurrentDateSubject().observe(v -> {
-            view.dateText.setText(v.format(formatter));
+            view.dateText.setText(v.format(dateTimeFormatter));
         });
 
         // Button handlers

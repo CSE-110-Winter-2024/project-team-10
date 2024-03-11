@@ -32,12 +32,15 @@ public interface TaskDao {
     @Query("SELECT MIN(id) FROM tasks")
     int getMinId();
 
+    @Query("UPDATE tasks SET taskMode = :mode WHERE id = :id")
+    void changeTaskMode(int id, int mode);
+
     @Transaction
     default int append(TaskEntity task) {
         var newTask = new TaskEntity(
                 1 + getMaxId(), task.description,
                 task.dateCreated, task.dateCompleted,
-                task.taskRecurrence, task.taskContext);
+                task.taskRecurrence, task.taskMode, task.taskContext);
         return Math.toIntExact(insert(newTask));
     }
 
@@ -46,7 +49,7 @@ public interface TaskDao {
         var newTask = new TaskEntity(
                 getMinId() - 1, task.description,
                 task.dateCreated, task.dateCompleted,
-                task.taskRecurrence, task.taskContext);
+                task.taskRecurrence, task.taskMode, task.taskContext);
         return Math.toIntExact(insert(newTask));
     }
 

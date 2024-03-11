@@ -54,8 +54,7 @@ public class TaskListFragment extends Fragment {
                 activityModel::toggleTaskCompletion,
                 activityModel::toggleTaskDeletion,
                 activityModel::toggleTaskMoveToToday,
-                activityModel::toggleTaskMoveToTomorrow,
-                activityModel::toggleSingleTaskMoveToTomorrow);
+                activityModel::toggleTaskMoveToTomorrow);
 
         activityModel.getDateTaskPacketSubject().observe(packet -> {
             boolean isNull = (packet == null)

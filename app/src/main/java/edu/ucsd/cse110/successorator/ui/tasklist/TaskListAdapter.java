@@ -2,7 +2,6 @@ package edu.ucsd.cse110.successorator.ui.tasklist;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,15 +35,14 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
             Consumer<Integer> onTaskClickComplete,
             Consumer<Integer> onTaskPressDelete,
             Consumer<Integer> onTaskPressMoveToToday,
-            Consumer<Integer> onTaskPressMoveToTomorrow,
-            Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow) {
+            Consumer<Integer> onTaskPressMoveToTomorrow) {
         super(context, 0, new ArrayList<>(taskList));
         this.fragmentManager = fragmentManager;
         this.onTaskClickComplete = onTaskClickComplete;
         this.onTaskPressDelete = onTaskPressDelete;
         this.onTaskPressMoveToToday = onTaskPressMoveToToday;
         this.onTaskPressMoveToTomorrow = onTaskPressMoveToTomorrow;
-        this.onTaskPressMoveSingleTaskToTomorrow = onTaskPressMoveSingleTaskToTomorrow;
+//        this.onTaskPressMoveSingleTaskToTomorrow = onTaskPressMoveSingleTaskToTomorrow;
     }
 
     @NonNull
@@ -82,9 +80,16 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         binding.description.setPaintFlags(paintFlags);
         binding.getRoot().setBackgroundColor(backgroundColor);
 
+        binding.task.setOnLongClickListener(v -> {
+            // Show the ChangeTaskModeDialogFragment when a task is long-pressed
+            showChangeTaskModeDialog(task);
+            return true;
+        });
+
         binding.task.setOnClickListener(v -> {
             var id = task.id();
             assert id != null;
+
             // (un)marks a task as complete
             onTaskClickComplete.accept(id);
         });
@@ -101,6 +106,17 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         return binding.getRoot();
     }
 
+    // Method to show the ChangeTaskModeDialogFragment
+    private void showChangeTaskModeDialog(Task task) {
+        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(
+                task,
+                onTaskClickComplete,
+                onTaskPressDelete,
+                onTaskPressMoveToToday,
+                onTaskPressMoveToTomorrow);
+        dialogFragment.show(fragmentManager, "ChangeTaskModeDialogFragment");
+    }
+
     @Override
     public boolean hasStableIds() {
         return true;
@@ -115,16 +131,5 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         assert id != null;
 
         return id;
-    }
-
-    private void showChangeTaskModeDialog(Task task) {
-        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(
-                task,
-                onTaskClickComplete,
-                onTaskPressDelete,
-                onTaskPressMoveToToday,
-                onTaskPressMoveToTomorrow,
-                onTaskPressMoveSingleTaskToTomorrow);
-        dialogFragment.show(fragmentManager, "ChangeTaskModeDialogFragment");
     }
 }
