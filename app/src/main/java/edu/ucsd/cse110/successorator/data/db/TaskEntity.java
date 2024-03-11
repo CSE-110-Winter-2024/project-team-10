@@ -1,20 +1,17 @@
 package edu.ucsd.cse110.successorator.data.db;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Insert;
 import androidx.room.PrimaryKey;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
-import edu.ucsd.cse110.successorator.lib.domain.TaskBuilder;
 import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
+import edu.ucsd.cse110.successorator.lib.domain.TaskMode;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 
 @Entity(tableName = "tasks")
@@ -38,6 +35,10 @@ public class TaskEntity {
     @ColumnInfo(name = "taskRecurrence")
     public Integer taskRecurrence;
 
+    // Task mode as an integer
+    @ColumnInfo(name = "taskMode")
+    public Integer taskMode;
+
     // Task context as a character (H, S, W, E)
     @ColumnInfo(name = "taskContext")
     public Character taskContext;
@@ -48,28 +49,32 @@ public class TaskEntity {
              @NonNull Long dateCreated,
              @NonNull Long dateCompleted,
              @NonNull Integer taskRecurrence,
+             @NonNull Integer taskMode,
              @NonNull Character taskContext) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.dateCompleted = dateCompleted;
         this.taskRecurrence = taskRecurrence;
+        this.taskMode = taskMode;
         this.taskContext = taskContext;
     }
 
     public @NonNull Task toTask() {
         ZoneId zone = ZoneId.systemDefault();
-        LocalDate dateCreated = Instant.ofEpochSecond(this.dateCreated).atZone(zone).toLocalDate();
-        LocalDate dateCompleted = null;
+        LocalDate created = Instant.ofEpochSecond(this.dateCreated).atZone(zone).toLocalDate();
+        LocalDate completed = null;
 
         if (this.dateCompleted >= 0) {
-            dateCompleted = Instant.ofEpochSecond(this.dateCompleted).atZone(zone).toLocalDate();
+            completed = Instant.ofEpochSecond(this.dateCompleted).atZone(zone).toLocalDate();
         }
 
         return new Task(
                 id, description,
-                dateCreated, dateCompleted,
-                TaskRecurrence.fetch(taskRecurrence), TaskContext.fetch(taskContext)
+                created, completed,
+                TaskRecurrence.fetch(taskRecurrence),
+                TaskMode.fetch(taskMode),
+                TaskContext.fetch(taskContext)
         );
     }
 
@@ -92,7 +97,18 @@ public class TaskEntity {
                 task.id(), task.getDescription(),
                 epochSecondsCreated, epochSecondsCompleted,
                 task.getTaskRecurrence().value(),
+                task.getTaskMode().value(),
                 task.getTaskContext().symbol()
         );
+    }
+
+    // Rolls over task modes
+    public void switchMode (Task task) {
+        if (task.getTaskMode() == TaskMode.TOMORROW) {
+            task.setTaskMode(TaskMode.TODAY);
+        }
+        else if (task.getTaskMode() == TaskMode.TODAY) {
+            task.setTaskMode(TaskMode.TODAY);
+        }
     }
 }

@@ -10,6 +10,8 @@ public interface TaskRepository {
     void saveTask(Task task);
     void removeTask(int id);
     void replaceTask(Task task);
-    void toggleTaskCompletion(LocalDate dateCompleted, int id);
+    void completeTask(LocalDate date, int id);
     int generateNextId();
+    void moveTaskToToday(int id);
+    void moveTaskToTomorrow(int id, LocalDate date);
 }

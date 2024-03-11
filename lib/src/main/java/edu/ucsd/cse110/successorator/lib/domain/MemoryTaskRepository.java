@@ -35,8 +35,18 @@ public class MemoryTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void toggleTaskCompletion(LocalDate dateCompleted, int id) {
+    public void completeTask(LocalDate dateCompleted, int id) {
         dataSource.toggleTaskComplettion(dateCompleted, id);
+    }
+
+    @Override
+    public void moveTaskToToday(int id) {
+
+    }
+
+    @Override
+    public void moveTaskToTomorrow(int id, LocalDate date) {
+
     }
 
     @Override

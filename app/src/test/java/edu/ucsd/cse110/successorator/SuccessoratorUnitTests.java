@@ -251,4 +251,3 @@ public class SuccessoratorUnitTests {
         assertEquals(4, repo2.taskListSize());
     }
 }
-

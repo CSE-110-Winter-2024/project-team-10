@@ -11,6 +11,7 @@ public class TaskBuilder {
     private @NonNull LocalDate dateCreated;
     private @Nullable LocalDate dateCompleted;
     private @NonNull TaskRecurrence taskRecurrence;
+    private @NonNull TaskMode taskMode;
     private @NonNull TaskContext taskContext;
 
     public TaskBuilder(int id) {
@@ -20,6 +21,7 @@ public class TaskBuilder {
         dateCreated = LocalDate.now();
         dateCompleted = null;
         taskRecurrence = TaskRecurrence.ONE_TIME;
+        taskMode = TaskMode.PENDING;
         taskContext = TaskContext.HOME;
     }
 
@@ -68,6 +70,6 @@ public class TaskBuilder {
 
     // Final build
     public Task build() {
-        return new Task(id, description, dateCreated, dateCompleted, taskRecurrence, taskContext);
+        return new Task(id, description, dateCreated, dateCompleted, taskRecurrence, taskMode, taskContext);
     }
 }

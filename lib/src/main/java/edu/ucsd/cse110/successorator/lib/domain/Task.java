@@ -17,6 +17,7 @@ public class Task {
     private @NonNull LocalDate dateCreated;
     private @Nullable LocalDate dateCompleted;
     private @NonNull TaskRecurrence taskRecurrence;
+    private @NonNull TaskMode taskMode;
     private @NonNull TaskContext taskContext;
 
     // TODO: create a builder class
@@ -26,12 +27,14 @@ public class Task {
              @NonNull LocalDate dateCreated,
              @Nullable LocalDate dateCompleted,
              @NonNull TaskRecurrence taskRecurrence,
+             @NonNull TaskMode taskMode,
              @NonNull TaskContext taskContext) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.dateCompleted = dateCompleted;
         this.taskRecurrence = taskRecurrence;
+        this.taskMode = taskMode;
         this.taskContext = taskContext;
     }
 
@@ -55,6 +58,15 @@ public class Task {
     @NonNull
     public TaskRecurrence getTaskRecurrence() {
         return taskRecurrence;
+    }
+
+    @NonNull
+    public TaskMode getTaskMode() {
+        return taskMode;
+    }
+
+    public void setTaskMode(@NonNull TaskMode newMode) {
+        this.taskMode = newMode;
     }
 
     @NonNull
@@ -92,6 +104,10 @@ public class Task {
     // Checks if dateCreated should be refreshed based on the current date (triggered on date changes)
     public void refreshDateCreated(LocalDate currentDate) {
         var previousDateCreated = dateCreated;
+
+        if (this.taskMode == TaskMode.TOMORROW) {
+            this.taskMode = TaskMode.TODAY;
+        }
 
         switch (taskRecurrence) {
             case ONE_TIME:
@@ -137,15 +153,18 @@ public class Task {
     // The following method decides whether to display a task or not at a specific date
     // TODO: pass the current task context
     public boolean displaySelf(LocalDate currentDate) {
+        ZoneId zone = ZoneId.systemDefault();
         // Always show if not completed
         if (isCompleted()) {
             // Show if the completion date is before or at the current one
-            ZoneId zone = ZoneId.systemDefault();
             long currentEpochSeconds = currentDate.atStartOfDay(zone).toInstant().getEpochSecond();
             long completedEpochSeconds = dateCompleted.atStartOfDay(zone).toInstant().getEpochSecond();
             return currentEpochSeconds <= completedEpochSeconds;
         } else {
-            return true;
+            // Show if the creation date is before or at the current one
+            long currentEpochSeconds = currentDate.atStartOfDay(zone).toInstant().getEpochSecond();
+            long creationEpochSeconds = dateCreated.atStartOfDay(zone).toInstant().getEpochSecond();
+            return currentEpochSeconds >= creationEpochSeconds;
         }
     }
 }
