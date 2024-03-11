@@ -45,7 +45,7 @@ public class MemoryTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void moveTaskToTomorrow(int id) {
+    public void moveTaskToTomorrow(int id, LocalDate date) {
 
     }
 

@@ -62,32 +62,32 @@ public class RoomTaskRepository implements TaskRepository {
         }
     }
 
-//    @Override
-//    public void moveTaskToToday(int id) {
-//        ZoneId zone = ZoneId.systemDefault();
-//        long currentEpochSeconds = LocalDate.now().atStartOfDay(zone).toInstant().getEpochSecond();
-//        dao.renewDateCreation(id, currentEpochSeconds);
-//    }
-//
-//    @Override
-//    public void moveTaskToTomorrow(int id, LocalDate tomorrow) {
-//        ZoneId zone = ZoneId.systemDefault();
-//        long tomorrowEpochSeconds = tomorrow.atStartOfDay(zone).toInstant().getEpochSecond();
-//        dao.renewDateCreation(id, tomorrowEpochSeconds);
-//    }
+    @Override
+    public void moveTaskToToday(int id) {
+        ZoneId zone = ZoneId.systemDefault();
+        long currentEpochSeconds = LocalDate.now().atStartOfDay(zone).toInstant().getEpochSecond();
+        dao.renewDateCreation(id, currentEpochSeconds);
+    }
+
+    @Override
+    public void moveTaskToTomorrow(int id, LocalDate tomorrow) {
+        ZoneId zone = ZoneId.systemDefault();
+        long tomorrowEpochSeconds = tomorrow.atStartOfDay(zone).toInstant().getEpochSecond();
+        dao.renewDateCreation(id, tomorrowEpochSeconds);
+    }
 
     @Override
     public int generateNextId() {
         return 1 + dao.getMaxId();
     }
 
-    @Override
-    public void moveTaskToToday(int id) {
-        dao.changeTaskMode(id, TaskMode.TODAY.value());
-    }
-
-    @Override
-    public void moveTaskToTomorrow(int id) {
-        dao.changeTaskMode(id, TaskMode.TOMORROW.value());
-    }
+//    @Override
+//    public void moveTaskToToday(int id) {
+//        dao.changeTaskMode(id, TaskMode.TODAY.value().);
+//    }
+//
+//    @Override
+//    public void moveTaskToTomorrow(int id) {
+//        dao.changeTaskMode(id, TaskMode.TOMORROW.value());
+//    }
 }

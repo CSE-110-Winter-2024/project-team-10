@@ -13,5 +13,5 @@ public interface TaskRepository {
     void completeTask(LocalDate date, int id);
     int generateNextId();
     void moveTaskToToday(int id);
-    void moveTaskToTomorrow(int id);
+    void moveTaskToTomorrow(int id, LocalDate date);
 }

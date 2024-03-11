@@ -25,7 +25,6 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
     private Consumer<Integer> onTaskPressDelete;
     private Consumer<Integer> onTaskPressMoveToToday;
     private Consumer<Integer> onTaskPressMoveToTomorrow;
-    private Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow;
     private FragmentManager fragmentManager;
 
     public TaskListAdapter(
@@ -42,7 +41,6 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         this.onTaskPressDelete = onTaskPressDelete;
         this.onTaskPressMoveToToday = onTaskPressMoveToToday;
         this.onTaskPressMoveToTomorrow = onTaskPressMoveToTomorrow;
-//        this.onTaskPressMoveSingleTaskToTomorrow = onTaskPressMoveSingleTaskToTomorrow;
     }
 
     @NonNull

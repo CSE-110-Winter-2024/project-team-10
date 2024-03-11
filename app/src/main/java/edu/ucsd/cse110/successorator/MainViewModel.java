@@ -101,10 +101,10 @@ public class MainViewModel extends ViewModel {
         taskRepository.completeTask(currentDateSubject.getValue(), id);
     }
 
-//    public void toggleTaskDeletion(int id) {
-//        taskRepository.removeTask(id);
-//    }
-//
+    public void toggleTaskDeletion(int id) {
+        taskRepository.removeTask(id);
+    }
+
 //    //    Used for long press move to today
 //    public void toggleTaskMoveToToday(int id) {
 //        taskRepository.moveTaskToToday(id);
@@ -115,16 +115,6 @@ public class MainViewModel extends ViewModel {
 //        LocalDate currentDate = currentDateSubject.getValue();
 //        taskRepository.moveTaskToTomorrow(id, currentDate);
 //    }
-//
-//    public void toggleSingleTaskMoveToTomorrow(int id) {
-//        LocalDate currentDate = currentDateSubject.getValue();
-//        taskRepository.moveTaskToTomorrow(id, currentDate.plusDays(1));
-//    }
-
-//    Used for long press to delete
-    public void toggleTaskDeletion(int id) {
-        taskRepository.removeTask(id);
-    }
 
 //    Used for long press move to today
     public void toggleTaskMoveToToday(int id) {
@@ -133,12 +123,9 @@ public class MainViewModel extends ViewModel {
 
 //    Used for long press move to tomorrow
     public void toggleTaskMoveToTomorrow(int id) {
-        taskRepository.moveTaskToTomorrow(id);
+        taskRepository.moveTaskToTomorrow(id, getCurrentDateSubject().getValue().plusDays(1));
     }
 
-    public void toggleSingleTaskMoveToTomorrow(int id) {
-        taskRepository.moveTaskToTomorrow(id);
-    }
 
     public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
         var now = currentDateSubject.getValue();
