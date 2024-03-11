@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +19,32 @@ import java.util.function.Consumer;
 import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.TaskBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.ui.tasklist.dialog.ChangeTaskModeDialogFragment;
 
 public class TaskListAdapter extends ArrayAdapter<Task> {
-    Consumer<Integer> onTaskClick;
+    private Consumer<Integer> onTaskClickComplete;
+    private Consumer<Integer> onTaskPressDelete;
+    private Consumer<Integer> onTaskPressMoveToToday;
+    private Consumer<Integer> onTaskPressMoveToTomorrow;
+    private Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow;
+    private FragmentManager fragmentManager;
 
-    public TaskListAdapter(Context context, List<Task> taskList, Consumer<Integer> onTaskClick) {
+    public TaskListAdapter(
+            Context context,
+            List<Task> taskList,
+            FragmentManager fragmentManager,
+            Consumer<Integer> onTaskClickComplete,
+            Consumer<Integer> onTaskPressDelete,
+            Consumer<Integer> onTaskPressMoveToToday,
+            Consumer<Integer> onTaskPressMoveToTomorrow,
+            Consumer<Integer> onTaskPressMoveSingleTaskToTomorrow) {
         super(context, 0, new ArrayList<>(taskList));
-        this.onTaskClick = onTaskClick;
+        this.fragmentManager = fragmentManager;
+        this.onTaskClickComplete = onTaskClickComplete;
+        this.onTaskPressDelete = onTaskPressDelete;
+        this.onTaskPressMoveToToday = onTaskPressMoveToToday;
+        this.onTaskPressMoveToTomorrow = onTaskPressMoveToTomorrow;
+        this.onTaskPressMoveSingleTaskToTomorrow = onTaskPressMoveSingleTaskToTomorrow;
     }
 
     @NonNull
@@ -66,7 +86,16 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
             var id = task.id();
             assert id != null;
             // (un)marks a task as complete
-            onTaskClick.accept(id);
+            onTaskClickComplete.accept(id);
+        });
+
+        binding.description.setPaintFlags(paintFlags);
+        binding.getRoot().setBackgroundColor(backgroundColor);
+
+        binding.task.setOnLongClickListener(v -> {
+            // Show the ChangeTaskModeDialogFragment when a task is long-pressed
+            showChangeTaskModeDialog(task);
+            return true;
         });
 
         return binding.getRoot();
@@ -86,5 +115,16 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         assert id != null;
 
         return id;
+    }
+
+    private void showChangeTaskModeDialog(Task task) {
+        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(
+                task,
+                onTaskClickComplete,
+                onTaskPressDelete,
+                onTaskPressMoveToToday,
+                onTaskPressMoveToTomorrow,
+                onTaskPressMoveSingleTaskToTomorrow);
+        dialogFragment.show(fragmentManager, "ChangeTaskModeDialogFragment");
     }
 }

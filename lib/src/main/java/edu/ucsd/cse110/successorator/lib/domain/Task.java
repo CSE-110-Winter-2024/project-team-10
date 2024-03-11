@@ -137,15 +137,18 @@ public class Task {
     // The following method decides whether to display a task or not at a specific date
     // TODO: pass the current task context
     public boolean displaySelf(LocalDate currentDate) {
+        ZoneId zone = ZoneId.systemDefault();
         // Always show if not completed
         if (isCompleted()) {
             // Show if the completion date is before or at the current one
-            ZoneId zone = ZoneId.systemDefault();
             long currentEpochSeconds = currentDate.atStartOfDay(zone).toInstant().getEpochSecond();
             long completedEpochSeconds = dateCompleted.atStartOfDay(zone).toInstant().getEpochSecond();
             return currentEpochSeconds <= completedEpochSeconds;
         } else {
-            return true;
+            // Show if the creation date is before or at the current one
+            long currentEpochSeconds = currentDate.atStartOfDay(zone).toInstant().getEpochSecond();
+            long creationEpochSeconds = dateCreated.atStartOfDay(zone).toInstant().getEpochSecond();
+            return currentEpochSeconds >= creationEpochSeconds;
         }
     }
 }

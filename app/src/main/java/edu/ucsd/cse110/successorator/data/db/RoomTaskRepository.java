@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.Transformations;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
 import edu.ucsd.cse110.successorator.util.LiveDataSubject;
+import static edu.ucsd.cse110.successorator.lib.util.LocalDateConverter.LocalDateToString;
 
 public class RoomTaskRepository implements TaskRepository {
     private final TaskDao dao;
@@ -48,7 +50,7 @@ public class RoomTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void toggleTaskCompletion(@NonNull LocalDate dateCompleted, int id) {
+    public void completeTask(@NonNull LocalDate dateCompleted, int id) {
         var task = dao.find(id).toTask();
         task.toggleDateCompleted(dateCompleted);
 
@@ -58,6 +60,20 @@ public class RoomTaskRepository implements TaskRepository {
         } else {
             dao.prepend(TaskEntity.fromTask(task));
         }
+    }
+
+    @Override
+    public void moveTaskToToday(int id) {
+        ZoneId zone = ZoneId.systemDefault();
+        long currentEpochSeconds = LocalDate.now().atStartOfDay(zone).toInstant().getEpochSecond();
+        dao.renewDateCreation(id, currentEpochSeconds);
+    }
+
+    @Override
+    public void moveTaskToTomorrow(int id, LocalDate tomorrow) {
+        ZoneId zone = ZoneId.systemDefault();
+        long tomorrowEpochSeconds = tomorrow.atStartOfDay(zone).toInstant().getEpochSecond();
+        dao.renewDateCreation(id, tomorrowEpochSeconds);
     }
 
     @Override

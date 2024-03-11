@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.successorator.data.db;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -7,6 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Dao
@@ -50,4 +52,7 @@ public interface TaskDao {
 
     @Query("SELECT COUNT(*) FROM tasks")
     int size();
+
+    @Query("UPDATE tasks SET dateCreated = :newDate WHERE id = :id")
+    void renewDateCreation(int id, long newDate);
 }
