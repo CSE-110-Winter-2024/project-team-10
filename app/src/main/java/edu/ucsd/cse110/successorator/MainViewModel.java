@@ -3,15 +3,11 @@ package edu.ucsd.cse110.successorator;
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
 import android.util.Log;
-import android.util.Pair;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
@@ -170,10 +166,5 @@ public class MainViewModel extends ViewModel {
         var now = currentDateSubject.getValue();
         now = now.minusDays(1);
         currentDateSubject.setValue(now);
-    }
-
-    // TODO: remove this as well...
-    public Subject<List<Task>> getTaskListSubject() {
-        return taskListSubject;
     }
 }

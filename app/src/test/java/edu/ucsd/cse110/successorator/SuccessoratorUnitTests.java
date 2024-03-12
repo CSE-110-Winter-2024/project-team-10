@@ -7,9 +7,6 @@ import static org.junit.Assert.*;
 import static edu.ucsd.cse110.successorator.ui.tasklist.TaskListFragment.filterTaskList;
 
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.data.MemoryDataSource;
@@ -83,10 +80,8 @@ public class SuccessoratorUnitTests {
     public void dateTest() {
         LocalDate date = LocalDate.now();
         Task task = TaskBuilder.from(1).describe("One-time task").createOn(date).build();
-
-        var expected = date;
         var actual = task.getDateCreated();
-        assertEquals(expected, actual);
+        assertEquals(date, actual);
     }
 
     // Tests task refreshing for recurrence
@@ -261,7 +256,7 @@ public class SuccessoratorUnitTests {
         Task errandTask = TaskBuilder.from(4).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).completeOn(LocalDate.now().minusDays(1)).clarify(TaskContext.ERRAND).build();
         Task homeTask1 = TaskBuilder.from(1).describe("One-time task").build();
         Task homeTask2 = TaskBuilder.from(3).describe("Weekly task").schedule(TaskRecurrence.WEEKLY).build();
-        Task workTask1 = TaskBuilder.from(1).describe("One-time task").clarify(TaskContext.WORK).build();;
+        Task workTask1 = TaskBuilder.from(1).describe("One-time task").clarify(TaskContext.WORK).build();
         Task workTask2 = TaskBuilder.from(2).describe("Daily task").schedule(TaskRecurrence.DAILY).clarify(TaskContext.WORK).build();
         Task schoolTask = TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).completeOn(LocalDate.now().minusWeeks(2)).clarify(TaskContext.SCHOOL).build();
         List<Task> DEFAULT_TASKS_2 = List.of(errandTask, homeTask1, homeTask2, workTask1, workTask2, schoolTask);

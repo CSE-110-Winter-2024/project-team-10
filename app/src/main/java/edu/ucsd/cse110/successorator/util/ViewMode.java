@@ -1,7 +1,5 @@
 package edu.ucsd.cse110.successorator.util;
 
-import edu.ucsd.cse110.successorator.MainViewModel;
-
 public enum ViewMode {
     TODAY, TOMORROW, PENDING, RECURRING;
 
