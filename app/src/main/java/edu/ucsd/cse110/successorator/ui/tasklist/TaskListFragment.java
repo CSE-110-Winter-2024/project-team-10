@@ -11,16 +11,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
-import edu.ucsd.cse110.successorator.lib.domain.Task;
-import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
-import edu.ucsd.cse110.successorator.util.FilterPacket;
-import edu.ucsd.cse110.successorator.util.ViewMode;
+import edu.ucsd.cse110.successorator.util.TaskListFilter;
 
 public class TaskListFragment extends Fragment {
     private TaskListAdapter adapter;
@@ -58,7 +53,8 @@ public class TaskListFragment extends Fragment {
                 return;
             }
 
-            var filteredTasks = filterTaskList(packet);
+            Log.d("filterTaskList", "filtering tasks with date=" + packet.currentDate.toString());
+            var filteredTasks = TaskListFilter.from(packet).filter();
 
             adapter.clear();
             adapter.addAll(filteredTasks);
@@ -72,49 +68,6 @@ public class TaskListFragment extends Fragment {
         var view = FragmentTaskListBinding.inflate(inflater, container, false);
         view.taskList.setAdapter(adapter);
         return view.getRoot();
-    }
-
-    static private List<Task> filterTaskList(FilterPacket packet) {
-        Log.d("filterTaskList", "filtering tasks with date=" + packet.currentDate.toString());
-
-        // Date to compare to for the task filtering
-        LocalDate compareDate = (packet.viewMode == ViewMode.TOMORROW)
-                ? packet.currentDate.plusDays(1)
-                : packet.currentDate;
-
-        List<Task> filteredList = new ArrayList<>();
-        if (packet.taskContext != null) {
-            for (Task task : packet.taskList) {
-                if (task.getTaskContext() == packet.taskContext) {
-                    filteredList.add(task);
-                }
-            }
-
-            return filteredList;
-        }
-
-        for (Task task : packet.taskList) {
-            if (packet.viewMode == ViewMode.PENDING) {
-                if (!task.isPending()) {
-                    continue;
-                }
-            } else if (packet.viewMode == ViewMode.RECURRING) {
-                if (task.getTaskRecurrence() == TaskRecurrence.ONE_TIME) {
-                    continue;
-                }
-            } else {
-                // Must be TODAY or TOMORROW, so its
-                // enough to check with compareDate
-                if (!task.displayOnDate(compareDate)) {
-                    continue;
-                }
-            }
-
-            // If we are here then the appropriate checks have passed
-            filteredList.add(task);
-        }
-
-        return filteredList;
     }
 }
 
