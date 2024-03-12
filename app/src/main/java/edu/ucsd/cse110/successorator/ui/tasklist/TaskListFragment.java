@@ -9,16 +9,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
 
 public class TaskListFragment extends Fragment {
     private TaskListAdapter adapter;
@@ -26,6 +27,8 @@ public class TaskListFragment extends Fragment {
     private ViewModelProvider.Factory modelFactory;
     private ViewModelProvider modelProvider;
     private MainViewModel activityModel;
+    private List<Task> filteredTasks;
+    private static MutableLiveData<TaskContext> taskContextMutableLiveData;
 
     public TaskListFragment() {}
 
@@ -46,6 +49,9 @@ public class TaskListFragment extends Fragment {
         modelProvider = new ViewModelProvider(modelOwner, modelFactory);
         activityModel = modelProvider.get(MainViewModel.class);
 
+        taskContextMutableLiveData = new MutableLiveData<>();
+        taskContextMutableLiveData.setValue(null);
+
         // Initializer the adapter
         this.adapter = new TaskListAdapter(
                 requireContext(),
@@ -56,20 +62,32 @@ public class TaskListFragment extends Fragment {
                 activityModel::toggleTaskMoveToToday,
                 activityModel::toggleTaskMoveToTomorrow);
 
-        activityModel.getDateTaskPacketSubject().observe(packet -> {
-            boolean isNull = (packet == null)
-                    || (packet.first == null)
-                    || (packet.second == null);
+        //TODO: create an observer for taskContext
+        taskContextMutableLiveData.observe(this, taskContext -> {
+            if (taskContextMutableLiveData.getValue() != null){
+                List<Task> tasklist = activityModel.getDateTaskPacketSubject().getValue().second;
 
-            if (isNull) {
-                return;
+                filteredTasks = filterTaskList(tasklist, taskContext);
+                adapter.clear();
+                adapter.addAll(filteredTasks);
+                adapter.notifyDataSetChanged();
+            }else {
+                activityModel.getDateTaskPacketSubject().observe(packet -> {
+                    boolean isNull = (packet == null)
+                            || (packet.first == null)
+                            || (packet.second == null);
+
+                    if (isNull) {
+                        return;
+                    }
+
+                    filteredTasks = filterTaskList(packet.second, packet.first);
+
+                    adapter.clear();
+                    adapter.addAll(filteredTasks);
+                    adapter.notifyDataSetChanged();
+                });
             }
-
-            var filteredTasks = filterTaskList(packet.second, packet.first);
-
-            adapter.clear();
-            adapter.addAll(filteredTasks);
-            adapter.notifyDataSetChanged();
         });
     }
 
@@ -83,13 +101,29 @@ public class TaskListFragment extends Fragment {
 
     static private List<Task> filterTaskList(List<Task> tasks, LocalDate currentDate) {
         List<Task> filteredList = new ArrayList<>();
-
         for (Task task : tasks) {
             if (task.displaySelf(currentDate)) {
                 filteredList.add(task);
             }
         }
-
         return filteredList;
     }
+
+    public static List<Task> filterTaskList(List<Task> tasks, TaskContext taskContext) {
+        if (tasks == null) {
+            return null;
+        }
+        List<Task> filteredList = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getTaskContext() == taskContext) {
+                filteredList.add(task);
+            }
+        }
+        return filteredList;
+    }
+
+    public static void setTaskContextMutableLiveData(TaskContext taskContext) {
+        taskContextMutableLiveData.setValue(taskContext);
+    }
 }
+

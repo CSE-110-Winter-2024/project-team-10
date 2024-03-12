@@ -5,6 +5,7 @@ import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLI
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
@@ -20,10 +21,12 @@ import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.SimpleSubject;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
+import edu.ucsd.cse110.successorator.ui.tasklist.dialog.FocusMenuDialogFragment;
 
 public class MainViewModel extends ViewModel {
     private final SimpleSubject<LocalDate> currentDateSubject;
     private final TaskRepository taskRepository;
+
     private final Subject<List<Task>> taskListSubject;
     private SimpleSubject<Pair<LocalDate, List<Task>>> dateTaskPacketSubject;
 
@@ -105,27 +108,13 @@ public class MainViewModel extends ViewModel {
         taskRepository.removeTask(id);
     }
 
-//    //    Used for long press move to today
-//    public void toggleTaskMoveToToday(int id) {
-//        taskRepository.moveTaskToToday(id);
-//    }
-//
-//    //    Used for long press move to tomorrow
-//    public void toggleTaskMoveToTomorrow(int id) {
-//        LocalDate currentDate = currentDateSubject.getValue();
-//        taskRepository.moveTaskToTomorrow(id, currentDate);
-//    }
-
-//    Used for long press move to today
     public void toggleTaskMoveToToday(int id) {
         taskRepository.moveTaskToToday(id);
     }
 
-//    Used for long press move to tomorrow
     public void toggleTaskMoveToTomorrow(int id) {
         taskRepository.moveTaskToTomorrow(id, getCurrentDateSubject().getValue().plusDays(1));
     }
-
 
     public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
         var now = currentDateSubject.getValue();
@@ -149,5 +138,9 @@ public class MainViewModel extends ViewModel {
         var now = currentDateSubject.getValue();
         now = now.minusDays(1);
         currentDateSubject.setValue(now);
+    }
+
+    public Subject<List<Task>> getTaskListSubject() {
+        return taskListSubject;
     }
 }

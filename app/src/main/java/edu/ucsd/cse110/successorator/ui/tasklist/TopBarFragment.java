@@ -17,6 +17,7 @@ import java.util.Locale;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTopBarBinding;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.CreateTaskDialogFragment;
+import edu.ucsd.cse110.successorator.ui.tasklist.dialog.FocusMenuDialogFragment;
 
 public class TopBarFragment extends Fragment {
 
@@ -66,6 +67,13 @@ public class TopBarFragment extends Fragment {
         view.addButton.setOnClickListener(v -> {
             var dialogFragment = CreateTaskDialogFragment.newInstance();
             dialogFragment.show(getParentFragmentManager(), "CreateTaskDialogFragment");
+        });
+
+        view.actionSettings.setOnClickListener(v -> {
+            // display the action menu
+            var dialogFragment = FocusMenuDialogFragment.newInstance();
+            dialogFragment.show(getParentFragmentManager(), "FocusMenuDialogFragment");
+
         });
 
         return view.getRoot();
