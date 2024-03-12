@@ -22,15 +22,10 @@ import java.util.Locale;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTopBarBinding;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.CreateTaskDialogFragment;
+import edu.ucsd.cse110.successorator.ui.tasklist.dialog.FocusMenuDialogFragment;
 import edu.ucsd.cse110.successorator.util.ViewMode;
 
 public class TopBarFragment extends Fragment {
-
-    private FragmentActivity modelOwner;
-    private ViewModelProvider.Factory modelFactory;
-    private ViewModelProvider modelProvider;
-    private MainViewModel activityModel;
-    private DateTimeFormatter dateTimeFormatter;
 
     public TopBarFragment() {}
 
@@ -46,14 +41,13 @@ public class TopBarFragment extends Fragment {
         var view = FragmentTopBarBinding.inflate(inflater, container, false);
 
         // Obtain the main view model
-        modelOwner = requireActivity();
-        modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
-        modelProvider = new ViewModelProvider(modelOwner, modelFactory);
-
-        activityModel = modelProvider.get(MainViewModel.class);
+        var modelOwner = requireActivity();
+        var modelFactory = ViewModelProvider.Factory.from(MainViewModel.initializer);
+        var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
+        var activityModel = modelProvider.get(MainViewModel.class);
 
         // Make a date formatter
-        dateTimeFormatter = DateTimeFormatter.ofPattern("EE MM/dd", Locale.ENGLISH);
+        var dateTimeFormatter = DateTimeFormatter.ofPattern("EE MM/dd", Locale.ENGLISH);
 
         // Drop down handler
         Spinner spinner = view.spinner;
@@ -93,6 +87,13 @@ public class TopBarFragment extends Fragment {
         view.addButton.setOnClickListener(v -> {
             var dialogFragment = CreateTaskDialogFragment.newInstance();
             dialogFragment.show(getParentFragmentManager(), "CreateTaskDialogFragment");
+        });
+
+        view.actionSettings.setOnClickListener(v -> {
+            // display the action menu
+            var dialogFragment = FocusMenuDialogFragment.newInstance();
+            dialogFragment.show(getParentFragmentManager(), "FocusMenuDialogFragment");
+
         });
 
         return view.getRoot();

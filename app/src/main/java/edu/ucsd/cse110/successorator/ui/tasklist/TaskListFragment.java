@@ -9,11 +9,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,9 +48,11 @@ public class TaskListFragment extends Fragment {
         this.adapter = new TaskListAdapter(requireContext(), List.of(), getParentFragmentManager(), activityModel::toggleTaskCompletion);
 
         activityModel.getDateTaskPacketSubject().observe(packet -> {
+            // Task context being null is fine
             boolean isNull = (packet == null)
                     || (packet.currentDate == null)
-                    || (packet.taskList == null);
+                    || (packet.taskList == null)
+                    || (packet.viewMode == null);
 
             if (isNull) {
                 return;
@@ -78,12 +78,21 @@ public class TaskListFragment extends Fragment {
         Log.d("filterTaskList", "filtering tasks with date=" + packet.currentDate.toString());
 
         // Date to compare to for the task filtering
-        LocalDate compareDate = packet.currentDate;
-        if (packet.viewMode == ViewMode.TOMORROW) {
-            compareDate = compareDate.plusDays(1);
-        }
+        LocalDate compareDate = (packet.viewMode == ViewMode.TOMORROW)
+                ? packet.currentDate.plusDays(1)
+                : packet.currentDate;
 
         List<Task> filteredList = new ArrayList<>();
+        if (packet.taskContext != null) {
+            for (Task task : packet.taskList) {
+                if (task.getTaskContext() == packet.taskContext) {
+                    filteredList.add(task);
+                }
+            }
+
+            return filteredList;
+        }
+
         for (Task task : packet.taskList) {
             if (packet.viewMode == ViewMode.PENDING) {
                 if (!task.isPending()) {
@@ -108,3 +117,4 @@ public class TaskListFragment extends Fragment {
         return filteredList;
     }
 }
+
