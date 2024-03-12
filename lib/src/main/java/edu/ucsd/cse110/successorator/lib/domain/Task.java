@@ -11,30 +11,28 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 public class Task {
+    // A task is pending if dateCreated == null
     // A task is complete if dateCompleted != null
     private final @Nullable Integer id;
     private final @NonNull String description;
-    private @NonNull LocalDate dateCreated;
+    private @Nullable LocalDate dateCreated;
     private @Nullable LocalDate dateCompleted;
     private @NonNull TaskRecurrence taskRecurrence;
-    private @NonNull TaskMode taskMode;
     private @NonNull TaskContext taskContext;
 
     // TODO: create a builder class
     public Task
             (@Nullable Integer id,
              @NonNull String description,
-             @NonNull LocalDate dateCreated,
+             @Nullable LocalDate dateCreated,
              @Nullable LocalDate dateCompleted,
              @NonNull TaskRecurrence taskRecurrence,
-             @NonNull TaskMode taskMode,
              @NonNull TaskContext taskContext) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.dateCompleted = dateCompleted;
         this.taskRecurrence = taskRecurrence;
-        this.taskMode = taskMode;
         this.taskContext = taskContext;
     }
 
@@ -45,7 +43,7 @@ public class Task {
         return description;
     }
 
-    @NonNull
+    @Nullable
     public LocalDate getDateCreated() {
         return dateCreated;
     }
@@ -58,15 +56,6 @@ public class Task {
     @NonNull
     public TaskRecurrence getTaskRecurrence() {
         return taskRecurrence;
-    }
-
-    @NonNull
-    public TaskMode getTaskMode() {
-        return taskMode;
-    }
-
-    public void setTaskMode(@NonNull TaskMode newMode) {
-        this.taskMode = newMode;
     }
 
     @NonNull
@@ -93,6 +82,10 @@ public class Task {
         return dateCompleted != null;
     }
 
+    public boolean isPending() {
+        return dateCreated == null;
+    }
+
     public void toggleDateCompleted(@NonNull LocalDate dateCompleted) {
         if (isCompleted()) {
             this.dateCompleted = null;
@@ -104,10 +97,6 @@ public class Task {
     // Checks if dateCreated should be refreshed based on the current date (triggered on date changes)
     public void refreshDateCreated(LocalDate currentDate) {
         var previousDateCreated = dateCreated;
-
-        if (this.taskMode == TaskMode.TOMORROW) {
-            this.taskMode = TaskMode.TODAY;
-        }
 
         switch (taskRecurrence) {
             case ONE_TIME:
@@ -151,8 +140,7 @@ public class Task {
     }
 
     // The following method decides whether to display a task or not at a specific date
-    // TODO: pass the current task context
-    public boolean displaySelf(LocalDate currentDate) {
+    public boolean displayOnDate(LocalDate currentDate) {
         ZoneId zone = ZoneId.systemDefault();
         // Always show if not completed
         if (isCompleted()) {
@@ -160,11 +148,13 @@ public class Task {
             long currentEpochSeconds = currentDate.atStartOfDay(zone).toInstant().getEpochSecond();
             long completedEpochSeconds = dateCompleted.atStartOfDay(zone).toInstant().getEpochSecond();
             return currentEpochSeconds <= completedEpochSeconds;
-        } else {
+        } else if (!isPending()) {
             // Show if the creation date is before or at the current one
             long currentEpochSeconds = currentDate.atStartOfDay(zone).toInstant().getEpochSecond();
             long creationEpochSeconds = dateCreated.atStartOfDay(zone).toInstant().getEpochSecond();
             return currentEpochSeconds >= creationEpochSeconds;
         }
+
+        return false;
     }
 }

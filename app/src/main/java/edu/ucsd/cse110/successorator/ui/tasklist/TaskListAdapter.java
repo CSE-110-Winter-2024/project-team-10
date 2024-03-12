@@ -21,26 +21,13 @@ import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.ChangeTaskModeDialogFragment;
 
 public class TaskListAdapter extends ArrayAdapter<Task> {
-    private Consumer<Integer> onTaskClickComplete;
-    private Consumer<Integer> onTaskPressDelete;
-    private Consumer<Integer> onTaskPressMoveToToday;
-    private Consumer<Integer> onTaskPressMoveToTomorrow;
-    private FragmentManager fragmentManager;
+    private final Consumer<Task> onTaskClickComplete;
+    private final FragmentManager fragmentManager;
 
-    public TaskListAdapter(
-            Context context,
-            List<Task> taskList,
-            FragmentManager fragmentManager,
-            Consumer<Integer> onTaskClickComplete,
-            Consumer<Integer> onTaskPressDelete,
-            Consumer<Integer> onTaskPressMoveToToday,
-            Consumer<Integer> onTaskPressMoveToTomorrow) {
+    public TaskListAdapter(Context context, List<Task> taskList, FragmentManager fragmentManager, Consumer<Task> onTaskClickComplete) {
         super(context, 0, new ArrayList<>(taskList));
         this.fragmentManager = fragmentManager;
         this.onTaskClickComplete = onTaskClickComplete;
-        this.onTaskPressDelete = onTaskPressDelete;
-        this.onTaskPressMoveToToday = onTaskPressMoveToToday;
-        this.onTaskPressMoveToTomorrow = onTaskPressMoveToTomorrow;
     }
 
     @NonNull
@@ -59,7 +46,11 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
         binding.description.setText(task.getDescription());
 
-        String dateText = task.getTaskRecurrence() + " " + task.getDateCreatedString();
+        String dateText = "Pending";
+        if (!task.isPending()) {
+            dateText = task.getTaskRecurrence() + " " + task.getDateCreatedString();
+        }
+
         binding.date.setText(dateText);
         binding.dateCompleted.setText(task.getDateCompletedString());
 
@@ -78,41 +69,19 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         binding.description.setPaintFlags(paintFlags);
         binding.getRoot().setBackgroundColor(backgroundColor);
 
-        binding.task.setOnLongClickListener(v -> {
-            // Show the ChangeTaskModeDialogFragment when a task is long-pressed
-            showChangeTaskModeDialog(task);
-            return true;
-        });
-
         binding.task.setOnClickListener(v -> {
-            var id = task.id();
-            assert id != null;
-
             // (un)marks a task as complete
-            onTaskClickComplete.accept(id);
+            onTaskClickComplete.accept(task);
         });
-
-        binding.description.setPaintFlags(paintFlags);
-        binding.getRoot().setBackgroundColor(backgroundColor);
 
         binding.task.setOnLongClickListener(v -> {
             // Show the ChangeTaskModeDialogFragment when a task is long-pressed
-            showChangeTaskModeDialog(task);
+            ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(task);
+            dialogFragment.show(fragmentManager, "ChangeTaskModeDialogFragment");
             return true;
         });
 
         return binding.getRoot();
-    }
-
-    // Method to show the ChangeTaskModeDialogFragment
-    private void showChangeTaskModeDialog(Task task) {
-        ChangeTaskModeDialogFragment dialogFragment = ChangeTaskModeDialogFragment.newInstance(
-                task,
-                onTaskClickComplete,
-                onTaskPressDelete,
-                onTaskPressMoveToToday,
-                onTaskPressMoveToTomorrow);
-        dialogFragment.show(fragmentManager, "ChangeTaskModeDialogFragment");
     }
 
     @Override

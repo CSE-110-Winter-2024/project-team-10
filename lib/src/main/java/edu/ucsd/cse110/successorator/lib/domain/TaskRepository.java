@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.successorator.lib.domain;
 
+import androidx.annotation.NonNull;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,8 +12,7 @@ public interface TaskRepository {
     void saveTask(Task task);
     void removeTask(int id);
     void replaceTask(Task task);
-    void completeTask(LocalDate date, int id);
+    void toggleTaskCompletion(int id, @NonNull LocalDate date);
+    void changeTaskDate(int id, LocalDate date);
     int generateNextId();
-    void moveTaskToToday(int id);
-    void moveTaskToTomorrow(int id, LocalDate date);
 }

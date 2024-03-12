@@ -4,12 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import static edu.ucsd.cse110.successorator.ui.tasklist.TaskListFragment.filterTaskList;
-
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.data.MemoryDataSource;
@@ -18,12 +13,9 @@ import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskBuilder;
 import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
+import edu.ucsd.cse110.successorator.util.FilterPacket;
+import edu.ucsd.cse110.successorator.util.TaskListFilter;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
 public class SuccessoratorUnitTests {
     public static final List<Task> DEFAULT_TASKS = List.of(
             TaskBuilder.from(1).describe("One-time task").build(),
@@ -42,20 +34,14 @@ public class SuccessoratorUnitTests {
     @Test
     public void isCompleteFalseTest() {
         Task task = TaskBuilder.from(1).describe("One-time task").build();
-
-        var expected = false;
-        var actual = task.isCompleted();
-        assertEquals(expected, actual);
+        assertEquals(false, task.isCompleted());
     }
 
     // Tests isComplete()
     @Test
     public void isCompleteTrueTest() {
         Task task = TaskBuilder.from(1).describe("One-time task").completeOn(LocalDate.now()).build();
-
-        var expected = true;
-        var actual = task.isCompleted();
-        assertEquals(expected, actual);
+        assertEquals(true, task.isCompleted());
     }
 
     // Tests task description
@@ -78,15 +64,26 @@ public class SuccessoratorUnitTests {
         assertEquals(expected, actual);
     }
 
+    // Tests pending status
+    @Test
+    public void isPendingFalseTest() {
+        Task task = TaskBuilder.from(1).describe("One-time task").createOn(LocalDate.now()).build();
+        assertEquals(false, task.isPending());
+    }
+
+    @Test
+    public void isPendingTrueTest() {
+        Task task = TaskBuilder.from(1).describe("One-time task").createOn(null).build();
+        assertEquals(true, task.isPending());
+    }
+
     // Tests task date
     @Test
     public void dateTest() {
         LocalDate date = LocalDate.now();
         Task task = TaskBuilder.from(1).describe("One-time task").createOn(date).build();
-
-        var expected = date;
         var actual = task.getDateCreated();
-        assertEquals(expected, actual);
+        assertEquals(date, actual);
     }
 
     // Tests task refreshing for recurrence
@@ -257,36 +254,51 @@ public class SuccessoratorUnitTests {
 
     // Checking that the task list can filter by a selected focus
     @Test
-    public void focusFilterTaskListTest() {
-        Task errandTask = TaskBuilder.from(4).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).completeOn(LocalDate.now().minusDays(1)).clarify(TaskContext.ERRAND).build();
-        Task homeTask1 = TaskBuilder.from(1).describe("One-time task").build();
+    public void filterContextTest() {
+        // Benchmark task list
+        Task errandTask = TaskBuilder.from(1).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).completeOn(LocalDate.now().minusDays(1)).clarify(TaskContext.ERRAND).build();
+        Task homeTask1 = TaskBuilder.from(2).describe("One-time task").build();
         Task homeTask2 = TaskBuilder.from(3).describe("Weekly task").schedule(TaskRecurrence.WEEKLY).build();
-        Task workTask1 = TaskBuilder.from(1).describe("One-time task").clarify(TaskContext.WORK).build();;
-        Task workTask2 = TaskBuilder.from(2).describe("Daily task").schedule(TaskRecurrence.DAILY).clarify(TaskContext.WORK).build();
-        Task schoolTask = TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).completeOn(LocalDate.now().minusWeeks(2)).clarify(TaskContext.SCHOOL).build();
-        List<Task> DEFAULT_TASKS_2 = List.of(errandTask, homeTask1, homeTask2, workTask1, workTask2, schoolTask);
+        Task workTask1 = TaskBuilder.from(4).describe("One-time task").clarify(TaskContext.WORK).build();
+        Task workTask2 = TaskBuilder.from(5).describe("Daily task").schedule(TaskRecurrence.DAILY).clarify(TaskContext.WORK).build();
+        Task schoolTask = TaskBuilder.from(6).describe("Yearly task").schedule(TaskRecurrence.YEARLY).completeOn(LocalDate.now().minusWeeks(2)).clarify(TaskContext.SCHOOL).build();
+
+        List<Task> taskList = List.of(errandTask, homeTask1, homeTask2, workTask1, workTask2, schoolTask);
 
         // Errand
+        FilterPacket errandPacket = (new FilterPacket())
+                .withTaskList(taskList)
+                .withTaskContext(TaskContext.ERRAND);
+
+        List<Task> actualErrand = TaskListFilter.from(errandPacket).filter();
         List<Task> expectedErrand = List.of(errandTask);
-        var actualErrand = filterTaskList(DEFAULT_TASKS_2, TaskContext.ERRAND);
         assertEquals(expectedErrand, actualErrand);
 
-
         // Home
+        FilterPacket homePacket = (new FilterPacket())
+                .withTaskList(taskList)
+                .withTaskContext(TaskContext.HOME);
+
+        List<Task> actualHome = TaskListFilter.from(homePacket).filter();
         List<Task> expectedHome = List.of(homeTask1, homeTask2);
-        var actualHome = filterTaskList(DEFAULT_TASKS_2, TaskContext.HOME);
         assertEquals(expectedHome, actualHome);
 
-
         // Work
+        FilterPacket workPacket = (new FilterPacket())
+                .withTaskList(taskList)
+                .withTaskContext(TaskContext.WORK);
+
+        List<Task> actualWork = TaskListFilter.from(workPacket).filter();
         List<Task> expectedWork = List.of(workTask1, workTask2);
-        var actualWork = filterTaskList(DEFAULT_TASKS_2, TaskContext.WORK);
         assertEquals(expectedWork, actualWork);
 
-
         // School
+        FilterPacket schoolPacket = (new FilterPacket())
+                .withTaskList(taskList)
+                .withTaskContext(TaskContext.SCHOOL);
+
+        List<Task> actualSchool = TaskListFilter.from(schoolPacket).filter();
         List<Task> expectedSchool = List.of(schoolTask);
-        var actualSchool = filterTaskList(DEFAULT_TASKS_2, TaskContext.SCHOOL);
         assertEquals(expectedSchool, actualSchool);
 
     }

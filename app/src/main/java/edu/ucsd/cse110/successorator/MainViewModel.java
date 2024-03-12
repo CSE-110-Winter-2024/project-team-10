@@ -3,15 +3,11 @@ package edu.ucsd.cse110.successorator;
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
 import android.util.Log;
-import android.util.Pair;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
@@ -21,14 +17,19 @@ import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.SimpleSubject;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
-import edu.ucsd.cse110.successorator.ui.tasklist.dialog.FocusMenuDialogFragment;
+import edu.ucsd.cse110.successorator.util.FilterPacket;
+import edu.ucsd.cse110.successorator.util.ViewMode;
 
 public class MainViewModel extends ViewModel {
     private final SimpleSubject<LocalDate> currentDateSubject;
     private final TaskRepository taskRepository;
 
     private final Subject<List<Task>> taskListSubject;
-    private SimpleSubject<Pair<LocalDate, List<Task>>> dateTaskPacketSubject;
+
+    // Since proper filtering depends on each component,
+    // we make an aggregate subject that is updated along with
+    // any of its components
+    private final SimpleSubject<FilterPacket> filterPacketSubject;
 
     public static final ViewModelInitializer<MainViewModel> initializer =
             new ViewModelInitializer<>(
@@ -48,30 +49,29 @@ public class MainViewModel extends ViewModel {
         var now = LocalDate.now();
         currentDateSubject = new SimpleSubject<>();
 
-        // Configure a subject for the combination of date and task list
-        var currentPacket = new Pair<LocalDate, List<Task>>(null, null);
-        dateTaskPacketSubject = new SimpleSubject<>();
-        dateTaskPacketSubject.setValue(currentPacket);
+        // Configure a subject for the filtering process
+        filterPacketSubject = new SimpleSubject<>();
+        filterPacketSubject.setValue(new FilterPacket());
 
-        // Needs to update itself if either component changes
-        taskListSubject.observe(list -> {
-            var currentValue = dateTaskPacketSubject.getValue();
-            if (list == null || currentValue == null) {
+        // Filter packet to update itself if any component changes
+        currentDateSubject.observe(date -> {
+            var currentPacket = filterPacketSubject.getValue();
+            if (date == null || currentPacket == null) {
                 return;
             }
 
-            var newValue = new Pair<>(currentValue.first, list);
-            dateTaskPacketSubject.setValue(newValue);
+            var newPacket = currentPacket.withDate(date);
+            filterPacketSubject.setValue(newPacket);
         });
 
-        currentDateSubject.observe(date -> {
-            var currentValue = dateTaskPacketSubject.getValue();
-            if (date == null || currentValue == null) {
+        taskListSubject.observe(list -> {
+            var currentPacket = filterPacketSubject.getValue();
+            if (list == null || currentPacket == null) {
                 return;
             }
 
-            var newValue = new Pair<>(date, currentValue.second);
-            dateTaskPacketSubject.setValue(newValue);
+            var newPacket = currentPacket.withTaskList(list);
+            filterPacketSubject.setValue(newPacket);
         });
 
         // Update the list of tasks on date change
@@ -96,51 +96,94 @@ public class MainViewModel extends ViewModel {
         return currentDateSubject;
     }
 
-    public Subject<Pair<LocalDate, List<Task>>> getDateTaskPacketSubject() {
-        return dateTaskPacketSubject;
+    public Subject<FilterPacket> getDateTaskPacketSubject() {
+        return filterPacketSubject;
     }
 
-    public void toggleTaskCompletion(int id) {
-        taskRepository.completeTask(currentDateSubject.getValue(), id);
+    public void completeTask(Task task) {
+        if (task.isCompleted()) {
+            // Already completed
+            return;
+        }
+
+        taskRepository.toggleTaskCompletion(task.id(), currentDateSubject.getValue());
     }
 
-    public void toggleTaskDeletion(int id) {
-        taskRepository.removeTask(id);
+    public void toggleTaskCompletion(Task task) {
+        taskRepository.toggleTaskCompletion(task.id(), currentDateSubject.getValue());
     }
 
-    public void toggleTaskMoveToToday(int id) {
-        taskRepository.moveTaskToToday(id);
+    public void removeTask(Task task) {
+        taskRepository.removeTask(task.id());
     }
 
-    public void toggleTaskMoveToTomorrow(int id) {
-        taskRepository.moveTaskToTomorrow(id, getCurrentDateSubject().getValue().plusDays(1));
+    // Used for long press move to today
+    public void changeTaskDateToday(Task task) {
+        LocalDate today = LocalDate.now();
+        taskRepository.changeTaskDate(task.id(), today);
     }
 
+    // Used for long press move to tomorrow
+    public void changeTaskDateTomorrow(Task task) {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        taskRepository.changeTaskDate(task.id(), tomorrow);
+    }
+
+    // Changing view mode
+    public void registerViewMode(ViewMode viewMode) {
+        var currentPacket = filterPacketSubject.getValue();
+        var newPacket = currentPacket.withViewMode(viewMode);
+        filterPacketSubject.setValue(newPacket);
+    }
+
+    // Changing task context (focus mode)
+    public void registerTaskContext(TaskContext taskContext) {
+        var currentPacket = filterPacketSubject.getValue();
+        var newPacket = currentPacket.withTaskContext(taskContext);
+        filterPacketSubject.setValue(newPacket);
+    }
+
+    // Adding new tasks
     public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
-        var now = currentDateSubject.getValue();
+        // Current date changes with view mode
+        LocalDate now;
+
+        switch (filterPacketSubject.getValue().viewMode) {
+            case TODAY:
+            case RECURRING:
+                now = currentDateSubject.getValue();
+                break;
+            case TOMORROW:
+                now = currentDateSubject.getValue().plusDays(1);
+                break;
+            default:
+                // PENDING date is null
+                now = null;
+                break;
+        }
+
+        // Create the task with our builder...
         var task = TaskBuilder.from(taskRepository)
                 .describe(description)
                 .createOn(now)
                 .schedule(recurrence)
                 .clarify(context)
                 .build();
+
+        // ...and add it to the database
         taskRepository.saveTask(task);
     }
 
     // Advancing the date forward OR backwards
-    public void moveNextDay() {
+    public void advanceNextDay() {
         var now = currentDateSubject.getValue();
         now = now.plusDays(1);
         currentDateSubject.setValue(now);
     }
 
-    public void movePreviousDay() {
+    public void advancePreviousDay() {
         var now = currentDateSubject.getValue();
         now = now.minusDays(1);
         currentDateSubject.setValue(now);
-    }
-
-    public Subject<List<Task>> getTaskListSubject() {
-        return taskListSubject;
     }
 }

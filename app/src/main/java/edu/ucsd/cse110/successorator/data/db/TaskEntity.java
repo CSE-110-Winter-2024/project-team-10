@@ -11,7 +11,6 @@ import java.time.ZoneId;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
-import edu.ucsd.cse110.successorator.lib.domain.TaskMode;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 
 @Entity(tableName = "tasks")
@@ -35,10 +34,6 @@ public class TaskEntity {
     @ColumnInfo(name = "taskRecurrence")
     public Integer taskRecurrence;
 
-    // Task mode as an integer
-    @ColumnInfo(name = "taskMode")
-    public Integer taskMode;
-
     // Task context as a character (H, S, W, E)
     @ColumnInfo(name = "taskContext")
     public Character taskContext;
@@ -49,21 +44,23 @@ public class TaskEntity {
              @NonNull Long dateCreated,
              @NonNull Long dateCompleted,
              @NonNull Integer taskRecurrence,
-             @NonNull Integer taskMode,
              @NonNull Character taskContext) {
         this.id = id;
         this.description = description;
         this.dateCreated = dateCreated;
         this.dateCompleted = dateCompleted;
         this.taskRecurrence = taskRecurrence;
-        this.taskMode = taskMode;
         this.taskContext = taskContext;
     }
 
     public @NonNull Task toTask() {
         ZoneId zone = ZoneId.systemDefault();
-        LocalDate created = Instant.ofEpochSecond(this.dateCreated).atZone(zone).toLocalDate();
+        LocalDate created = null;
         LocalDate completed = null;
+
+        if (this.dateCreated >= 0) {
+            created = Instant.ofEpochSecond(this.dateCreated).atZone(zone).toLocalDate();
+        }
 
         if (this.dateCompleted >= 0) {
             completed = Instant.ofEpochSecond(this.dateCompleted).atZone(zone).toLocalDate();
@@ -73,17 +70,20 @@ public class TaskEntity {
                 id, description,
                 created, completed,
                 TaskRecurrence.fetch(taskRecurrence),
-                TaskMode.fetch(taskMode),
                 TaskContext.fetch(taskContext)
         );
     }
 
     public static TaskEntity fromTask(@NonNull Task task) {
         ZoneId zone = ZoneId.systemDefault();
-        long epochSecondsCreated = task.getDateCreated()
-                .atStartOfDay(zone)
-                .toInstant()
-                .getEpochSecond();
+        long epochSecondsCreated = -1;
+
+        if (!task.isPending()) {
+            epochSecondsCreated = task.getDateCreated()
+                    .atStartOfDay(zone)
+                    .toInstant()
+                    .getEpochSecond();
+        }
 
         long epochSecondsCompleted = -1;
         if (task.isCompleted()) {
@@ -97,18 +97,7 @@ public class TaskEntity {
                 task.id(), task.getDescription(),
                 epochSecondsCreated, epochSecondsCompleted,
                 task.getTaskRecurrence().value(),
-                task.getTaskMode().value(),
                 task.getTaskContext().symbol()
         );
-    }
-
-    // Rolls over task modes
-    public void switchMode (Task task) {
-        if (task.getTaskMode() == TaskMode.TOMORROW) {
-            task.setTaskMode(TaskMode.TODAY);
-        }
-        else if (task.getTaskMode() == TaskMode.TODAY) {
-            task.setTaskMode(TaskMode.TODAY);
-        }
     }
 }

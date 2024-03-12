@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.successorator.lib.data;
 
 
+import androidx.annotation.NonNull;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
@@ -45,7 +47,7 @@ public class MemoryDataSource {
         return max;
     }
 
-    public void toggleTaskComplettion(LocalDate dateCompleted, int id) {
+    public void toggleTaskCompletion(int id, @NonNull LocalDate dateCompleted) {
         var task = findTask(id);
         task.toggleDateCompleted(dateCompleted);
 
