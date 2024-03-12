@@ -116,7 +116,6 @@ public class MainViewModel extends ViewModel {
         taskRepository.moveTaskToTomorrow(id, getCurrentDateSubject().getValue().plusDays(1));
     }
 
-
     public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
         var now = currentDateSubject.getValue();
         var task = TaskBuilder.from(taskRepository)
