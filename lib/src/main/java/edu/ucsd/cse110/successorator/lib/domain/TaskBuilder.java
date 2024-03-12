@@ -42,14 +42,12 @@ public class TaskBuilder {
 
     // Configure the creation date
     public TaskBuilder createOn(LocalDate dateCreated) {
-        assert dateCreated != null;
         this.dateCreated = dateCreated;
         return this;
     }
 
     // Configure the completion date
     public TaskBuilder completeOn(LocalDate dateCompleted) {
-        assert dateCompleted != null;
         this.dateCompleted = dateCompleted;
         return this;
     }

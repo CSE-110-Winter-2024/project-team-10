@@ -46,7 +46,11 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
         binding.description.setText(task.getDescription());
 
-        String dateText = task.getTaskRecurrence() + " " + task.getDateCreatedString();
+        String dateText = "Pending";
+        if (!task.isPending()) {
+            dateText = task.getTaskRecurrence() + " " + task.getDateCreatedString();
+        }
+
         binding.date.setText(dateText);
         binding.dateCompleted.setText(task.getDateCompletedString());
 

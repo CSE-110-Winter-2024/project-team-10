@@ -145,13 +145,32 @@ public class MainViewModel extends ViewModel {
 
     // Adding new tasks
     public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
-        var now = currentDateSubject.getValue();
+        // Current date changes with view mode
+        LocalDate now;
+
+        switch (filterPacketSubject.getValue().viewMode) {
+            case TODAY:
+            case RECURRING:
+                now = currentDateSubject.getValue();
+                break;
+            case TOMORROW:
+                now = currentDateSubject.getValue().plusDays(1);
+                break;
+            default:
+                // PENDING date is null
+                now = null;
+                break;
+        }
+
+        // Create the task with our builder...
         var task = TaskBuilder.from(taskRepository)
                 .describe(description)
                 .createOn(now)
                 .schedule(recurrence)
                 .clarify(context)
                 .build();
+
+        // ...and add it to the database
         taskRepository.saveTask(task);
     }
 

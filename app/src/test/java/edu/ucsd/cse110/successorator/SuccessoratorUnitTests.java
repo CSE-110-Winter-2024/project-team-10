@@ -34,20 +34,14 @@ public class SuccessoratorUnitTests {
     @Test
     public void isCompleteFalseTest() {
         Task task = TaskBuilder.from(1).describe("One-time task").build();
-
-        var expected = false;
-        var actual = task.isCompleted();
-        assertEquals(expected, actual);
+        assertEquals(false, task.isCompleted());
     }
 
     // Tests isComplete()
     @Test
     public void isCompleteTrueTest() {
         Task task = TaskBuilder.from(1).describe("One-time task").completeOn(LocalDate.now()).build();
-
-        var expected = true;
-        var actual = task.isCompleted();
-        assertEquals(expected, actual);
+        assertEquals(true, task.isCompleted());
     }
 
     // Tests task description
@@ -68,6 +62,19 @@ public class SuccessoratorUnitTests {
         int expected = 1;
         int actual = task.id();
         assertEquals(expected, actual);
+    }
+
+    // Tests pending status
+    @Test
+    public void isPendingFalseTest() {
+        Task task = TaskBuilder.from(1).describe("One-time task").createOn(LocalDate.now()).build();
+        assertEquals(false, task.isPending());
+    }
+
+    @Test
+    public void isPendingTrueTest() {
+        Task task = TaskBuilder.from(1).describe("One-time task").createOn(null).build();
+        assertEquals(true, task.isPending());
     }
 
     // Tests task date

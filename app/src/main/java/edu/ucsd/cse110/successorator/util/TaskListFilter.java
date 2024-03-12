@@ -77,6 +77,7 @@ public class TaskListFilter {
             return filterByContext();
         }
 
+        // View mode filtering
         switch (viewMode) {
             case TODAY:
                 return filterByDate(currentDate);
@@ -88,6 +89,7 @@ public class TaskListFilter {
                 return filterRecurring();
         }
 
+        // Should not get here, since viewMode should never be null
         throw new IllegalStateException();
     }
 }

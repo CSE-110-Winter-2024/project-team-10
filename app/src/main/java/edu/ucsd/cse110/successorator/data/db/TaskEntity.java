@@ -55,8 +55,12 @@ public class TaskEntity {
 
     public @NonNull Task toTask() {
         ZoneId zone = ZoneId.systemDefault();
-        LocalDate created = Instant.ofEpochSecond(this.dateCreated).atZone(zone).toLocalDate();
+        LocalDate created = null;
         LocalDate completed = null;
+
+        if (this.dateCreated >= 0) {
+            created = Instant.ofEpochSecond(this.dateCreated).atZone(zone).toLocalDate();
+        }
 
         if (this.dateCompleted >= 0) {
             completed = Instant.ofEpochSecond(this.dateCompleted).atZone(zone).toLocalDate();
