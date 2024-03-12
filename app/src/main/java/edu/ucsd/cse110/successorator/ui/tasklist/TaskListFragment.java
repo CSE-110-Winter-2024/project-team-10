@@ -21,6 +21,8 @@ import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTaskListBinding;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
+import edu.ucsd.cse110.successorator.util.FilterPacket;
+import edu.ucsd.cse110.successorator.util.ViewMode;
 
 public class TaskListFragment extends Fragment {
     private TaskListAdapter adapter;
@@ -72,22 +74,22 @@ public class TaskListFragment extends Fragment {
         return view.getRoot();
     }
 
-    static private List<Task> filterTaskList(MainViewModel.FilterPacket packet) {
+    static private List<Task> filterTaskList(FilterPacket packet) {
         Log.d("filterTaskList", "filtering tasks with date=" + packet.currentDate.toString());
 
         // Date to compare to for the task filtering
         LocalDate compareDate = packet.currentDate;
-        if (packet.viewMode == MainViewModel.ViewMode.TOMORROW) {
+        if (packet.viewMode == ViewMode.TOMORROW) {
             compareDate = compareDate.plusDays(1);
         }
 
         List<Task> filteredList = new ArrayList<>();
         for (Task task : packet.taskList) {
-            if (packet.viewMode == MainViewModel.ViewMode.PENDING) {
+            if (packet.viewMode == ViewMode.PENDING) {
                 if (!task.isPending()) {
                     continue;
                 }
-            } else if (packet.viewMode == MainViewModel.ViewMode.RECURRING) {
+            } else if (packet.viewMode == ViewMode.RECURRING) {
                 if (task.getTaskRecurrence() == TaskRecurrence.ONE_TIME) {
                     continue;
                 }

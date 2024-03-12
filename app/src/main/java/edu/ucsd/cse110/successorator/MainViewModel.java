@@ -21,63 +21,13 @@ import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.SimpleSubject;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
 import edu.ucsd.cse110.successorator.ui.tasklist.TaskListAdapter;
+import edu.ucsd.cse110.successorator.util.FilterPacket;
+import edu.ucsd.cse110.successorator.util.ViewMode;
 
 public class MainViewModel extends ViewModel {
     private final SimpleSubject<LocalDate> currentDateSubject;
     private final TaskRepository taskRepository;
     private final Subject<List<Task>> taskListSubject;
-
-    // Task view modes
-    public enum ViewMode {
-        TODAY, TOMORROW, PENDING, RECURRING;
-
-        public static ViewMode fetch(int index) {
-            switch (index) {
-                case 0:
-                    return TODAY;
-                case 1:
-                    return TOMORROW;
-                case 2:
-                    return PENDING;
-                case 3:
-                    return RECURRING;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-    }
-
-    // Class is a record of data needed to filter the tasks
-    public class FilterPacket {
-        public LocalDate currentDate = null;
-        public List<Task> taskList = null;
-        public ViewMode viewMode = null;
-
-        public FilterPacket() {}
-        public FilterPacket(FilterPacket other) {
-            this.currentDate = other.currentDate;
-            this.taskList = other.taskList;
-            this.viewMode = other.viewMode;
-        }
-
-        FilterPacket withDate(LocalDate currentDate) {
-            FilterPacket fp = new FilterPacket(this);
-            fp.currentDate = currentDate;
-            return fp;
-        }
-
-        FilterPacket withTaskList(List<Task> taskList) {
-            FilterPacket fp = new FilterPacket(this);
-            fp.taskList = taskList;
-            return fp;
-        }
-
-        FilterPacket withViewMode(ViewMode viewMode) {
-            FilterPacket fp = new FilterPacket(this);
-            fp.viewMode = viewMode;
-            return fp;
-        }
-    };
 
     // Since proper filtering depends on each component,
     // we make an aggregate subject that is updated along with

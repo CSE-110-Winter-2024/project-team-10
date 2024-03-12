@@ -22,6 +22,7 @@ import java.util.Locale;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.databinding.FragmentTopBarBinding;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.CreateTaskDialogFragment;
+import edu.ucsd.cse110.successorator.util.ViewMode;
 
 public class TopBarFragment extends Fragment {
 
@@ -73,7 +74,7 @@ public class TopBarFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("Spinner selected", "position:" + position);
-                activityModel.registerViewMode(MainViewModel.ViewMode.fetch(position));
+                activityModel.registerViewMode(ViewMode.fetch(position));
             }
 
             @Override
