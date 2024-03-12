@@ -33,14 +33,6 @@ public class SuccessoratorUnitTests {
             TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).build()
     );
 
-//    public static final List<Task> DEFAULT_TASKS_2 = List.of(
-//            TaskBuilder.from(1).describe("One-time task").clarify(TaskContext.WORK).build(),
-//            TaskBuilder.from(2).describe("Daily task").schedule(TaskRecurrence.DAILY).clarify(TaskContext.WORK).build(),
-//            TaskBuilder.from(3).describe("Weekly task").schedule(TaskRecurrence.WEEKLY).build(),
-//            TaskBuilder.from(4).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).completeOn(LocalDate.now().minusDays(1)).clarify(TaskContext.ERRAND).build(),
-//            TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).completeOn(LocalDate.now().minusWeeks(2)).clarify(TaskContext.SCHOOL).build()
-//    );
-
     public static MemoryTaskRepository listRepository(List<Task> taskList) {
         MemoryDataSource dataSource = MemoryDataSource.fromList(taskList);
         return new MemoryTaskRepository(dataSource);
