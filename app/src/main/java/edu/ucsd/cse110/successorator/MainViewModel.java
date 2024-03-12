@@ -20,12 +20,69 @@ import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRepository;
 import edu.ucsd.cse110.successorator.lib.util.SimpleSubject;
 import edu.ucsd.cse110.successorator.lib.util.Subject;
+import edu.ucsd.cse110.successorator.ui.tasklist.TaskListAdapter;
 
 public class MainViewModel extends ViewModel {
     private final SimpleSubject<LocalDate> currentDateSubject;
     private final TaskRepository taskRepository;
     private final Subject<List<Task>> taskListSubject;
-    private SimpleSubject<Pair<LocalDate, List<Task>>> dateTaskPacketSubject;
+
+    // Task view modes
+    public enum ViewMode {
+        TODAY, TOMORROW, PENDING, RECURRING;
+
+        public static ViewMode fetch(int index) {
+            switch (index) {
+                case 0:
+                    return TODAY;
+                case 1:
+                    return TOMORROW;
+                case 2:
+                    return PENDING;
+                case 3:
+                    return RECURRING;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
+
+    // Class is a record of data needed to filter the tasks
+    public class FilterPacket {
+        public LocalDate currentDate = null;
+        public List<Task> taskList = null;
+        public ViewMode viewMode = null;
+
+        public FilterPacket() {}
+        public FilterPacket(FilterPacket other) {
+            this.currentDate = other.currentDate;
+            this.taskList = other.taskList;
+            this.viewMode = other.viewMode;
+        }
+
+        FilterPacket withDate(LocalDate currentDate) {
+            FilterPacket fp = new FilterPacket(this);
+            fp.currentDate = currentDate;
+            return fp;
+        }
+
+        FilterPacket withTaskList(List<Task> taskList) {
+            FilterPacket fp = new FilterPacket(this);
+            fp.taskList = taskList;
+            return fp;
+        }
+
+        FilterPacket withViewMode(ViewMode viewMode) {
+            FilterPacket fp = new FilterPacket(this);
+            fp.viewMode = viewMode;
+            return fp;
+        }
+    };
+
+    // Since proper filtering depends on each component,
+    // we make an aggregate subject that is updated along with
+    // any of its components
+    private final SimpleSubject<FilterPacket> filterPacketSubject;
 
     public static final ViewModelInitializer<MainViewModel> initializer =
             new ViewModelInitializer<>(
@@ -45,30 +102,29 @@ public class MainViewModel extends ViewModel {
         var now = LocalDate.now();
         currentDateSubject = new SimpleSubject<>();
 
-        // Configure a subject for the combination of date and task list
-        var currentPacket = new Pair<LocalDate, List<Task>>(null, null);
-        dateTaskPacketSubject = new SimpleSubject<>();
-        dateTaskPacketSubject.setValue(currentPacket);
+        // Configure a subject for the filtering process
+        filterPacketSubject = new SimpleSubject<>();
+        filterPacketSubject.setValue(new FilterPacket());
 
-        // Needs to update itself if either component changes
-        taskListSubject.observe(list -> {
-            var currentValue = dateTaskPacketSubject.getValue();
-            if (list == null || currentValue == null) {
+        // Filter packet to update itself if any component changes
+        currentDateSubject.observe(date -> {
+            var currentPacket = filterPacketSubject.getValue();
+            if (date == null || currentPacket == null) {
                 return;
             }
 
-            var newValue = new Pair<>(currentValue.first, list);
-            dateTaskPacketSubject.setValue(newValue);
+            var newPacket = currentPacket.withDate(date);
+            filterPacketSubject.setValue(newPacket);
         });
 
-        currentDateSubject.observe(date -> {
-            var currentValue = dateTaskPacketSubject.getValue();
-            if (date == null || currentValue == null) {
+        taskListSubject.observe(list -> {
+            var currentPacket = filterPacketSubject.getValue();
+            if (list == null || currentPacket == null) {
                 return;
             }
 
-            var newValue = new Pair<>(date, currentValue.second);
-            dateTaskPacketSubject.setValue(newValue);
+            var newPacket = currentPacket.withTaskList(list);
+            filterPacketSubject.setValue(newPacket);
         });
 
         // Update the list of tasks on date change
@@ -93,8 +149,8 @@ public class MainViewModel extends ViewModel {
         return currentDateSubject;
     }
 
-    public Subject<Pair<LocalDate, List<Task>>> getDateTaskPacketSubject() {
-        return dateTaskPacketSubject;
+    public Subject<FilterPacket> getDateTaskPacketSubject() {
+        return filterPacketSubject;
     }
 
     public void completeTask(Task task) {
@@ -126,6 +182,14 @@ public class MainViewModel extends ViewModel {
         taskRepository.changeTaskDate(task.id(), tomorrow);
     }
 
+    // Changing view mode
+    public void registerViewMode(ViewMode viewMode) {
+        var currentPacket = filterPacketSubject.getValue();
+        var newPacket = currentPacket.withViewMode(viewMode);
+        filterPacketSubject.setValue(newPacket);
+    }
+
+    // Adding new tasks
     public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
         var now = currentDateSubject.getValue();
         var task = TaskBuilder.from(taskRepository)

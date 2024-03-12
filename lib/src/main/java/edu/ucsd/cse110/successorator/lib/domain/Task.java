@@ -140,9 +140,7 @@ public class Task {
     }
 
     // The following method decides whether to display a task or not at a specific date
-    // TODO: pass the current task context
-    // TODO: pass the view mode
-    public boolean displaySelf(LocalDate currentDate) {
+    public boolean displayOnDate(LocalDate currentDate) {
         ZoneId zone = ZoneId.systemDefault();
         // Always show if not completed
         if (isCompleted()) {

@@ -73,12 +73,11 @@ public class TopBarFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("Spinner selected", "position:" + position);
+                activityModel.registerViewMode(MainViewModel.ViewMode.fetch(position));
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         // Button handlers
