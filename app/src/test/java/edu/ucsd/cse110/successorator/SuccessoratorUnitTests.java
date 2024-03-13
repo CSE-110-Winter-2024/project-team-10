@@ -1,9 +1,12 @@
 package edu.ucsd.cse110.successorator;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.*;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -12,6 +15,14 @@ import java.util.List;
 import edu.ucsd.cse110.successorator.lib.data.MemoryDataSource;
 import edu.ucsd.cse110.successorator.lib.domain.MemoryTaskRepository;
 import edu.ucsd.cse110.successorator.lib.domain.Task;
+import edu.ucsd.cse110.successorator.data.db.RoomTaskRepository;
+import edu.ucsd.cse110.successorator.data.db.TaskDao;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
+import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
+
+
+
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -155,5 +166,72 @@ public class SuccessoratorUnitTests {
         assertEquals(3, repo1.taskListSize());
         assertEquals(4, repo2.taskListSize());
     }
+
+    @Mock
+    private TaskDao taskDao;
+
+    private RoomTaskRepository repository;
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        repository = new RoomTaskRepository(taskDao);
+    }
+
+    // Testing task creation with HOME context
+    @Test
+    public void taskCreationWithHomeContextTest() {
+        Task task = TaskBuilder.from(10)
+                .describe("Home task example")
+                .createOn(LocalDate.now())
+                .schedule(TaskRecurrence.ONE_TIME)
+                .clarify(TaskContext.HOME)
+                .build();
+
+        assertEquals("Task context for a home-related task should be correctly assigned",
+                TaskContext.HOME, task.getTaskContext());
+    }
+
+    // Testing task creation with the school context
+    @Test
+    public void taskCreationWithSchoolContextTest() {
+        Task task = TaskBuilder.from(20) // Unique ID for distinction
+                .describe("School task example")
+                .createOn(LocalDate.now())
+                .schedule(TaskRecurrence.ONE_TIME)
+                .clarify(TaskContext.SCHOOL)
+                .build();
+
+        assertEquals("Task context for a school-related task should be correctly assigned",
+                TaskContext.SCHOOL, task.getTaskContext());
+    }
+
+    // Testing task creation with ERRANDS context
+    @Test
+    public void taskCreationWithErrandsContextTest() {
+        Task task = TaskBuilder.from(30) // Unique ID for distinction
+                .describe("Errands task example")
+                .createOn(LocalDate.now())
+                .schedule(TaskRecurrence.ONE_TIME)
+                .clarify(TaskContext.ERRAND)
+                .build();
+
+        assertEquals("Task context for an errands-related task should be correctly assigned",
+                TaskContext.ERRAND, task.getTaskContext());
+    }
+
+    // Testing task creation with WORK context
+    @Test
+    public void taskCreationWithWorkContextTest() {
+        Task task = TaskBuilder.from(40) // Unique ID for distinction
+                .describe("Work task example")
+                .createOn(LocalDate.now())
+                .schedule(TaskRecurrence.ONE_TIME)
+                .clarify(TaskContext.WORK)
+                .build();
+
+        assertEquals("Task context for a work-related task should be correctly assigned",
+                TaskContext.WORK, task.getTaskContext());
+    }
+
 }
 
