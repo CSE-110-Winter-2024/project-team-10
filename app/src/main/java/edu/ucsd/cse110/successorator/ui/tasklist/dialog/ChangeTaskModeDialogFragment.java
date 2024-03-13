@@ -47,43 +47,37 @@ public class ChangeTaskModeDialogFragment extends DialogFragment {
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
         var activityModel = modelProvider.get(MainViewModel.class);
 
-        View dialogView = view.getRoot();
-        Button moveToTodayButton = dialogView.findViewById(R.id.move_to_today);
-        Button moveToTomorrowButton = dialogView.findViewById(R.id.move_to_tomorrow);
-        Button finishButton = dialogView.findViewById(R.id.finish);
-        Button deleteButton = dialogView.findViewById(R.id.delete);
-
-        moveToTodayButton.setOnClickListener(v -> {
+        view.moveToToday.setOnClickListener(v -> {
             activityModel.changeTaskDateToday(task);
             dismiss();
         });
 
-        moveToTomorrowButton.setOnClickListener(v -> {
+        view.moveToTomorrow.setOnClickListener(v -> {
             activityModel.changeTaskDateTomorrow(task);
             dismiss();
         });
 
-        finishButton.setOnClickListener(v -> {
+        view.finish.setOnClickListener(v -> {
             activityModel.completeTask(task);
             dismiss();
         });
 
-        deleteButton.setOnClickListener(v -> {
+        view.delete.setOnClickListener(v -> {
             activityModel.removeTask(task);
             dismiss();
         });
 
         // Only enable moving dates if it a one time task
-        moveToTodayButton.setEnabled(task.getTaskRecurrence() == TaskRecurrence.ONE_TIME);
-        moveToTomorrowButton.setEnabled(task.getTaskRecurrence() == TaskRecurrence.ONE_TIME);
+        view.moveToToday.setEnabled(task.getTaskRecurrence() == TaskRecurrence.ONE_TIME);
+        view.moveToTomorrow.setEnabled(task.getTaskRecurrence() == TaskRecurrence.ONE_TIME);
 
         // Only enable completing a task if it is not already completed
-        finishButton.setEnabled(!task.isCompleted());
+        view.finish.setEnabled(!task.isCompleted());
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(task.getDescription())
                 .setMessage("What would you like to do?")
-                .setView(dialogView)
+                .setView(view.getRoot())
                 .setNegativeButton("Cancel", this::onCancelButtonClick)
                 .create();
     }

@@ -134,7 +134,7 @@ public class Task {
 
         // Reset the completion date if needed
         // This is only when the date of creation changes
-        if (!previousDateCreated.equals(dateCreated)) {
+        if (previousDateCreated != null && !previousDateCreated.equals(dateCreated)) {
             dateCompleted = null;
         }
     }

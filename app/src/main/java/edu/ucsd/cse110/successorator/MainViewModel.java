@@ -144,13 +144,15 @@ public class MainViewModel extends ViewModel {
     }
 
     // Adding new tasks
-    public void createTask(String description, TaskRecurrence recurrence, TaskContext context) {
+    public void createTask(String description, LocalDate selectedDate, TaskRecurrence recurrence, TaskContext context) {
         // Current date changes with view mode
         LocalDate now;
 
         switch (filterPacketSubject.getValue().viewMode) {
-            case TODAY:
             case RECURRING:
+                now = selectedDate;
+                break;
+            case TODAY:
                 now = currentDateSubject.getValue();
                 break;
             case TOMORROW:
