@@ -17,10 +17,19 @@ public class TaskListFilter {
     TaskContext taskContext;
 
     private TaskListFilter(List<Task> taskList, LocalDate currentDate, ViewMode viewMode, TaskContext taskContext) {
-        this.taskList = taskList;
         this.currentDate = currentDate;
         this.viewMode = viewMode;
         this.taskContext = taskContext;
+
+        // Filter out tasks that are ahead of the current date
+        this.taskList = new ArrayList<>();
+        for (Task task : taskList) {
+            if (task.getDateCreated() == null) {
+                this.taskList.add(task);
+            } else if (!task.getDateCreated().isAfter(currentDate)) {
+                    this.taskList.add(task);
+            }
+        }
     }
 
     public static TaskListFilter from(FilterPacket packet) {

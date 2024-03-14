@@ -151,6 +151,8 @@ public class MainViewModel extends ViewModel {
         // Current date changes with view mode
         LocalDate now;
 
+        // Modify date based on view mode
+        // TODO: move to task creation fragment...
         switch (filterPacketSubject.getValue().viewMode) {
             case RECURRING:
                 now = selectedDate;
@@ -166,6 +168,12 @@ public class MainViewModel extends ViewModel {
                 now = null;
                 break;
         }
+
+        if (recurrence != TaskRecurrence.ONE_TIME) {
+            now = selectedDate;
+        }
+
+        Log.d("createTask", "now=" + now + " --> selectedDate" + selectedDate);
 
         // Create the task with our builder...
         var task = TaskBuilder.from(taskRepository)
