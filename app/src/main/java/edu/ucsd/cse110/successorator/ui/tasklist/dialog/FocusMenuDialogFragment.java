@@ -38,7 +38,6 @@ public class FocusMenuDialogFragment extends DialogFragment {
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
 
         activityModel = modelProvider.get(MainViewModel.class);
-        activityModel.registerTaskContext(TaskContext.HOME);
     }
 
     @NonNull
