@@ -8,4 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#d3d3d3</color>
+
+    <color name="home_focus_color">#FF0000</color> <!-- color for Home focus -->
+    <color name="work_focus_color">#00FF00</color> <!-- color for Work focus -->
+    <color name="school_focus_color">#0000FF</color> <!-- color for School focus -->
+    <color name="errand_focus_color">#FF00FF</color> <!-- color for Errand focus -->
+    <color name="default_focus_color">#d0c2e4</color> <!-- color for Default focus -->
 </resources>

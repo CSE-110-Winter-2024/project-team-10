@@ -3,6 +3,7 @@ package edu.ucsd.cse110.successorator.ui.tasklist;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import edu.ucsd.cse110.successorator.MainViewModel;
+import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.FragmentTopBarBinding;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.CreateTaskDialogFragment;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.FocusMenuDialogFragment;
@@ -92,9 +94,33 @@ public class TopBarFragment extends Fragment {
             // display the action menu
             var dialogFragment = FocusMenuDialogFragment.newInstance();
             dialogFragment.show(getParentFragmentManager(), "FocusMenuDialogFragment");
+        });
 
+        activityModel.getSelectedTaskContext().observe(getViewLifecycleOwner(), taskContext -> {
+            Log.d("tag", "image color");
+            if (taskContext != null) {
+                switch (taskContext) {
+                    case HOME:
+                        view.actionSettings.setBackgroundColor(getResources().getColor(R.color.home_focus_color, null));
+                        break;
+                    case WORK:
+                        view.actionSettings.setBackgroundColor(getResources().getColor(R.color.work_focus_color, null));
+                        break;
+                    case SCHOOL:
+                        view.actionSettings.setBackgroundColor(getResources().getColor(R.color.school_focus_color, null));
+                        break;
+                    case ERRAND:
+                        view.actionSettings.setBackgroundColor(getResources().getColor(R.color.errand_focus_color, null));
+                        break;
+                    default:
+                        view.actionSettings.setBackgroundColor(getResources().getColor(R.color.default_focus_color, null)); // A default color
+                }
+            } else {
+                view.actionSettings.setBackgroundColor(getResources().getColor(R.color.default_focus_color, null)); // Reset to default if null
+            }
         });
 
         return view.getRoot();
     }
+
 }

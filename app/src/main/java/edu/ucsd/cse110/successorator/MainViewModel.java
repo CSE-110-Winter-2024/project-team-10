@@ -4,6 +4,8 @@ import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLI
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
@@ -21,9 +23,9 @@ import edu.ucsd.cse110.successorator.util.FilterPacket;
 import edu.ucsd.cse110.successorator.util.ViewMode;
 
 public class MainViewModel extends ViewModel {
+    private final MutableLiveData<TaskContext> selectedTaskContext = new MutableLiveData<>();
     private final SimpleSubject<LocalDate> currentDateSubject;
     private final TaskRepository taskRepository;
-
     private final Subject<List<Task>> taskListSubject;
 
     // Since proper filtering depends on each component,
@@ -141,6 +143,7 @@ public class MainViewModel extends ViewModel {
         var currentPacket = filterPacketSubject.getValue();
         var newPacket = currentPacket.withTaskContext(taskContext);
         filterPacketSubject.setValue(newPacket);
+        setSelectedTaskContext(taskContext);
     }
 
     // Adding new tasks
@@ -185,5 +188,13 @@ public class MainViewModel extends ViewModel {
         var now = currentDateSubject.getValue();
         now = now.minusDays(1);
         currentDateSubject.setValue(now);
+    }
+
+    public LiveData<TaskContext> getSelectedTaskContext() {
+        return selectedTaskContext;
+    }
+
+    public void setSelectedTaskContext(TaskContext taskContext) {
+        selectedTaskContext.setValue(taskContext);
     }
 }
