@@ -304,7 +304,7 @@ public class SuccessoratorUnitTests {
 
     // Testing task creation with HOME context
     @Test
-    public void createTaskWithHomeContextTest() {
+    public void homeContextTest() {
         Task task = TaskBuilder.from(10)
                 .describe("Home task example")
                 .createOn(LocalDate.now())
@@ -318,7 +318,7 @@ public class SuccessoratorUnitTests {
 
     // Testing task creation with SCHOOL context
     @Test
-    public void createTaskWithSchoolContextTest() {
+    public void schoolContextTest() {
         Task task = TaskBuilder.from(20)
                 .describe("School task example")
                 .createOn(LocalDate.now())
@@ -332,7 +332,7 @@ public class SuccessoratorUnitTests {
 
     // Testing task creation with ERRANDS context
     @Test
-    public void createTaskWithErrandsContextTest() {
+    public void errandContextTest() {
         Task task = TaskBuilder.from(30)
                 .describe("Errands task example")
                 .createOn(LocalDate.now())
@@ -346,7 +346,7 @@ public class SuccessoratorUnitTests {
 
     // Testing task creation with WORK context
     @Test
-    public void createTaskWithWorkContextTest() {
+    public void workContextTest() {
         Task task = TaskBuilder.from(40)
                 .describe("Work task example")
                 .createOn(LocalDate.now())
