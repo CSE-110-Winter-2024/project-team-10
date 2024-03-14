@@ -22,6 +22,7 @@ import java.util.Locale;
 import edu.ucsd.cse110.successorator.MainViewModel;
 import edu.ucsd.cse110.successorator.R;
 import edu.ucsd.cse110.successorator.databinding.FragmentTopBarBinding;
+import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.CreateTaskDialogFragment;
 import edu.ucsd.cse110.successorator.ui.tasklist.dialog.FocusMenuDialogFragment;
 import edu.ucsd.cse110.successorator.util.ViewMode;
@@ -60,7 +61,7 @@ public class TopBarFragment extends Fragment {
             headers.add("Pending");
             headers.add("Recurring");
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, headers);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.view_mode_text, headers);
 
             spinner.setAdapter(adapter);
         });
@@ -97,30 +98,36 @@ public class TopBarFragment extends Fragment {
         });
 
         activityModel.getSelectedTaskContext().observe(getViewLifecycleOwner(), taskContext -> {
-            Log.d("tag", "image color");
-            if (taskContext != null) {
-                switch (taskContext) {
-                    case HOME:
-                        view.actionSettings.setBackgroundColor(getResources().getColor(R.color.home_focus_color, null));
-                        break;
-                    case WORK:
-                        view.actionSettings.setBackgroundColor(getResources().getColor(R.color.work_focus_color, null));
-                        break;
-                    case SCHOOL:
-                        view.actionSettings.setBackgroundColor(getResources().getColor(R.color.school_focus_color, null));
-                        break;
-                    case ERRAND:
-                        view.actionSettings.setBackgroundColor(getResources().getColor(R.color.errand_focus_color, null));
-                        break;
-                    default:
-                        view.actionSettings.setBackgroundColor(getResources().getColor(R.color.default_focus_color, null)); // A default color
-                }
-            } else {
-                view.actionSettings.setBackgroundColor(getResources().getColor(R.color.default_focus_color, null)); // Reset to default if null
-            }
+            configureMenuColor(view, taskContext);
         });
+
+        // Disable the previous button
+        view.prevButton.setVisibility(View.INVISIBLE);
+        view.prevButton.setEnabled(false);
 
         return view.getRoot();
     }
 
+    void configureMenuColor(FragmentTopBarBinding view, TaskContext taskContext) {
+        if (taskContext != null) {
+            switch (taskContext) {
+                case HOME:
+                    view.actionSettings.setBackgroundColor(getResources().getColor(R.color.home_focus_color, null));
+                    break;
+                case WORK:
+                    view.actionSettings.setBackgroundColor(getResources().getColor(R.color.work_focus_color, null));
+                    break;
+                case SCHOOL:
+                    view.actionSettings.setBackgroundColor(getResources().getColor(R.color.school_focus_color, null));
+                    break;
+                case ERRAND:
+                    view.actionSettings.setBackgroundColor(getResources().getColor(R.color.errand_focus_color, null));
+                    break;
+                default:
+                    view.actionSettings.setBackgroundColor(getResources().getColor(R.color.default_focus_color, null)); // A default color
+            }
+        } else {
+            view.actionSettings.setBackgroundColor(getResources().getColor(R.color.default_focus_color, null)); // Reset to default if null
+        }
+    }
 }

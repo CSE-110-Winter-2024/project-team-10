@@ -9,9 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#d3d3d3</color>
 
-    <color name="home_focus_color">#FF0000</color> <!-- color for Home focus -->
-    <color name="work_focus_color">#00FF00</color> <!-- color for Work focus -->
-    <color name="school_focus_color">#0000FF</color> <!-- color for School focus -->
-    <color name="errand_focus_color">#FF00FF</color> <!-- color for Errand focus -->
-    <color name="default_focus_color">#d0c2e4</color> <!-- color for Default focus -->
+    <color name="home_focus_color">#77FF0000</color> <!-- color for Home focus -->
+    <color name="work_focus_color">#7700EE00</color> <!-- color for Work focus -->
+    <color name="school_focus_color">#770000FF</color> <!-- color for School focus -->
+    <color name="errand_focus_color">#77FF00FF</color> <!-- color for Errand focus -->
+    <color name="default_focus_color">#77d0c2e4</color> <!-- color for Default focus -->
 </resources>

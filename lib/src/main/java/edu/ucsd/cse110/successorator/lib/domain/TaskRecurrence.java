@@ -22,15 +22,15 @@ public enum TaskRecurrence {
     public String toString() {
         switch (value) {
             case 0:
-                return "[0nce]";
+                return "(0nce)";
             case 1:
-                return "[Daily]";
+                return "(Daily)";
             case 2:
-                return "[Weekly]";
+                return "(Weekly)";
             case 3:
-                return "[Monthly]";
+                return "(Monthly)";
             case 4:
-                return "[Yearly]";
+                return "(Yearly)";
         }
 
         throw new IllegalArgumentException();

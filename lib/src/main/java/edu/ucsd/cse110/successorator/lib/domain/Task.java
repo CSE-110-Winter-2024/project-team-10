@@ -94,67 +94,68 @@ public class Task {
         }
     }
 
-    // Checks if dateCreated should be refreshed based on the current date (triggered on date changes)
-    public void refreshDateCreated(LocalDate currentDate) {
-        var previousDateCreated = dateCreated;
-
-        switch (taskRecurrence) {
-            case ONE_TIME:
-                // Never refresh one-time tasks
-                break;
-            case DAILY:
-                // Refresh to the currentDate
-                // Need a local copy so evaluate a dummy expression
-                dateCreated = currentDate.minusDays(0);
-                break;
-            case WEEKLY:
-                // Find the corresponding day of the week in currentDate
-                long weeksBetween = ChronoUnit.WEEKS.between(dateCreated, currentDate);
-                if (currentDate.isAfter(dateCreated)) {
-                    dateCreated = dateCreated.plusWeeks(weeksBetween);
-                }
-                break;
-            case MONTHLY:
-                // Find the corresponding day of the month in currentDate
-                long monthsBetween = ChronoUnit.MONTHS.between(dateCreated, currentDate);
-                if (currentDate.isAfter(dateCreated)) {
-                    dateCreated = dateCreated.plusMonths(monthsBetween);
-                }
-                break;
-            case YEARLY:
-                // Find the corresponding day of the year in currentDate
-                long yearsBetween = ChronoUnit.YEARS.between(dateCreated, currentDate);
-                if (currentDate.isAfter(dateCreated)) {
-                    dateCreated = dateCreated.plusYears(yearsBetween);
-                }
-                break;
-            default:
-                break;
+    // The following method decides whether to display
+    // the task or not at a specific date, considering
+    // only its creation date and (up to date) completion
+    // date (rollover or not)
+    public boolean displayOnDate(LocalDate currentDate) {
+        // Pending means null dateCreated
+        if (isPending()) {
+            return false;
         }
 
-        // Reset the completion date if needed
-        // This is only when the date of creation changes
-        if (!previousDateCreated.equals(dateCreated)) {
-            dateCompleted = null;
+        // If the current date is before, skip
+        if (currentDate.isBefore(dateCreated)) {
+            return false;
+        }
+
+        // Considering the task completion
+        if (isCompleted()) {
+            return !currentDate.isAfter(dateCompleted);
+        } else {
+            return true;
         }
     }
 
-    // The following method decides whether to display a task or not at a specific date
-    public boolean displayOnDate(LocalDate currentDate) {
-        ZoneId zone = ZoneId.systemDefault();
-        // Always show if not completed
-        if (isCompleted()) {
-            // Show if the completion date is before or at the current one
-            long currentEpochSeconds = currentDate.atStartOfDay(zone).toInstant().getEpochSecond();
-            long completedEpochSeconds = dateCompleted.atStartOfDay(zone).toInstant().getEpochSecond();
-            return currentEpochSeconds <= completedEpochSeconds;
-        } else if (!isPending()) {
-            // Show if the creation date is before or at the current one
-            long currentEpochSeconds = currentDate.atStartOfDay(zone).toInstant().getEpochSecond();
-            long creationEpochSeconds = dateCreated.atStartOfDay(zone).toInstant().getEpochSecond();
-            return currentEpochSeconds >= creationEpochSeconds;
+    // Update the creation date of the task depending on
+    // the current date and recurrence, assumes that the
+    // currenDate does not move backwards
+    public void refreshDates(LocalDate currentDate) {
+        // Skip if pending, ahead of currentDate/schedule
+        if (isPending() || currentDate.isBefore(dateCreated)) {
+            return;
         }
 
-        return false;
+        // Record old date for later
+        LocalDate previousDate = dateCreated;
+
+        switch (taskRecurrence) {
+            case ONE_TIME:
+                // No refreshes
+                break;
+            case DAILY:
+                dateCreated = currentDate;
+                break;
+            case WEEKLY:
+                long weeks = ChronoUnit.WEEKS.between(dateCreated, currentDate);
+                dateCreated = dateCreated.plusWeeks(weeks);
+                break;
+            case MONTHLY:
+                // A month is ~4 weeks (to avoid end of month errors)
+                long months = ChronoUnit.WEEKS.between(dateCreated, currentDate)/4;
+                dateCreated = dateCreated.plusWeeks(4 * months);
+                break;
+            case YEARLY:
+                long years = ChronoUnit.YEARS.between(dateCreated, currentDate);
+                dateCreated = dateCreated.plusYears(years);
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+
+        // If the date was update, then reset task completion
+        if (!previousDate.equals(dateCreated)) {
+            dateCompleted = null;
+        }
     }
 }

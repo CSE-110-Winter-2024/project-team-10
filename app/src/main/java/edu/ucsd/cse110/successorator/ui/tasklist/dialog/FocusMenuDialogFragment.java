@@ -2,6 +2,7 @@ package edu.ucsd.cse110.successorator.ui.tasklist.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
@@ -45,8 +46,9 @@ public class FocusMenuDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         var view = FragmentFocusMenuBinding.inflate(getLayoutInflater());
 
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+        AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(view.getRoot())
+                .setNegativeButton("Cancel", this::onCancelButtonClick)
                 .create();
 
         // Set OnClickListener for each TextView
@@ -54,33 +56,32 @@ public class FocusMenuDialogFragment extends DialogFragment {
         TextView workFocus = view.getRoot().findViewById(R.id.work_focus);
         TextView schoolFocus = view.getRoot().findViewById(R.id.school_focus);
         TextView errandFocus = view.getRoot().findViewById(R.id.errand_focus);
-        TextView cancelFocus = view.getRoot().findViewById(R.id.cancel_focus);
 
         homeFocus.setOnClickListener(v -> {
             activityModel.registerTaskContext(TaskContext.HOME);
-            dismiss();
+            dialog.dismiss();
         });
 
         workFocus.setOnClickListener(v -> {
             activityModel.registerTaskContext(TaskContext.WORK);
-            dismiss();
+            dialog.dismiss();
         });
 
         schoolFocus.setOnClickListener(v -> {
             activityModel.registerTaskContext(TaskContext.SCHOOL);
-            dismiss();
+            dialog.dismiss();
         });
 
         errandFocus.setOnClickListener(v -> {
             activityModel.registerTaskContext(TaskContext.ERRAND);
-            dismiss();
+            dialog.dismiss();
         });
 
-        cancelFocus.setOnClickListener(v -> {
-            activityModel.registerTaskContext(null);
-            dismiss();
-        });
+        return dialog;
+    }
 
-        return alertDialog;
+    private void onCancelButtonClick(DialogInterface dialog, int which) {
+        activityModel.registerTaskContext(null);
+        dialog.cancel();
     }
 }
