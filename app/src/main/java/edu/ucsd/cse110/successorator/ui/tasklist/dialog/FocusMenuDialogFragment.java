@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,7 +39,6 @@ public class FocusMenuDialogFragment extends DialogFragment {
         var modelProvider = new ViewModelProvider(modelOwner, modelFactory);
 
         activityModel = modelProvider.get(MainViewModel.class);
-        activityModel.registerTaskContext(TaskContext.HOME);
     }
 
     @NonNull
