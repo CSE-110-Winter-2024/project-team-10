@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.successorator.util;
 
+import androidx.annotation.NonNull;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,7 @@ public class TaskListFilter {
     ViewMode viewMode;
     TaskContext taskContext;
 
-    private TaskListFilter(List<Task> taskList, LocalDate currentDate, ViewMode viewMode, TaskContext taskContext) {
+    private TaskListFilter(List<Task> taskList, @NonNull LocalDate currentDate, ViewMode viewMode, TaskContext taskContext) {
         this.currentDate = currentDate;
         this.viewMode = viewMode;
         this.taskContext = taskContext;
