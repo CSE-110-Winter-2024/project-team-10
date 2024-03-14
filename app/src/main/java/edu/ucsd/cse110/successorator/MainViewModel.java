@@ -85,7 +85,7 @@ public class MainViewModel extends ViewModel {
 
             Log.d("MainViewModel", "refreshing task list due to date change");
             for (Task task : list) {
-                task.refreshDateCreated(date);
+                task.refreshDates(date);
                 taskRepository.replaceTask(task);
             }
         });

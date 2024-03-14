@@ -23,12 +23,12 @@ public class TaskListFilter {
         this.viewMode = viewMode;
         this.taskContext = taskContext;
 
-        // Filter out tasks that are ahead of the current date
+        // Filter out tasks that should not show with the current date
         this.taskList = new ArrayList<>();
         for (Task task : taskList) {
-            if (task.getDateCreated() == null) {
+            if (task.isPending()) {
                 this.taskList.add(task);
-            } else if (!task.getDateCreated().isAfter(currentDate)) {
+            } else if (task.displayOnDate(currentDate)) {
                     this.taskList.add(task);
             }
         }
