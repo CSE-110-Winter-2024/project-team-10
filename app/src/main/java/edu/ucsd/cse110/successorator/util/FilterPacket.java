@@ -10,9 +10,10 @@ import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
 
 // This class is a record of data needed to filter the tasks
 public class FilterPacket {
+    // Set the default here itself
     public LocalDate currentDate = LocalDate.now();
     public List<Task> taskList = null;
-    public ViewMode viewMode = null;
+    public ViewMode viewMode = ViewMode.TODAY;
     public TaskContext taskContext = null;
 
     public FilterPacket() {}

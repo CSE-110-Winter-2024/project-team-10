@@ -18,7 +18,11 @@ public class TaskListFilter {
     ViewMode viewMode;
     TaskContext taskContext;
 
-    private TaskListFilter(List<Task> taskList, @NonNull LocalDate currentDate, ViewMode viewMode, TaskContext taskContext) {
+    private TaskListFilter(List<Task> taskList, LocalDate currentDate, ViewMode viewMode, TaskContext taskContext) {
+        assert taskList != null;
+        assert currentDate != null;
+        assert viewMode != null;
+
         this.currentDate = currentDate;
         this.viewMode = viewMode;
         this.taskContext = taskContext;
@@ -63,7 +67,7 @@ public class TaskListFilter {
     }
 
     // Static specialized filters
-    private static List<Task> filterByDate(List<Task> taskList, LocalDate compareDate) {
+    public static List<Task> filterByDate(List<Task> taskList, LocalDate compareDate) {
         List<Task> tasks = new ArrayList<>();
         for (Task task : taskList) {
             if (task.displayOnDate(compareDate)) {
@@ -74,7 +78,7 @@ public class TaskListFilter {
         return tasks;
     }
 
-    private static List<Task> filterPending(List<Task> taskList) {
+    public static List<Task> filterPending(List<Task> taskList) {
         List<Task> tasks = new ArrayList<>();
         for (Task task : taskList) {
             if (task.isPending()) {
@@ -85,7 +89,7 @@ public class TaskListFilter {
         return tasks;
     }
 
-    private static List<Task> filterRecurring(List<Task> taskList) {
+    public static List<Task> filterRecurring(List<Task> taskList) {
         List<Task> tasks = new ArrayList<>();
         for (Task task : taskList) {
             if (task.getTaskRecurrence() != TaskRecurrence.ONE_TIME) {
@@ -96,7 +100,7 @@ public class TaskListFilter {
         return tasks;
     }
 
-    private static List<Task> filterByContext(List<Task> taskList, TaskContext taskContext) {
+    public static List<Task> filterByContext(List<Task> taskList, TaskContext taskContext) {
         List<Task> tasks = new ArrayList<>();
         for (Task task : taskList) {
             if (task.getTaskContext() == taskContext) {
