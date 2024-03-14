@@ -16,7 +16,7 @@ import edu.ucsd.cse110.successorator.util.FilterPacket;
 import edu.ucsd.cse110.successorator.util.TaskListFilter;
 
 public class TaskFilter {
-    static List<Task> DEFAULT_TASKS = List.of(
+    static final List<Task> DEFAULT_TASKS = List.of(
         TaskBuilder.from(1).describe("Monthly task")
                 .schedule(TaskRecurrence.MONTHLY)
                 .completeOn(LocalDate.now().minusDays(1))
@@ -42,6 +42,10 @@ public class TaskFilter {
                 .schedule(TaskRecurrence.YEARLY)
                 .completeOn(LocalDate.now().minusWeeks(2))
                 .clarify(TaskContext.SCHOOL)
+                .build(),
+
+        TaskBuilder.from(7).describe("Pending task")
+                .createOn(null)
                 .build()
     );
 
@@ -50,6 +54,20 @@ public class TaskFilter {
     public void filterSpecializedByContext() {
         List<Task> actual = TaskListFilter.filterByContext(DEFAULT_TASKS, TaskContext.WORK);
         List<Task> expected = List.of(DEFAULT_TASKS.get(3), DEFAULT_TASKS.get(4));
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void filterSpecializedByPending() {
+        List<Task> actual = TaskListFilter.filterPending(DEFAULT_TASKS);
+        List<Task> expected = List.of(DEFAULT_TASKS.get(6));
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void filterSpecializedRecurring() {
+        List<Task> actual = TaskListFilter.filterRecurring(DEFAULT_TASKS);
+        List<Task> expected = List.of(DEFAULT_TASKS.get(0), DEFAULT_TASKS.get(2), DEFAULT_TASKS.get(4), DEFAULT_TASKS.get(5));
         assertEquals(actual, expected);
     }
 

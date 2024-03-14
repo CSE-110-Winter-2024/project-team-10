@@ -61,7 +61,7 @@ public class TopBarFragment extends Fragment {
             headers.add("Pending");
             headers.add("Recurring");
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, headers);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.view_mode_text, headers);
 
             spinner.setAdapter(adapter);
         });

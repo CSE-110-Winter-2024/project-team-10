@@ -111,7 +111,7 @@ public class Task {
 
         // Considering the task completion
         if (isCompleted()) {
-            return currentDate.isBefore(dateCompleted);
+            return !currentDate.isAfter(dateCompleted);
         } else {
             return true;
         }
