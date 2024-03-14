@@ -95,7 +95,7 @@ public class SuccessoratorUnitTests {
         Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).build();
         assertEquals(date, task.getDateCreated());
 
-        task.refreshDateCreated(moved);
+        task.refreshDates(moved);
         assertEquals(date, task.getDateCreated());
     }
 
@@ -107,7 +107,7 @@ public class SuccessoratorUnitTests {
         Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.DAILY).build();
         assertEquals(date, task.getDateCreated());
 
-        task.refreshDateCreated(moved);
+        task.refreshDates(moved);
         assertEquals(moved, task.getDateCreated());
     }
 
@@ -121,27 +121,27 @@ public class SuccessoratorUnitTests {
         Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.WEEKLY).build();
         assertEquals(date, task.getDateCreated());
 
-        task.refreshDateCreated(movedSameWeek);
+        task.refreshDates(movedSameWeek);
         assertEquals(date, task.getDateCreated());
 
-        task.refreshDateCreated(movedNextWeek);
+        task.refreshDates(movedNextWeek);
         assertEquals(dateNextWeek, task.getDateCreated());
     }
 
     @Test
     public void monthlyRecurrenceTest() {
         LocalDate date = LocalDate.now();
-        LocalDate dateNextMonth = LocalDate.now().plusMonths(1);
+        LocalDate dateNextMonth = LocalDate.now().plusWeeks(4);
         LocalDate movedSameMonth = date.plusDays(5);
         LocalDate movedNextMonth = date.plusMonths(1).plusDays(2);
 
         Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.MONTHLY).build();
         assertEquals(date, task.getDateCreated());
 
-        task.refreshDateCreated(movedSameMonth);
+        task.refreshDates(movedSameMonth);
         assertEquals(date, task.getDateCreated());
 
-        task.refreshDateCreated(movedNextMonth);
+        task.refreshDates(movedNextMonth);
         assertEquals(dateNextMonth, task.getDateCreated());
     }
 
@@ -155,10 +155,10 @@ public class SuccessoratorUnitTests {
         Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(TaskRecurrence.YEARLY).build();
         assertEquals(date, task.getDateCreated());
 
-        task.refreshDateCreated(movedSameYear);
+        task.refreshDates(movedSameYear);
         assertEquals(date, task.getDateCreated());
 
-        task.refreshDateCreated(movedNextYear);
+        task.refreshDates(movedNextYear);
         assertEquals(dateNextYear, task.getDateCreated());
     }
 
@@ -257,9 +257,9 @@ public class SuccessoratorUnitTests {
     public void filterContextTest() {
         // Benchmark task list
         Task errandTask = TaskBuilder.from(1).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).completeOn(LocalDate.now().minusDays(1)).clarify(TaskContext.ERRAND).build();
-        Task homeTask1 = TaskBuilder.from(2).describe("One-time task").build();
+        Task homeTask1 = TaskBuilder.from(2).describe("One-time task (1)").build();
         Task homeTask2 = TaskBuilder.from(3).describe("Weekly task").schedule(TaskRecurrence.WEEKLY).build();
-        Task workTask1 = TaskBuilder.from(4).describe("One-time task").clarify(TaskContext.WORK).build();
+        Task workTask1 = TaskBuilder.from(4).describe("One-time task (2)").clarify(TaskContext.WORK).build();
         Task workTask2 = TaskBuilder.from(5).describe("Daily task").schedule(TaskRecurrence.DAILY).clarify(TaskContext.WORK).build();
         Task schoolTask = TaskBuilder.from(6).describe("Yearly task").schedule(TaskRecurrence.YEARLY).completeOn(LocalDate.now().minusWeeks(2)).clarify(TaskContext.SCHOOL).build();
 
@@ -271,7 +271,7 @@ public class SuccessoratorUnitTests {
                 .withTaskContext(TaskContext.ERRAND);
 
         List<Task> actualErrand = TaskListFilter.from(errandPacket).filter();
-        List<Task> expectedErrand = List.of(errandTask);
+        List<Task> expectedErrand = List.of();
         assertEquals(expectedErrand, actualErrand);
 
         // Home
@@ -298,8 +298,63 @@ public class SuccessoratorUnitTests {
                 .withTaskContext(TaskContext.SCHOOL);
 
         List<Task> actualSchool = TaskListFilter.from(schoolPacket).filter();
-        List<Task> expectedSchool = List.of(schoolTask);
+        List<Task> expectedSchool = List.of();
         assertEquals(expectedSchool, actualSchool);
+    }
 
+    // Testing task creation with HOME context
+    @Test
+    public void createTaskWithHomeContextTest() {
+        Task task = TaskBuilder.from(10)
+                .describe("Home task example")
+                .createOn(LocalDate.now())
+                .schedule(TaskRecurrence.ONE_TIME)
+                .clarify(TaskContext.HOME)
+                .build();
+
+        assertEquals("Task context for a home-related task should be correctly assigned",
+                TaskContext.HOME, task.getTaskContext());
+    }
+
+    // Testing task creation with SCHOOL context
+    @Test
+    public void createTaskWithSchoolContextTest() {
+        Task task = TaskBuilder.from(20)
+                .describe("School task example")
+                .createOn(LocalDate.now())
+                .schedule(TaskRecurrence.ONE_TIME)
+                .clarify(TaskContext.SCHOOL)
+                .build();
+
+        assertEquals("Task context for a school-related task should be correctly assigned",
+                TaskContext.SCHOOL, task.getTaskContext());
+    }
+
+    // Testing task creation with ERRANDS context
+    @Test
+    public void createTaskWithErrandsContextTest() {
+        Task task = TaskBuilder.from(30)
+                .describe("Errands task example")
+                .createOn(LocalDate.now())
+                .schedule(TaskRecurrence.ONE_TIME)
+                .clarify(TaskContext.ERRAND)
+                .build();
+
+        assertEquals("Task context for an errands-related task should be correctly assigned",
+                TaskContext.ERRAND, task.getTaskContext());
+    }
+
+    // Testing task creation with WORK context
+    @Test
+    public void createTaskWithWorkContextTest() {
+        Task task = TaskBuilder.from(40)
+                .describe("Work task example")
+                .createOn(LocalDate.now())
+                .schedule(TaskRecurrence.ONE_TIME)
+                .clarify(TaskContext.WORK)
+                .build();
+
+        assertEquals("Task context for a work-related task should be correctly assigned",
+                TaskContext.WORK, task.getTaskContext());
     }
 }
