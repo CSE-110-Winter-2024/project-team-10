@@ -1,20 +1,14 @@
-# Team X - Successorator 
+# Team 10 - Successorator 
 
 ---
 
-This is the mostly empty template for the Successorator project.
+Velocity Calculation
 
-## Getting Started
+Based on Iteration 1, this was our estimated velocity: 
 
- - [ ] Look around the project.
-   - The `docs/` directory may be helpful, as Slack/Discord messages are easy to lose.
-     - This is a good place to put finalized user stories, standards, guidelines, meeting notes, etc
-       that you want to stick with the repository in perpetuity (e.g. after the semester ends) e.g.
-       for portfolio purposes.
-     - Google Docs is easier for collaboration, but eventually you might want to put the
-       finalized versions here for reference. (This way you can also reference them in PRs!)
- - [ ] Modify the `.github/pull_request_template.md` to suit your needs.
-   - You **do not** need to use the exact same template, but justify your changes when you 
-     PR the updated template.
- - [ ] Replace this README with something appropriate.
-   - **When you do, replace the title to replace X with your team number.**
+work done = estimated hours of work done = 10 work days * 4 hours per day = 40
+work hours available = work hours available to get work done = hours available * # of people = (10 work days * 2 hours per day) * 6 = 20 * 6 = 60 hours
+
+Velocity = work done/work hours availble = 40 hours/60 hours = **0.67**
+
+This velocity would then be used to figure out how our work would flow for our second iteration.
