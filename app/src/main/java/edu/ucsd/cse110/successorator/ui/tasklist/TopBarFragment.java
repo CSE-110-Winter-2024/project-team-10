@@ -82,10 +82,6 @@ public class TopBarFragment extends Fragment {
             activityModel.advanceNextDay();
         });
 
-        view.prevButton.setOnClickListener(v -> {
-            activityModel.advancePreviousDay();
-        });
-
         view.addButton.setOnClickListener(v -> {
             var dialogFragment = CreateTaskDialogFragment.newInstance();
             dialogFragment.show(getParentFragmentManager(), "CreateTaskDialogFragment");
@@ -100,10 +96,6 @@ public class TopBarFragment extends Fragment {
         activityModel.getSelectedTaskContext().observe(getViewLifecycleOwner(), taskContext -> {
             configureMenuColor(view, taskContext);
         });
-
-        // Disable the previous button
-        view.prevButton.setVisibility(View.INVISIBLE);
-        view.prevButton.setEnabled(false);
 
         return view.getRoot();
     }
