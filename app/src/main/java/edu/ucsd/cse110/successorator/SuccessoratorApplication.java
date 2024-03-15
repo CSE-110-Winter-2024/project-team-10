@@ -39,13 +39,13 @@ public class SuccessoratorApplication extends Application {
             // Properly loading dummy tasks
             List<Task> completed = new ArrayList<>();
             List<Task> uncompleted = new ArrayList<>();
-            for (Task task : DEFAULT_TASKS) {
-                if (task.isCompleted()) {
-                    completed.add(task);
-                } else {
-                    uncompleted.add(task);
-                }
-            }
+//            for (Task task : DEFAULT_TASKS) {
+//                if (task.isCompleted()) {
+//                    completed.add(task);
+//                } else {
+//                    uncompleted.add(task);
+//                }
+//            }
 
             // Uncompleted tasks first, then completed ones
             for (Task task : uncompleted) {
@@ -67,12 +67,12 @@ public class SuccessoratorApplication extends Application {
     public TaskRepository getTaskRepository() {
         return taskRepository;
     }
-    public static final List<Task> DEFAULT_TASKS = List.of(
-            TaskBuilder.from(1).describe("One-time task").build(),
-            TaskBuilder.from(2).describe("Daily task").schedule(TaskRecurrence.DAILY).clarify(TaskContext.WORK).build(),
-            TaskBuilder.from(3).describe("Weekly task").schedule(TaskRecurrence.WEEKLY).build(),
-            TaskBuilder.from(4).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).clarify(TaskContext.ERRAND).build(),
-            TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).clarify(TaskContext.SCHOOL).build(),
-            TaskBuilder.from(6).describe("Pending task").createOn(null).build()
-    );
+//    public static final List<Task> DEFAULT_TASKS = List.of(
+//            TaskBuilder.from(1).describe("One-time task").build(),
+//            TaskBuilder.from(2).describe("Daily task").schedule(TaskRecurrence.DAILY).clarify(TaskContext.WORK).build(),
+//            TaskBuilder.from(3).describe("Weekly task").schedule(TaskRecurrence.WEEKLY).build(),
+//            TaskBuilder.from(4).describe("Monthly task").schedule(TaskRecurrence.MONTHLY).clarify(TaskContext.ERRAND).build(),
+//            TaskBuilder.from(5).describe("Yearly task").schedule(TaskRecurrence.YEARLY).clarify(TaskContext.SCHOOL).build(),
+//            TaskBuilder.from(6).describe("Pending task").createOn(null).build()
+//    );
 }
