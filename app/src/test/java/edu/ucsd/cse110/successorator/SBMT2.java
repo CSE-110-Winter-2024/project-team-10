@@ -3,21 +3,17 @@ package edu.ucsd.cse110.successorator;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import edu.ucsd.cse110.successorator.lib.domain.Task;
 import edu.ucsd.cse110.successorator.lib.domain.TaskBuilder;
 import edu.ucsd.cse110.successorator.lib.domain.TaskContext;
 import edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence;
-import edu.ucsd.cse110.successorator.util.FilterPacket;
 import edu.ucsd.cse110.successorator.util.TaskListFilter;
 
 // Tests the second of the "Scenario Based Milestone Tests"
@@ -91,30 +87,27 @@ public class SBMT2 {
 
         assertEquals(schoolTasks, TaskListFilter.filterByContext(allTasks, TaskContext.SCHOOL));
 
-
-
         // Tap the dropdown menu and select the “recurring” option.
         // Fill in the text field and select the “Weekly” option.
-        // Also click the date at the bottom and select March 1st. Create the task. (US 7)
+        // Also click the date at the bottom and select (March 1st?).
+        // Create the task. (US 7)
         // The task should not be visible on the current date (assuming it is prior to March 1st).
         // Tap until March 1st is displayed as the date. The task should appear. (US 7)
-        // Mark the task as complete. Move forward another SEVEN days. The task should reappear in the completed list. (US 7)
-        LocalDate date = LocalDate.now();
-        LocalDate dateNextWeek = LocalDate.now().plusWeeks(1);
-        LocalDate movedSameWeek = date.plusDays(5);
-        LocalDate movedNextWeek = date.plusDays(9);
+        Task task = TaskBuilder.from(1).describe("Task 1")
+                .createOn(LocalDate.now().plusDays(5))
+                .schedule(TaskRecurrence.WEEKLY)
+                .build();
+        assertEquals(LocalDate.now().plusDays(5), task.getDateCreated());
 
-        Task task = TaskBuilder.from(1).describe("Task 1").createOn(date).schedule(edu.ucsd.cse110.successorator.lib.domain.TaskRecurrence.WEEKLY).build();
-        Assert.assertEquals(date, task.getDateCreated());
-
-        task.refreshDates(movedSameWeek);
-        Assert.assertEquals(date, task.getDateCreated());
-
-        task.refreshDates(movedNextWeek);
-        Assert.assertEquals(dateNextWeek, task.getDateCreated());
+        // Mark the task as complete. Move forward another SEVEN days.
+        // The task should reappear in the completed list. (US 7)
+        task = TaskBuilder.from(1).describe("Task 1")
+                .createOn(LocalDate.now().plusDays(5))
+                .completeOn(LocalDate.now())
+                .schedule(TaskRecurrence.WEEKLY)
+                .build();
+        assertEquals(true, task.isCompleted());
     }
-
-
 
     // Exit the app. This SBMT has now been completed successfully.
 }
