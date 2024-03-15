@@ -20,10 +20,11 @@ import edu.ucsd.cse110.successorator.util.TaskListFilter;
 // Target User Stories: US1, US3, US5
 // SBMT 1: Task Scheduling Options, Long Press & Task Context
 public class SBMT1 {
-    List<Task> allTasks = new ArrayList<Task>();
     @Test
     public void SBMT1Test() {
         // Start the app by tapping its icon.
+        List<Task> allTasks = new ArrayList<Task>();
+
         // Further progress into the app’s UI by tapping the ‘+’ icon.
         // The task creation menu should display the text input box, the contexts,
         // and the scheduling options (US 1 & US 5).
@@ -117,8 +118,8 @@ public class SBMT1 {
 
         allTasks = List.of(schoolTask1,schoolTask2, homeTask1, homeTask2, schoolTask3);
 
-        List<Task> schoolTasks = List.of(schoolTask1, schoolTask2, schoolTask3);
-        List<Task> homeTasks = List.of(homeTask1, homeTask2);
+        List<Task> schoolTasks = List.of(schoolTask1, schoolTask2, schoolTask3);//Expected 1
+        List<Task> homeTasks = List.of(homeTask1, homeTask2);//Expected 2
 
         assertEquals(schoolTasks, TaskListFilter.filterByContext(allTasks, TaskContext.SCHOOL));
         assertEquals(homeTasks, TaskListFilter.filterByContext(allTasks, TaskContext.HOME));
